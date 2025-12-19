@@ -9,7 +9,9 @@ test('article page loads', async ({ page }) => {
   await page.goto('/');
   const firstPost = page.locator('article').first();
   await firstPost.click();
-  await expect(page.locator('article')).toBeVisible();
+  // After clicking an article, we should navigate to a new page
+  await page.waitForLoadState('networkidle');
+  await expect(page.locator('article').first()).toBeVisible();
 });
 
 
