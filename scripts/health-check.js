@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-const http = require('http');
+import http from 'http';
 
 const host = process.env.WP_HOME || 'http://localhost:8080';
+// Basic health check URLs for fresh install
+// Update these after importing production data to check actual categories/pages
 const urls = [
-  '/',
-  '/category/gay-car-reviews/',
-  '/about/'
+  '/'
 ];
 
 function checkUrl(path) {

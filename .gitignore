@@ -40,9 +40,15 @@ logs/
 test-results/
 playwright-report/
 playwright/.cache/
+.phpunit.cache/
+coverage/
 
 # Temporary files
 tmp/
 temp/
 *.tmp
+
+# Cache directories
+.cache/
+*.cache
 
