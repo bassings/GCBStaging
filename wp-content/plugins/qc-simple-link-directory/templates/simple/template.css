@@ -1,0 +1,399 @@
+/*Default Template*/
+
+.qcld-main-container-style-simple h1{
+  margin: 0;
+  padding: 12px 0;
+  line-height: normal; 
+  font-size: 22px;
+  font-weight: 600;
+}
+.qcld-main-container-style-simple h2{
+  margin: 0;
+  padding: 12px 0;
+  line-height: normal; 
+  font-size: 20px;
+  font-weight: 600;
+}
+.qcld-main-container-style-simple h3{
+  margin: 0;
+  padding: 12px 0;
+  line-height: normal; 
+  font-size: 18px;
+  font-weight: 600;
+}
+.qcld-main-container-style-simple p{
+  margin: 0;
+  padding: 0;
+  line-height: 22px;
+}
+.qcld-main-container-style-simple ul{
+  margin: 0;
+  padding: 0;
+}
+.qcld-main-container-style-simple ul li{
+  margin: 0;
+  padding: 0;
+  list-style: none; 
+}
+
+.qcld-main-container-style-simple .simple .qcopd-single-list ul{
+	padding: 0 !important;
+	margin: 0px;
+	background-color: #ffffff;
+	border-top: 5px solid #f86960;
+	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+	margin: 0 0 5px;
+	width: 100%;
+}
+
+.qcld-main-container-style-simple .simple .qcopd-single-list ul li{
+	list-style: none;
+  position: relative;
+  margin-left: 0;
+  padding-left: 0;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.qcld-main-container-style-simple .simple .qcopd-single-list h3 {
+  color: #262b35;
+  font-size: 17px;
+  font-weight: normal;
+  text-transform: uppercase;
+}
+
+.qcld-main-container-style-simple .simple .qcopd-single-list ul{
+	border-top: 5px solid #f86960;
+}
+
+.qcld-main-container-style-simple .simple .qcopd-single-list ul li a {
+
+  color: #828282;
+  display: block;
+  padding: 13px 10px 13px 10px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: normal;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  line-height: 20px;
+  -moz-box-shadow: 0px 0px 0px #ffffff;
+  -webkit-box-shadow: 0px 0px 0px #ffffff;
+  box-shadow: 0px 0px 0px #ffffff;
+  filter: progid:DXImageTransform.Microsoft.Shadow(Strength=0, Direction=90, Color=#ffffff); 
+}
+
+.qcld-main-container-style-simple .simple .qcopd-single-list ul li:hover {
+  background: #fafafa;
+  color: #f86960;
+  border-bottom: 1px solid #f86960;
+}
+
+
+
+.qcld-main-container-style-simple .simple .list-img {
+
+   display: inline-block !important;
+   float: none;
+   vertical-align: middle;
+   margin: 0 10px 0 0;
+   font-size: 15px;
+
+}
+.qcld-main-container-style-simple .simple .list-img img{
+  width: 24px;
+  height: 24px;
+}
+
+/*Upvote Section*/
+.qcld-main-container-style-simple .simple .upvote-section-simple {
+  height: 100%;
+  position: absolute;
+  right: 2px;
+  top: 50%;
+  color: #666;
+  font-size: 12px;
+  text-align: center;
+  width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+-moz-transform: translateY(-50%);
+-webkit-transform: translateY(-50%);
+-o-transform: translateY(-50%);
+-ms-transform: translateY(-50%);
+transform: translateY(-50%);
+z-index:5;
+}
+
+
+
+.qcld-main-container-style-simple .simple .bookmark-section-simple {
+    height: 100%;
+    position: absolute;
+    right: 22px;
+    top: 50%;
+    
+    font-size: 12px;
+    text-align: center;
+    width: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    -moz-transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+	z-index:5;
+}
+
+
+.qcld-main-container-style-simple .simple .new-icon-section > span {
+  align-items: center;
+  background-color: rgba(0,0,0,.7);
+  color: #fff;
+  display: flex;
+  font-size: 9px;
+  font-weight: bold;
+  height: 13px;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left:0;
+  width: 28px;
+}
+.qcld-main-container-style-simple .simple .featured-section {
+  bottom: 1px;
+  position: absolute;
+  right: 0;
+  z-index: 1;
+  width: 0;
+	height: 0;
+	border-style: solid;
+	border-width: 0 0px 25px 25px;
+	border-color: transparent transparent #FFEB3B transparent;
+
+}
+.qcld-main-container-style-simple .simple .featured-section i {
+  position: absolute;
+  left: -9px;
+  top: 10px;
+  color: #3d7dfc;
+  font-size: 12px;
+}
+.qcld-main-container-style-simple .new-icon-section i {
+	cursor:pointer;
+}
+
+
+.qcld-main-container-style-simple .simple .upvote-btn:hover, .qcld-main-container-style-simple .simple .ca-menu li:hover .upvote-btn{
+  cursor: pointer;
+  color: #81D742;
+}
+
+.qcld-main-container-style-simple .simple .upvote-btn, .qcld-main-container-style-simple .simple .upvote-count{
+  display: block;
+}
+
+.qcld-main-container-style-simple .simple .upvote-btn {
+  display: inline-block;
+  height: 35px;
+  padding-top: 0px;
+  text-align: center;
+  width: 100%;
+  z-index: 805;
+}
+
+.qcld-main-container-style-simple .simple .upvote-count {
+  font-size: 11px;
+  margin-top: 0px;
+  width: 100%;
+  z-index: 800;
+}
+
+.qcld-main-container-style-simple .simple .upvote-section-simple .upvote-btn, .qcld-main-container-style-simple .simple .upvote-section-simple .upvote-count {
+  color: #828282;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+
+.qcld-main-container-style-simple .simple .upvote-section-simple .upvote-btn:hover, .qcld-main-container-style-simple .simple li:hover .upvote-btn, .qcld-main-container-style-simple .simple li:hover .upvote-count{
+  color: #f86960;
+}
+
+.qcld-main-container-style-simple .simple .bookmark-section-simple .bookmark-btn:hover, .qcld-main-container-style-simple .simple li:hover .bookmark-btn{
+    color: #f86960;
+}
+
+/*RTL CSS*/
+.qcld-main-container-style-simple .direction-rtl .qcopd-single-list, .qcld-main-container-style-simple .direction-rtl .qcopd-single-list h3, .qcld-main-container-style-simple .direction-rtl .qcopd-single-list ul li, .qcld-main-container-style-simple .direction-rtl .qcopd-single-list ul li a, .qcld-main-container-style-simple .qcopd-single-list ul li span 
+{
+  direction: rtl !important;
+}
+
+.qcld-main-container-style-simple .direction-rtl .simple .list-img {
+  margin-left: 10px;
+  margin-right: 0;
+}
+
+.qcld-main-container-style-simple .direction-rtl .upvote-section-simple {
+  left: 10px !important;
+  right: auto !important;
+}
+
+/*TPL Fix*/
+.qcld-main-container-style-simple .simple .upvote-section-simple {
+  height: 100% !important;
+}
+
+.qcld-main-container-style-simple .simple .upvote-btn {
+  height: 25px;
+  width: 32px;
+}
+/* new custom css */
+
+.qcld-main-container-style-simple .qc-full-wrapper {
+  display: flex;
+  width: 100%;
+}
+.qcld-main-container-style-simple .left-side-filter {
+  background:none;
+  float: left;
+  margin-right: 25px;
+  width: 30% !important;
+  border-bottom: none;
+}
+.qcld-main-container-style-simple .direction-rtl .qcopd-single-list ul li a{
+	padding-left:40px;
+}
+
+.qcld-main-container-style-simple .sld_spinner {
+  margin: 0px auto;
+  width: 70px;
+  text-align: center;
+}
+
+.qcld-main-container-style-simple .sld_spinner > div {
+  width: 18px;
+  height: 18px;
+  background-color: #333;
+
+  border-radius: 100%;
+  display: inline-block;
+  -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+  animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+}
+
+.qcld-main-container-style-simple .sld_spinner .sld_bounce1 {
+  -webkit-animation-delay: -0.32s;
+  animation-delay: -0.32s;
+}
+
+.qcld-main-container-style-simple .sld_spinner .sld_bounce2 {
+  -webkit-animation-delay: -0.16s;
+  animation-delay: -0.16s;
+}
+
+@-webkit-keyframes sk-bouncedelay {
+  0%, 80%, 100% { -webkit-transform: scale(0) }
+  40% { -webkit-transform: scale(1.0) }
+}
+
+@keyframes sk-bouncedelay {
+  0%, 80%, 100% { 
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  } 40% { 
+    -webkit-transform: scale(1.0);
+    transform: scale(1.0);
+  }
+}
+
+.qcld-main-container-style-simple .read-more {
+	color: #000;
+	font-size: 11px;
+	position: absolute;
+	z-index: 99999;
+	display: block;
+	left: 48px;
+	bottom: 4px;
+}
+.qcld-main-container-style-simple .open-mpf-sld-more{
+	    height: 25px;
+    font-size: 13px;
+}
+.qcld-main-container-style-simple .direction-rtl .simple .qcopd-single-list ul li a {
+    padding-right: 0px;
+}
+
+.qcld-main-container-style-simple .simple span.qcopd-list-item-author {
+  color: #828282;
+  position: absolute;
+  bottom: 1px;
+  left: 45px;
+  font-size: 9px;
+}
+.qcld-main-container-style-simple .simple .qcopd-single-list ul li a{
+  padding-bottom: 30px !important;
+}
+.qcld-main-container-style-simple .simple .qcopd-single-list ul li:hover span.qcopd-list-item-author{
+  color: #f86960;
+}
+
+.qcld-main-container-style-simple .ca-content-audio audio {
+    height: 36px;
+    width: 95%;
+}
+.qcld-main-container-style-simple .ca-content-audio {
+    margin: -10px 0 0 15px;
+}
+.qcld-main-container-style-simple .simple .qcopd-single-list ul li a {
+    padding-bottom: 13px!important;
+}
+
+.qcld-main-container-style-simple .simple .bookmark-section-simple {
+    right: 42px;
+}
+.qcld-main-container-style-simple .simple .upvote-section-simple {
+  right: 30px;
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  width: auto;
+  top: 12px;
+  height: auto !important;
+}
+.qcld-main-container-style-simple .simple .qcopd-single-list ul li a {
+  padding-bottom: 13px !important;
+  display: flex;
+  align-items: center;
+}
+.advertise-block.tpl-default {
+  width: 100% !important;
+  margin-bottom: 0 !important;
+  height: auto !important;
+  margin-top: 0 !important;
+}
+
+.qcld-main-container-style-simple .simple .bookmark-section-simple {
+  right: 0;
+  top: 12px;
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  height: auto !important;
+}
+.advertise-block img {
+  float: left;
+}
+
+.qcld-main-container-style-simple .simple .upvote-count, .qcld-main-container-style-simple .upvote-count {
+  margin-top: 0 !important;
+}
+

@@ -1,0 +1,70 @@
+.sldp-holder {
+	margin: 5px 0 0;
+}
+
+.sldp-holder a {
+	font-size: 12px;
+	cursor: pointer;
+	margin: 0 5px;
+	color: #337ab7;
+}
+
+.sldp-holder a:hover {
+	background-color: #337ab7;
+	color: #fff;
+}
+
+.sldp-holder a.jp-previous { margin-right: 15px; }
+.sldp-holder a.jp-next { margin-left: 15px; }
+
+.sldp-holder a.jp-current, a.jp-current:hover { 
+	color: #FF4242;
+	font-weight: bold;
+}
+
+.sldp-holder a.jp-disabled, a.jp-disabled:hover {
+	color: #bbb;
+}
+
+.sldp-holder a.jp-current, a.jp-current:hover,
+.sldp-holder a.jp-disabled, a.jp-disabled:hover {
+	cursor: default; 
+	background: none;
+}
+
+.sldp-holder span { margin: 0 5px; }
+
+.sldp-holder a {
+  border: 1px solid #ccc;
+  padding: 5px 6px;
+  margin: 0;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+
+.sldp-holder a {
+  font-size: 12px;
+  line-height: 17px;
+  padding: 1px 6px;
+  box-shadow: none !important;
+}
+
+.sldp-holder a.jp-current, a.jp-current:hover, .sldp-holder a:active {
+  background-color: #337ab7;
+  border-color: #337ab7;
+  color: #ffffff;
+  cursor: default;
+  z-index: 3;
+  font-weight: normal;
+  box-shadow: none !important;
+}
+
+.sldp-holder a.jp-next {
+  margin-left: 1px;
+}
+
+.sldp-holder a.jp-previous {
+  margin-right: 1px;
+}

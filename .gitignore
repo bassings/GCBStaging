@@ -3,14 +3,21 @@
 prod.sql
 gaycarboys-export.sql
 *-export.sql
-wp-content/
 wp-content-*.tar.gz
 wp-content-*.zip
 *.wpress
 
-# WordPress core (we'll use Docker image)
+# WordPress core (we'll use Docker image for local dev)
 wordpress/
 !wordpress/.gitkeep
+
+# wp-content exclusions (for GitHub Deployments)
+wp-content/cache/
+wp-content/upgrade/
+wp-content/upgrade-temp-backup/
+wp-content/debug.log
+wp-content/.DS_Store
+wp-content/uploads/
 
 # Environment variables
 .env

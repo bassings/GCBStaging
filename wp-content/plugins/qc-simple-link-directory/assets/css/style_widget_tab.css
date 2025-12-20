@@ -1,0 +1,332 @@
+
+
+* {
+	margin:0;
+	padding:0;
+}
+.clearfix-div::after {
+    display: block;
+    clear: both;
+    content: "";
+}
+.qc_tab_container {
+    max-width: 1170px;
+    /* margin: 0 auto; */
+    /* padding-left: 15px; */
+    margin-left: -10px;
+    /* padding-right: 15px; */
+    margin-right: -10px;
+}
+.qc_tab_container {
+}
+
+/* Style the tab */
+.qc_tab_style {
+	overflow: hidden;
+}
+.qc_tab_style {
+    margin: 0 auto;
+    padding: 5px 35px;
+    text-align: center;
+    display: table;
+    border: 1px solid #eaeaea;
+    border-radius: 5px;
+}
+
+/* Style the buttons inside the tab */
+.qc-column-4 {
+    width: 33.33333333%;
+	float:left;
+}
+.qc-column-4 {
+	position:relative;
+	padding-left:10px;
+	padding-right:10px;
+	box-sizing:border-box;
+}
+.featured-block {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 60px;
+    background: #fff;
+    overflow: hidden;
+    border: 1px solid #edecf3;
+    border-radius: 5px;
+    padding: 10px 20px 10px 80px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+.featured-block-img {
+    width: 82px;
+    height: 61px;
+    box-sizing: border-box;
+    border-radius: 5px 0 0 5px;
+    overflow: hidden;
+    background: #f5f6f7;
+    color: #fff;
+    position: absolute;
+    left: 0;
+    top: 0;
+	display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.featured-block-info h4 {
+    font-size: 13px;
+    margin: 0;
+}
+.featured-block-info h4 a {
+	text-decoration:none;
+	color:#666;
+}
+.featured-block-info {
+    padding-left: 20px;
+}
+.featured-block-upvote {
+    position: absolute;
+    bottom: 4px;
+    right: 6px;
+    min-width: 40px;
+    height: 20px;
+    padding: 2px 10px;
+    background-color: #cecece;
+    border-radius: 10px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    line-height: 14px;
+}
+.featured-block-upvote span.upvote-count.count {
+    margin-right: 5px;
+}
+.featured-block-upvote span.upvote-btn.upvote-on {
+	cursor:pointer;
+}
+.featured-block-upvote span {
+    font-size: 11px;
+    color: #fff;
+}
+.qc_tab_style button {
+	background: #fff;
+	float: left;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	position: relative;
+	letter-spacing: 1px;
+	text-align:center;
+}
+.qc_tab_style button {
+    color: #898787;
+    font-size: 15px;
+    line-height: 26px;
+    display: block;
+    padding: 8px 20px;
+    -webkit-transition: all 0.5s linear;
+    -moz-transition: all 0.5s linear;
+    -o-transition: all 0.5s linear;
+    transition: all 0.5s linear;
+    border-radius: 10px;
+}
+
+
+
+/* Create an active/current tablink class */
+.qc_tab_style button.active,
+.qc_tab_style button:hover {
+    background-color: #1a1835;
+	color:#fff;
+	 -webkit-transition: all 0.5s linear;
+    -moz-transition: all 0.5s linear;
+    -o-transition: all 0.5s linear;
+    transition: all 0.5s linear;
+}
+.qc_tab_style button.active:before{
+	border-bottom-color: #3374d0;
+
+}
+
+
+/* Style the tab content */
+.qc_tabcontent {
+    display: none;
+    border-top: none;
+    margin-top: 15px;
+}
+
+.qc-image {
+	width: 100px;
+	height: 80px;
+	overflow: hidden;
+	margin-right:20px;
+}
+.qc-bottom-content h3 {
+	display: inline-block;
+}
+
+img {
+	max-width:100%;
+}
+.qc-top-content {
+	border-bottom: 2px solid #d5d5d5;
+	margin-bottom: 20px;
+	padding-bottom: 6px;
+}
+
+.qc-top-content span a {
+	color: #3063aa;
+	text-decoration: none;
+	font-size: 13px;
+	font-weight: bold;
+}
+.qc-top-content h2 {
+	font-size: 20px;
+	color: #333;
+	font-weight: normal;
+	margin-bottom: 6px;
+	margin-top:0;
+}
+.qc-bottom-content {
+	display: flex;
+	align-items: flex-start;
+}
+.qc-bottom-content h3 {
+	font-size: 18px;
+	display: inline-block;
+	margin-top: 0;
+	margin-bottom: 5px;
+	color: #222;
+	font-weight: normal;
+}
+.qc-bottom-content h3 a {
+	text-decoration:none;
+	color:#008080;
+}
+.qc-inner-content-right p {
+	margin-top: 0;
+	font-size: 12px;
+}
+.qc-inner-content-right p a {
+	color: #3063aa;
+}
+
+.qc-inner-content-right p span {
+	color: #666;
+	text-decoration:underline;
+}
+
+.qc-inner-content-right {
+	width: 100%;
+	position: relative;
+}
+.tag-list {
+	width: 100%;
+	text-align: right;
+}
+.tag-list ul li {
+	display: inline-block;
+}
+.tag-list ul {
+	list-style: none;
+	margin: 0;
+}
+.tag-list ul li a {
+	color: #555;
+	text-decoration: none;
+	padding: 5px 12px;
+	background: #f7f7f7;
+	font-size: 12px;
+	margin-bottom: 4px;
+	display: inline-block;
+}
+.qc-inner-content-right h6 {
+	margin-top: 0;
+	color: #666;
+	font-size: 12px;
+	margin-bottom: 0;
+}
+.qc-inner-content-right h6 span {
+	padding-right:8px;
+}
+.qc-bottom-content {
+	display: flex;
+	align-items: flex-start;
+	border-bottom: 1px solid #ededed;
+	padding-bottom: 10px;
+	margin-bottom:10px;
+}
+
+.qc-inner-content-right .upvote-section > span > i {
+	cursor:pointer;
+	display:block;
+}
+
+.qc-inner-content-right .upvote-section > span > i  {
+	background:#3374d0;
+	color:#fff;
+	width:30px;
+	height:25px;
+	margin-bottom:3px;
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	border-top-right-radius: 3px;
+	border-bottom-right-radius: 3px;
+
+}
+.qc-inner-content-right .upvote-section .counter {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 25px;
+	background: #fafafd;
+	color: #666;
+	border-top-left-radius: 3px;
+	border-bottom-left-radius: 3px;
+	padding: 0 10px;
+}
+
+.qc-inner-content-right .upvote-section span {
+	font-size: 18px;
+}
+@media only screen and (max-width: 991px) {
+	.qc-column-4 {
+		width: 50%;
+	}
+
+}
+
+
+@media only screen and (max-width: 767px){
+	
+	.tag-list {
+		text-align: left;
+		margin: 15px auto;
+	}
+	.upvote-section {
+		top: 36px;
+	}
+	.qc_tab_style button::before {
+		display: none;
+	}
+	.qc_tab_style button {
+		font-size: 15px;
+		padding: 8px 12px;
+		width: 100%;
+		margin-bottom: 10px;
+	}
+	.qc-column-4 {
+		width: 50%;
+	}
+
+}
+@media only screen and (max-width: 579px) {
+	.qc-column-4 {
+		width: 100%;
+	}
+}

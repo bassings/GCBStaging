@@ -1,0 +1,266 @@
+/*style-9*/
+
+.qcld-main-container-style-9 h1{
+  margin: 0;
+  padding: 12px 0;
+  line-height: normal; 
+  font-size: 22px;
+  font-weight: 600;
+}
+.qcld-main-container-style-9 h2{
+  margin: 0;
+  padding: 12px 0;
+  line-height: normal; 
+  font-size: 20px;
+  font-weight: 600;
+}
+.qcld-main-container-style-9 h3{
+  margin: 0;
+  padding: 12px 0;
+  line-height: normal; 
+  font-size: 18px;
+  font-weight: 600;
+}
+.qcld-main-container-style-9 p{
+  margin: 0;
+  padding: 0;
+  line-height: 22px;
+}
+.qcld-main-container-style-9 ul{
+  margin: 0;
+  padding: 0;
+}
+.qcld-main-container-style-9 ul li{
+  margin: 0;
+  padding: 0;
+  list-style: none; 
+}
+
+
+.qcld-main-container-style-9 .style-9 .opd-list-style-9 ul{
+  padding: 10px 0 0 !important;
+  margin: 0px;
+  background-color: #ffffff;
+  border-top: 5px solid #f86960;
+  box-shadow: none;
+  margin: 0 0 0px;
+  width: 100%;
+  text-align: left !important;
+}
+
+.qcld-main-container-style-9 .style-9 .opd-list-style-9{
+  margin-bottom: 30px;
+}
+
+.qcld-main-container-style-9 .style-9 .opd-list-style-9 ul li{
+  list-style: none;
+  position: relative;
+  display: inline-block;
+  margin-right: 8px;
+  margin-left: 0 !important;
+  display: inline-flex;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 5px 60px 5px 5px;
+  margin-bottom: 5px;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+}
+
+.qcld-main-container-style-9 .style-9 .opd-list-style-9 h3 {
+  color: #262b35;
+  font-size: 17px;
+  font-weight: normal;
+  text-transform: uppercase;
+}
+
+.qcld-main-container-style-9 .style-9 .opd-list-style-9 ul{
+  border-top: 5px solid #f86960;
+}
+
+.qcld-main-container-style-9 .style-9 .opd-list-style-9 ul li a {
+  color: #828282;
+  display: block;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: normal;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  line-height: 20px;
+  filter: progid:DXImageTransform.Microsoft.Shadow(Strength=0, Direction=90, Color=#ffffff); 
+  box-shadow: none;
+  padding: 0;
+}
+
+.qcld-main-container-style-9 .style-9 .opd-list-style-9 ul li a:hover {
+  color: #f86960;
+}
+
+.qcld-main-container-style-9 .style-9 .list-img{
+  display: inline-block !important;
+  vertical-align: middle;
+  margin-right: 10px;
+}
+
+.qcld-main-container-style-9 .style-9 .list-img img{
+  width: 24px;
+  height: 24px;
+}
+
+
+.qcld-main-container-style-9 .style-9 .new-icon-section > span {
+  align-items: center;
+  background-color: rgba(0,0,0,.7);
+  color: #fff;
+  display: flex;
+  font-size: 9px;
+  font-weight: bold;
+  height: 13px;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left:0;
+  width: 28px;
+  z-index: 9999;
+}
+.qcld-main-container-style-9 .style-9 .featured-section {
+  bottom: 0px;
+  position: absolute;
+  right: 0;
+  z-index: 1;
+  width: 0;
+	height: 0;
+	border-style: solid;
+	border-width: 0 2px 35px 25px;
+	border-color: transparent transparent #FFEB3B transparent;
+
+}
+.qcld-main-container-style-9 .style-9 .featured-section i {
+	position: absolute;
+	left: -10px;
+	top: 17px;
+	color: #3d7dfc;
+}
+.qcld-main-container-style-9 .new-icon-section i {
+	cursor:pointer;
+}
+
+/*Upvote Section*/
+.qcld-main-container-style-9 .style-9 .upvote-section-style-9 {
+  height: 100%;
+  position: relative;
+  color: #666;
+  font-size: 12px;
+  text-align: center;
+  display: inline-block;
+  margin-left: 5px;
+  height: 100% !important;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 5px 0 0;
+
+}
+
+.qcld-main-container-style-9 .style-9 .upvote-section-style-9 .upvote-btn{
+  height: auto !important;
+  width: auto !important;
+}
+
+.qcld-main-container-style-9 .style-9 .upvote-btn:hover, .qcld-main-container-style-9 .style-9 .ca-menu li:hover .upvote-btn{
+  cursor: pointer;
+  color: #81D742;
+}
+
+.qcld-main-container-style-9 .style-9 .upvote-btn, .qcld-main-container-style-9 .style-9 .upvote-count{
+  display: inline-block !important;
+}
+
+.qcld-main-container-style-9 .style-9 .upvote-section-style-9 .upvote-btn, .qcld-main-container-style-9 .style-9 .upvote-section-style-9 .upvote-count {
+  color: #828282;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+
+.qcld-main-container-style-9 .style-9 .upvote-section-style-9 .upvote-btn:hover, .qcld-main-container-style-9 .style-9 li:hover .upvote-btn, .qcld-main-container-style-9 .style-9 li:hover .upvote-count{
+  color: #f86960;
+}
+
+.qcld-main-container-style-9 .style-9 .logo-icon{
+  display: inline-block;
+  font-size: 12px;
+}
+
+.qcld-main-container-style-9 .style-9 .logo-icon img {
+  height: 20px;
+  margin-right: 8px;
+  vertical-align: middle;
+  width: auto;
+  margin-bottom: 1px;
+  display: inline-block;
+}
+
+/*RTL CSS*/
+.qcld-main-container-style-9 .direction-rtl .opd-list-style-9, .qcld-main-container-style-9 .direction-rtl .opd-list-style-9 h3, .qcld-main-container-style-9 .direction-rtl .opd-list-style-9 ul li, .qcld-main-container-style-9 .direction-rtl .opd-list-style-9 ul li a, .qcld-main-container-style-9 .opd-list-style-9 ul li span 
+{
+  direction: rtl !important;
+}
+
+.qcld-main-container-style-9 .direction-rtl .style-9 .list-img {
+  margin-left: 10px;
+  margin-right: 0;
+}
+
+.qcld-main-container-style-9 .direction-rtl .upvote-section-style-9 {
+  left: 10px !important;
+  right: auto !important;
+}
+.qcld-main-container-style-9 .qcopd-list-wrapper {
+  display: flex;
+  width: 100%;
+}
+.qcld-main-container-style-9 .left-side-filter {
+  background:none;
+  float: left;
+  margin-right: 25px;
+  width: 30% !important;
+  border-bottom: none;
+}
+.qcld-main-container-style-9 .bookmark-section-style-9{
+	margin-left: 10px;
+}
+.qcld-main-container-style-9 .ca-content-audio audio {
+    height: 36px;
+    width: 240px;
+}
+
+.qcld-main-container-style-9 .qcopd-list-wrapper .style-9 .featured-section {
+  background: transparent !important;
+  width: 0 !important;
+  height: auto !important;
+  right: 0px !important;
+  border-width: 0 2px 35px 25px !important;
+  border-color: transparent transparent #FFEB3B transparent !important;
+}
+.qcld-main-container-style-9 .bookmark-section-style-9 {
+  margin-left: 10px;
+  position: absolute;
+  right: 5px;
+  top: 0;
+}
+
+
+.upvote-section.upvote-section-style-9 {
+  position: absolute !important;
+  bottom: 0;
+  right: 0;
+}
+
+
+
+
