@@ -1,0 +1,255 @@
+
+
+	/* Style the tab */
+	.qcld_sld_tab {
+		overflow: hidden;
+		border:none;
+		margin:0 12px;
+		/*background-color: #f9f9f9; */
+	}
+	
+	/* Style the buttons inside the tab */
+	.qcld_sld_tab button {
+		background-color: #f6f9fe;
+		float: left;
+		border: none;
+		outline: none;
+		cursor: pointer;
+		padding: 12px 8px 12px 50px;
+		transition: 0.3s;
+		font-size: 15px;
+		color:#999;
+		position:relative;
+		margin-right:12px;
+		margin-bottom:10px;
+		height:44px;
+	}
+	.qcld_sld_tab button::before {
+		width: 0; 
+		height: 0; 
+		border-bottom: 44px solid #f6f9fe; 
+		border-right: 12px solid transparent;
+		position:absolute;
+		content:"";
+		top:0;
+		right:-12px;
+		z-index:99;
+		transition: 0.3s;
+	}
+	
+	.qcld_sld_tab button::after {
+		width: 0;
+		height: 0;
+		border-top: 44px solid #f6f9fe;
+		border-left: 12px solid transparent;
+		position: absolute;
+		content: "";
+		top: 0;
+		left: -12px;
+		z-index: 99;
+		transition: 0.3s;
+	}
+	.qcld_sld_tab button:first-child::after {
+		border-top: 44px solid #fff;
+	}
+	
+	.qcld_sld_tab button.qcld_sld_active::before {	
+		border-bottom: 44px solid #e8ecf4; 
+	}
+	.qcld_sld_tab .qcld_sld_tablinks.qcld_sld_active:hover::before {	
+		border-bottom: 44px solid #ddd; 
+	}
+	.qcld_sld_tab .qcld_sld_tablinks.qcld_sld_active:hover::after {	
+		border-top: 44px solid #ddd;		
+	}
+	
+	/* Change background color of buttons on hover */
+	.qcld_sld_tab button:hover {
+		background:#dadfe8;
+		color: #101010;
+	}
+	.qcld_sld_tab .qcld_sld_tablinks:hover::after {
+		border-top: 44px solid #dadfe8;
+		
+	}
+	.qcld_sld_tab .qcld_sld_tablinks:hover::before {
+		border-bottom: 44px solid #dadfe8; 
+	}
+	
+	/* Create an active/current tablink class */
+	.qcld_sld_tab button.qcld_sld_active {
+		background-color: #e8ecf4;
+		color:#000;
+	}
+	
+	.qcld_sld_tab .qcld_sld_tablinks.qcld_sld_active:hover {
+		background-color: #dadfe8;
+		color:#000;
+	}
+	
+	/* Style the tab content */
+	.qcld_sld_tabcontent {
+		display: none;
+		padding: 20px 12px;
+		background:#fff;
+		border: none;
+		border-bottom:1px solid #ddd;
+	}
+	
+	.qcld_sld_tab_main {
+		padding-top:50px;
+		width:100%;
+		margin:0 auto;
+	}
+	.qcld_sld_tab .cat_img_top {
+		width: 25px;
+		overflow: hidden;
+		height: 25px;
+		position: absolute;
+		left: 15px;
+		border-radius: 100%;
+		top: 50%;
+		margin-top: -13px;
+	}
+
+
+/*
+	SLD Tab with Subcategories
+*/
+	.sld-tab-subcategory-container ul{
+		list-style-type: none;
+		list-style-position: unset;
+	}
+	.sld-tab-subcategory-container ul:after {
+	    clear: both;
+	    content: '';
+	    display: block;
+	    height: 1px;
+	}
+	.qcld_sld_tab .sld-tab-subcategory .sld-subcat-parent-li a{
+		display: block;
+		cursor: pointer;
+		padding: 0 8px 0 50px;
+		font-size: 15px;
+		color:#999;
+		height: 44px;
+		line-height: 44px;
+	}
+	.qcld_sld_tab .sld-tab-subcategory .sld-subcat-parent-li {
+		transition: 0.3s;
+		background-color: #f6f9fe;
+		float: left;
+		border: none;
+		outline: none;
+		position:relative;
+		margin-right:12px;
+		margin-bottom:10px;
+	}
+	.qcld_sld_tab .sld-tab-subcategory .sld-subcat-parent-li::before {
+		width: 0; 
+		height: 0; 
+		border-bottom: 44px solid #f6f9fe; 
+		border-right: 12px solid transparent;
+		position:absolute;
+		content:"";
+		top:0;
+		right:-12px;
+		z-index:99;
+		transition: 0.3s;
+	}
+	
+	.qcld_sld_tab .sld-tab-subcategory .sld-subcat-parent-li::after {
+		width: 0;
+		height: 0;
+		border-top: 44px solid #f6f9fe;
+		border-left: 12px solid transparent;
+		position: absolute;
+		content: "";
+		top: 0;
+		left: -12px;
+		z-index: 99;
+		transition: 0.3s;
+	}
+	.qcld_sld_tab .sld-tab-subcategory .sld-subcat-parent-li:first-child::after {
+		border-top: 44px solid #fff;
+	}
+	
+	.qcld_sld_tab .sld-tab-subcategory .sld-subcat-parent-li.qcld_sld_active::before {	
+		border-bottom: 44px solid #e8ecf4; 
+	}
+	/* Change background color of buttons on hover */
+	.qcld_sld_tab .sld-subcat-parent-li:hover {
+		background:#dadfe8;
+		color: #101010;
+	}
+	.qcld_sld_tab .sld-subcat-parent-li:hover::after {
+		border-top: 44px solid #dadfe8;
+		
+	}
+	.qcld_sld_tab .sld-subcat-parent-li:hover::before {
+		border-bottom: 44px solid #dadfe8; 
+	}
+	.sld-tab-subcategory-inner{
+		position: absolute;
+	    left: 0;
+	    top: 100%;
+	    width: 300px;
+	    background: #f6f9fe;
+	    box-shadow: 1px 0px 3px 1px rgb(197, 199, 199);
+	    z-index: 9999999999;
+	    visibility: hidden;
+	    opacity: 0;
+	    margin-left: 0;
+	}
+	.qcld_sld_tab .sld-subcat-parent-li:hover > ul{
+		transition: all 500ms;
+		-webkit-transition: all 500ms;
+		visibility: visible;
+	    opacity: 1;	
+	}
+	.sld-tab-subcategory-inner li{
+		background: #f6f9fe;
+	}
+	.sld-tab-subcategory-inner li:hover{
+		background:#dadfe8;
+		color: #101010;
+	}
+	
+	.sld-subcat-parent-li .sld-caret{
+		position: absolute;
+	    top: 50%;
+	    transform: translateY(-50%);
+	    right: 0px;
+	    display: block;
+	    padding-top: 5px;
+	}
+	.sld-subcat-parent-li.sld-has-subcat > .qcld_sld_tablinks{
+		padding-right: 15px !important;
+	}
+	.qcld_sld_tab .sld-subcat-parent-li.sld-tablink-active-li::after,
+	.qcld_sld_tab .sld-subcat-parent-li.sld-tablink-active-parent-li::after {
+		border-top: 44px solid #dadfe8;
+		
+	}
+	.qcld_sld_tab .sld-subcat-parent-li.sld-tablink-active-li::before,
+	.qcld_sld_tab .sld-subcat-parent-li.sld-tablink-active-parent-li::before {
+		border-bottom: 44px solid #dadfe8; 
+	}
+	.sld-subcat-parent-li .qcld_sld_active,
+	.sld-subcat-parent-li.sld-tablink-active-parent-li,
+	.qcld_sld_tab .sld-subcat-parent-li.sld-tablink-active-parent-li > .qcld_sld_tablinks{
+		background:#dadfe8;
+		color: #101010;
+	}
+	.sld-overflow-visible{
+		overflow: visible;
+	}
+	.sld-tab-subcategory{
+		margin-left: 0;
+	}
+	.sld-tab-subcategory .cat_img_top img{
+		display: block;
+	}
+	.sld-tab-subcategory-inner > li > a{
+		position: relative;
+	}
