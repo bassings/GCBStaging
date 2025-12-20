@@ -26,6 +26,7 @@ services:
       WORDPRESS_DEBUG: ${WP_DEBUG:-true}
     volumes:
       - ./wordpress:/var/www/html
+      - ./wp-content:/var/www/wp-content
       - ./config/wp-config-local.php:/var/www/html/wp-config.php
 
   wpcli:
@@ -41,6 +42,7 @@ services:
       WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:-gaycarboys}
     volumes:
       - ./wordpress:/var/www/html
+      - ./wp-content:/var/www/wp-content
       - ./config/wp-config-local.php:/var/www/html/wp-config.php
     working_dir: /var/www/html
 
