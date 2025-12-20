@@ -10,6 +10,7 @@ wp-content-*.zip
 # WordPress core (we'll use Docker image for local dev)
 wordpress/
 !wordpress/.gitkeep
+!wordpress/wp-content
 
 # wp-content exclusions (for GitHub Deployments)
 wp-content/cache/
