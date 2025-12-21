@@ -64,3 +64,6 @@ temp/
 .cache/
 *.cache
 
+
+# Content exports (too large for git)
+content-exports/
