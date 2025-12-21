@@ -1,25 +1,37 @@
-name: Publish Website
+version: 1
 
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
-jobs:
-  Publish-Website:
-    name: Publish-Website
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: Install PHP dependencies
-        uses: php-actions/composer@v6
-        with:
-          dev: no
-      - name: Upload the artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: wpcom
-          path: |
-            .
-            !.git*
-          retention-days: 1
+# GitHub Deployments configuration for WordPress.com
+# Only deploy themes, plugins, and mu-plugins to /wp-content/
+
+deployment:
+  # Deploy to /wp-content/ on WordPress.com
+  # This maps our root-level folders to the correct WordPress locations
+  include:
+    - themes/**
+    - plugins/**
+    - mu-plugins/**
+    - jetpack-waf/**
+    - index.php
+
+  # Exclude everything else (local dev files)
+  exclude:
+    - wordpress/**
+    - scripts/**
+    - tests/**
+    - node_modules/**
+    - vendor/**
+    - docs/**
+    - .git/**
+    - .github/**
+    - .claude/**
+    - "*.md"
+    - .gitignore
+    - .env*
+    - docker-compose.yml
+    - package.json
+    - package-lock.json
+    - composer.json
+    - composer.lock
+    - phpcs.xml.dist
+    - phpunit.xml.dist
+    - playwright.config.ts
