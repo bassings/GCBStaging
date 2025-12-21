@@ -12,13 +12,17 @@ wordpress/
 !wordpress/.gitkeep
 !wordpress/wp-content
 
-# wp-content exclusions (for GitHub Deployments)
+# wp-content exclusions (local dev files - not for deployment)
 wp-content/cache/
 wp-content/upgrade/
 wp-content/upgrade-temp-backup/
 wp-content/debug.log
 wp-content/.DS_Store
 wp-content/uploads/
+
+# Uploads and cache at root (local dev only)
+uploads/
+cache/
 
 # Environment variables
 .env

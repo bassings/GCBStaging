@@ -30,6 +30,7 @@ services:
       - ./plugins:/var/www/plugins
       - ./mu-plugins:/var/www/mu-plugins
       - ./jetpack-waf:/var/www/jetpack-waf
+      - ./uploads:/var/www/uploads
       - ./config/wp-config-local.php:/var/www/html/wp-config.php
 
   wpcli:
@@ -49,6 +50,7 @@ services:
       - ./plugins:/var/www/plugins
       - ./mu-plugins:/var/www/mu-plugins
       - ./jetpack-waf:/var/www/jetpack-waf
+      - ./uploads:/var/www/uploads
       - ./config/wp-config-local.php:/var/www/html/wp-config.php
     working_dir: /var/www/html
 
