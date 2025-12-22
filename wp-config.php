@@ -71,6 +71,13 @@ $table_prefix  = 'wp_';
  */
 define('WP_DEBUG', false);
 
+/* Memory Optimization */
+define('WP_MEMORY_LIMIT', '512M');
+define('WP_MAX_MEMORY_LIMIT', '512M');
+
+/* Auto-update configuration */
+define('WP_AUTO_UPDATE_CORE', 'minor'); // Auto-update minor versions only
+
 /* That's all, stop editing! Happy blogging. */
 
 /** Absolute path to the WordPress directory. */
