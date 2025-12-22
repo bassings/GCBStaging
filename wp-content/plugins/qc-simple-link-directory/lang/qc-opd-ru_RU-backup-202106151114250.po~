@@ -1,0 +1,845 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Перевод плагина Simple Link Directory\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-01-02 12:06+0000\n"
+"PO-Revision-Date: 2018-02-10 16:44+0300\n"
+"Language-Team: Борис Шпаковский https://kotboris.ru\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.6\n"
+"Last-Translator: \n"
+"Language: ru_RU\n"
+
+#: qc-op-directory-post-type.php:16
+msgid "Add New List Item"
+msgstr "Добавить новый элемент списка"
+
+#: qc-op-directory-post-type.php:17
+msgid "Edit List Item"
+msgstr "Изменить элемент списка"
+
+#: qc-op-directory-post-type.php:18
+msgid "New List Item"
+msgstr "Новый элемент списка"
+
+#: qc-op-directory-post-type.php:19
+msgid "Manage List Items"
+msgstr "Управление элементами списка"
+
+#: qc-op-directory-post-type.php:20
+msgid "View List Item"
+msgstr "Просмотр элементов списка"
+
+#: qc-op-directory-post-type.php:21
+msgid "Search List Item"
+msgstr "Поиск элемента списка"
+
+#: qc-op-directory-post-type.php:22
+msgid "No List Item found"
+msgstr "Элемент списка не найден"
+
+#: qc-op-directory-post-type.php:23
+msgid "No List Item found in the Trash"
+msgstr "Элемент списка найден в корзине"
+
+#: qc-op-directory-post-type.php:25
+msgid "Simple Link Directory"
+msgstr "Simple Link Directory"
+
+#: qc-op-directory-post-type.php:30
+msgid "This post type holds all posts for your directory items."
+msgstr "Этот тип записей содержит все записи для элементов вашего каталога."
+
+#: qc-op-directory-post-type.php:45
+msgctxt "List Categories"
+msgid "List Categories"
+msgstr "Категории списков"
+
+#: qc-op-directory-post-type.php:46
+msgctxt "taxonomy singular name"
+msgid "Category"
+msgstr "Категория"
+
+#: qc-op-directory-post-type.php:47
+msgid "Search List Categories"
+msgstr "Поиск по категориям списков"
+
+#: qc-op-directory-post-type.php:48
+msgid "All List Categories"
+msgstr "Все категории списков"
+
+#: qc-op-directory-post-type.php:49
+msgid "Parent List Categories"
+msgstr "Родительские категории списков"
+
+#: qc-op-directory-post-type.php:50
+msgid "Parent List Category:"
+msgstr "Родительская категория списка:"
+
+#: qc-op-directory-post-type.php:51
+msgid "Edit List Category"
+msgstr "Изменить категорию списка"
+
+#: qc-op-directory-post-type.php:52
+msgid "Update List Category"
+msgstr "Обновить категорию списка"
+
+#: qc-op-directory-post-type.php:53
+msgid "Add New List Category"
+msgstr "Добавить новую категорию списка"
+
+#: qc-op-directory-post-type.php:54
+msgid "New List Category Name"
+msgstr "Имя новой категории списка"
+
+#: qc-op-directory-post-type.php:55
+msgid "List Categories"
+msgstr "Список Категорий"
+
+#: qc-opd-sorting-support.php:83 templates/simple/filter-template.php:55
+#: templates/simple/filter-template.php:132 templates/simple/template.php:145
+#: templates/simple/template.php:289 templates/style-1/filter-template.php:45
+#: templates/style-1/filter-template.php:122 templates/style-1/template.php:127
+#: templates/style-1/template.php:258 templates/style-10/filter-template.php:45
+#: templates/style-10/filter-template.php:122
+#: templates/style-10/template.php:115 templates/style-10/template.php:245
+#: templates/style-11/filter-template.php:45
+#: templates/style-11/filter-template.php:122
+#: templates/style-11/template.php:138 templates/style-11/template.php:269
+#: templates/style-12/filter-template.php:45
+#: templates/style-12/filter-template.php:122
+#: templates/style-12/template.php:126 templates/style-12/template.php:257
+#: templates/style-13/filter-template.php:45
+#: templates/style-13/filter-template.php:122
+#: templates/style-13/template.php:126 templates/style-13/template.php:257
+#: templates/style-14/filter-template.php:44
+#: templates/style-14/filter-template.php:122
+#: templates/style-14/template.php:128 templates/style-14/template.php:259
+#: templates/style-2/filter-template.php:45
+#: templates/style-2/filter-template.php:122 templates/style-2/template.php:127
+#: templates/style-2/template.php:258 templates/style-3/filter-template.php:45
+#: templates/style-3/filter-template.php:122 templates/style-3/template.php:127
+#: templates/style-3/template.php:258 templates/style-4/filter-template.php:45
+#: templates/style-4/filter-template.php:122 templates/style-4/template.php:127
+#: templates/style-4/template.php:258 templates/style-5/filter-template.php:45
+#: templates/style-5/filter-template.php:122 templates/style-5/template.php:126
+#: templates/style-5/template.php:257 templates/style-6/filter-template.php:45
+#: templates/style-6/filter-template.php:122 templates/style-6/template.php:127
+#: templates/style-6/template.php:258 templates/style-7/filter-template.php:45
+#: templates/style-7/filter-template.php:122 templates/style-7/template.php:127
+#: templates/style-7/template.php:258 templates/style-8/filter-template.php:45
+#: templates/style-8/filter-template.php:122 templates/style-8/template.php:126
+#: templates/style-8/template.php:257 templates/style-9/filter-template.php:45
+#: templates/style-9/filter-template.php:122 templates/style-9/template.php:137
+#: templates/style-9/template.php:269
+msgid "Show All"
+msgstr "Показывать все"
+
+#: qcopd-shortcode-generator.php:41
+msgid "SLD - Shortcode Generator"
+msgstr "SLD - генератор шорткодов"
+
+#: qcopd-widgets.php:14
+msgid "SLD - Most Popular Links"
+msgstr "SLD - Самые популярные ссылки"
+
+#: qcopd-widgets.php:16
+msgid "Widget to display most popular list items from - simple link directory."
+msgstr ""
+"Виджет для отображения наиболее популярных ссылок из - simple link directory."
+
+#: qcopd-widgets.php:56
+msgid "Popular Links"
+msgstr "Популярные ссылки"
+
+#: qcopd-widgets.php:57 qcopd-widgets.php:150 qcopd-widgets.php:243
+msgid "5"
+msgstr "5"
+
+#: qcopd-widgets.php:62 qcopd-widgets.php:155 qcopd-widgets.php:248
+msgid "Title:"
+msgstr "Заголовок:"
+
+#: qcopd-widgets.php:68 qcopd-widgets.php:161 qcopd-widgets.php:254
+msgid "Limit:"
+msgstr "Лимит:"
+
+#: qcopd-widgets.php:107
+msgid "SLD - Random Links"
+msgstr "SLD - Случайные ссылки"
+
+#: qcopd-widgets.php:109
+msgid ""
+"Widget to display randomly picked list items from - simple link directory."
+msgstr "Виджет для отображения случайных ссылок из - simple link directory."
+
+#: qcopd-widgets.php:149
+msgid "Random Links"
+msgstr "Случайные ссылки"
+
+#: qcopd-widgets.php:200
+msgid "SLD - Latest Links"
+msgstr "SLD - Последние ссылки"
+
+#: qcopd-widgets.php:202
+msgid ""
+"Widget to display the most recent list items from - simple link directory."
+msgstr ""
+"Виджет для отображения наиболее свежих ссылок из - simple link directory."
+
+#: qcopd-widgets.php:242
+msgid "Latest Links"
+msgstr "Последние ссылки"
+
+#: embed/embedder.php:98
+msgid "Share List"
+msgstr "Список Поделившихся"
+
+#: embed/embedder.php:112
+msgid "Generate Embed Code For This List"
+msgstr "Сгенерировать встраиваемый код для данного списка"
+
+#: embed/embedder.php:136
+msgid "Generate & Copy"
+msgstr "Сгенерировать и скопировать"
+
+#: embed/embedder.php:143
+msgid "Generated Code"
+msgstr "Генерировать код"
+
+#: modules/dashboard/class.sld_dashboard.php:430
+#: modules/dashboard/qc-subscriber_entry_list.php:395
+#: modules/dashboard/qc-subscriber_entry_list.php:428
+msgid "Pending"
+msgstr "В ожидании"
+
+#: modules/dashboard/class.sld_dashboard.php:432
+#: modules/dashboard/qc-subscriber_entry_list.php:396
+#: modules/dashboard/qc-subscriber_entry_list.php:430
+msgid "Approved"
+msgstr "Утверждено"
+
+#: modules/dashboard/class.sld_dashboard.php:434
+#: modules/dashboard/qc-subscriber_entry_list.php:432
+msgid "Deny"
+msgstr "Отвергнуть"
+
+#: modules/dashboard/class.sld_dashboard.php:436
+#: modules/dashboard/qc-subscriber_entry_list.php:434
+msgid "Edited"
+msgstr "Изменено"
+
+#: modules/dashboard/class.sld_dashboard.php:514
+msgid "Dashboard"
+msgstr "Консоль"
+
+#: modules/dashboard/class.sld_dashboard.php:517
+#: templates/simple/search-template.php:29
+#: templates/style-1/search-template.php:28
+#: templates/style-10/search-template.php:28
+#: templates/style-11/search-template.php:28
+#: templates/style-12/search-template.php:28
+#: templates/style-13/search-template.php:31
+#: templates/style-14/search-template.php:31
+#: templates/style-2/search-template.php:28
+#: templates/style-3/search-template.php:28
+#: templates/style-4/search-template.php:28
+#: templates/style-5/search-template.php:28
+#: templates/style-6/search-template.php:28
+#: templates/style-7/search-template.php:28
+#: templates/style-8/search-template.php:28
+#: templates/style-9/search-template.php:28
+msgid "Add Link"
+msgstr "Добавить ссылку"
+
+#: modules/dashboard/class.sld_dashboard.php:519
+msgid "Your Links"
+msgstr "Ваши ссылки"
+
+#: modules/dashboard/class.sld_dashboard.php:524
+#: modules/dashboard/sld_entrylist.php:37
+#: modules/dashboard/sld_entrylist.php:85
+msgid "Package"
+msgstr "Пакет"
+
+#: modules/dashboard/class.sld_dashboard.php:531
+msgid "Logout"
+msgstr "Выйти"
+
+#: modules/dashboard/class.sld_dashboard.php:543
+msgid "Something Went Wrong."
+msgstr "Что-то пошло не так."
+
+#: modules/dashboard/class.sld_dashboard.php:546
+msgid "User profile updated."
+msgstr "Профиль обновлен."
+
+#: modules/dashboard/class.sld_dashboard.php:565
+#, php-format
+msgid "Hi %s, Welcome to Dashboard."
+msgstr "Привет %s, Добро пожаловать в Панель управления."
+
+#: modules/dashboard/class.sld_dashboard.php:576
+#: modules/dashboard/class.sld_dashboard.php:584
+#: modules/dashboard/sld_package.php:182 modules/dashboard/sld_package.php:227
+msgid "Total Link"
+msgstr "Всего ссылок"
+
+#: modules/dashboard/class.sld_dashboard.php:577
+#: modules/dashboard/class.sld_dashboard.php:585
+msgid "Submited Link"
+msgstr "Подтвержденная ссылка"
+
+#: modules/dashboard/class.sld_dashboard.php:578
+#: modules/dashboard/class.sld_dashboard.php:586
+#: modules/dashboard/sld_package.php:186
+msgid "Remaining Link"
+msgstr "Оставшаяся ссылка"
+
+#: modules/dashboard/class.sld_dashboard.php:599
+msgid "Update Profile Info"
+msgstr "Обновление информации профиля"
+
+#: modules/dashboard/class.sld_dashboard.php:602
+msgid "Full Name"
+msgstr "Полное имя"
+
+#: modules/dashboard/class.sld_dashboard.php:604
+#: modules/registration/class.sld_registration.php:223
+msgid "Email"
+msgstr "E-Mail"
+
+#: modules/dashboard/class.sld_dashboard.php:608
+#: modules/login/qc-login-form.php:16
+#: modules/registration/class.sld_registration.php:213
+msgid "Username"
+msgstr "Имя пользователя"
+
+#: modules/dashboard/class.sld_dashboard.php:638
+msgid ""
+"Payment has been done successfully. Thank you!\n"
+"                    Now you can add links to our Lists."
+msgstr ""
+"Оплата выполнена успешно. Спасибо!\n"
+"                     Теперь вы можете добавлять ссылки на наши списки."
+
+#: modules/dashboard/class.sld_dashboard.php:652
+#, php-format
+msgid ""
+"You have to login in to view this content. <a href=\"%s\">Click Here</a> to "
+"log in."
+msgstr ""
+"Для просмотра этого содержимого вам необходимо войти в систему. <a href=\"%s"
+"\"> Нажмите здесь </a>, чтобы войти в систему."
+
+#: modules/dashboard/class.sld_dashboard.php:654
+msgid "Sorry, You are not allowed to view the content of this page."
+msgstr "К сожалению, вам не разрешено просматривать содержимое этой страницы."
+
+#: modules/dashboard/qc-subscriber_entry_list.php:397
+msgid "Denied"
+msgstr "Отказано"
+
+#: modules/dashboard/qc-subscriber_entry_list.php:398
+msgid "Paid"
+msgstr "Оплачен"
+
+#: modules/dashboard/qc-subscriber_entry_list.php:399
+msgid "Free"
+msgstr "Бесплатно"
+
+#: modules/dashboard/sld_entry.php:85
+msgid "Add Your Link"
+msgstr "Добавить ссылку"
+
+#: modules/dashboard/sld_entry.php:89 modules/dashboard/sld_entryedit.php:87
+#: modules/dashboard/sld_entrylist.php:23
+#: modules/dashboard/sld_entrylist.php:64
+msgid "Link Title"
+msgstr "Имя ссылки"
+
+#: modules/dashboard/sld_entry.php:91 modules/dashboard/sld_entryedit.php:89
+msgid "Link (Include http:// or https://)"
+msgstr "Ссылка (Включая http:// or https://)"
+
+#: modules/dashboard/sld_entry.php:95 modules/dashboard/sld_entryedit.php:93
+#: modules/dashboard/sld_entrylist.php:27
+#: modules/dashboard/sld_entrylist.php:70
+msgid "Link Subtitle"
+msgstr "Ссылка подзаголовка"
+
+#: modules/dashboard/sld_entry.php:98 modules/dashboard/sld_entryedit.php:96
+msgid "Select Package"
+msgstr "Выберите тариф"
+
+#: modules/dashboard/sld_entry.php:144 modules/dashboard/sld_entryedit.php:140
+msgid "Link Image"
+msgstr "Ссылка изображения"
+
+#: modules/dashboard/sld_entry.php:156 modules/dashboard/sld_entryedit.php:156
+#: modules/dashboard/sld_entrylist.php:30
+#: modules/dashboard/sld_entrylist.php:75
+msgid "Category"
+msgstr "Категория"
+
+#: modules/dashboard/sld_entry.php:175 modules/dashboard/sld_entryedit.php:178
+msgid "Select List"
+msgstr "Выберите список"
+
+#: modules/dashboard/sld_entry.php:183 modules/dashboard/sld_entry.php:189
+#: modules/dashboard/sld_entryedit.php:209
+#: modules/dashboard/sld_entryedit.php:215
+msgid "No Follow"
+msgstr "Не следовать"
+
+#: modules/dashboard/sld_entryedit.php:84
+msgid "Link Edit Form"
+msgstr "Форма редактирования ссылки"
+
+#: modules/dashboard/sld_entryedit.php:229
+msgid "<p>Something Went Wrong.</p>"
+msgstr "<p> Что-то пошло не так. </ p>"
+
+#: modules/dashboard/sld_entrylist.php:13
+msgid "Link List Page"
+msgstr "Страница списка ссылок"
+
+#: modules/dashboard/sld_entrylist.php:20
+#: modules/dashboard/sld_entrylist.php:57
+msgid "Image"
+msgstr "Изображение"
+
+#: modules/dashboard/sld_entrylist.php:33
+msgid "List"
+msgstr "Список"
+
+#: modules/dashboard/sld_entrylist.php:41
+#: modules/dashboard/sld_entrylist.php:97 modules/dashboard/sld_package.php:193
+#: modules/dashboard/sld_package.php:245
+#: modules/package/class.sld_order_list.php:90
+#: modules/package/class.sld_order_list.php:126
+msgid "Status"
+msgstr "Статус"
+
+#: modules/dashboard/sld_entrylist.php:45
+#: modules/dashboard/sld_entrylist.php:102
+#: modules/dashboard/sld_package.php:197 modules/dashboard/sld_package.php:258
+#: modules/package/class.sld_order_list.php:93
+#: modules/package/class.sld_order_list.php:130
+msgid "Action"
+msgstr "Действие"
+
+#: modules/dashboard/sld_entrylist.php:80
+msgid "SLD List"
+msgstr "Список SLD"
+
+#: modules/dashboard/sld_entrylist.php:103
+msgid "Edit"
+msgstr "Изменить"
+
+#: modules/dashboard/sld_entrylist.php:105
+#: modules/package/class.sld_order_list.php:132
+msgid "Delete"
+msgstr "Удалить"
+
+#: modules/dashboard/sld_package.php:6
+msgid "<p>No Package Available</p>"
+msgstr "<p> Нет доступных пакетов </ p>"
+
+#: modules/dashboard/sld_package.php:74
+msgid "Package Details"
+msgstr "Детали"
+
+#: modules/dashboard/sld_package.php:80
+msgid "Title"
+msgstr "Заголовок"
+
+#: modules/dashboard/sld_package.php:87
+msgid "Description"
+msgstr "Описание"
+
+#: modules/dashboard/sld_package.php:95
+#: modules/package/class.sld_package.php:198
+msgid "Duration"
+msgstr "Длительность"
+
+#: modules/dashboard/sld_package.php:105
+msgid "Link"
+msgstr "Ссылка"
+
+#: modules/dashboard/sld_package.php:110
+msgid "Price"
+msgstr "Цена"
+
+#: modules/dashboard/sld_package.php:115
+#: modules/package/class.sld_package.php:221
+msgid "Currency"
+msgstr "Валюта"
+
+#: modules/dashboard/sld_package.php:171 modules/dashboard/sld_package.php:211
+msgid "Package name"
+msgstr "Имя пакета"
+
+#: modules/dashboard/sld_package.php:175 modules/dashboard/sld_package.php:217
+msgid "Purchase Date"
+msgstr "Дата покупки"
+
+#: modules/dashboard/sld_package.php:178 modules/dashboard/sld_package.php:222
+msgid "Expire Date"
+msgstr "Публикация до"
+
+#: modules/dashboard/sld_package.php:189 modules/dashboard/sld_package.php:240
+msgid "Cost"
+msgstr "Стоимость"
+
+#: modules/dashboard/sld_package.php:232
+msgid "Remain Link"
+msgstr "Оставить ссылку"
+
+#: modules/dashboard/sld_package.php:298
+msgid "You have no package purchased!"
+msgstr "У вас нет купленного пакета!"
+
+#: modules/login/class.sld_login.php:50
+msgid "Successfully logged in!"
+msgstr "Ваша авторизация прошла успешно!"
+
+#: modules/login/class.sld_login.php:52
+msgid "Wrong credentials or you are not allowed to logged in."
+msgstr "Неверные учетные данные, или вы не можете войти в систему."
+
+#: modules/login/class.sld_login.php:54
+msgid "Successfully logged out!"
+msgstr "Выход из системы выполнен успешно!"
+
+#: modules/login/class.sld_login.php:56
+msgid "Something went wrong while activating your user"
+msgstr "Что-то пошло не так, когда вы активировали своего пользователя"
+
+#: modules/login/class.sld_login.php:58
+msgid "You are not allowed to access this area."
+msgstr "Вы не можете получить доступ к этой области."
+
+#: modules/login/class.sld_login.php:60
+msgid "Successfully activated"
+msgstr "Успешно активировано"
+
+#: modules/login/class.sld_login.php:144
+#, php-format
+msgid ""
+"Use the following link to restore your password: <a href='%s'>restore your "
+"password</a> <br/><br/>%s<br/>"
+msgstr ""
+"Используйте следующую ссылку для восстановления пароля: <a href='%s'> "
+"восстановить пароль </a> <br/> <br/>% s <br/>"
+
+#: modules/login/class.sld_login.php:145
+msgid "Restore your password"
+msgstr "Восстановить пароль"
+
+#: modules/login/class.sld_login.php:205
+msgid "You will receive an email with the activation link"
+msgstr "Вы получите письмо с ссылкой для активации своего аккаунта"
+
+#: modules/login/class.sld_login.php:207
+msgid "You may receive an email with the activation link"
+msgstr "Мы отправили Вам электронное письмо с ключом активации"
+
+#: modules/login/class.sld_login.php:209
+msgid "An error has ocurred sending the email"
+msgstr "Произошла ошибка при отправке письма"
+
+#: modules/login/class.sld_login.php:211
+msgid "Username is not valid"
+msgstr "Неправильное имя пользователя"
+
+#: modules/login/class.sld_login.php:220
+msgid "You are now logged in. It makes no sense to restore your account"
+msgstr ""
+"Вы уже вошли в систему, нет необходимости восстанавливать доступ к своему "
+"аккаунту"
+
+#: modules/login/qc-login-form.php:12 modules/login/qc-login-preview.php:15
+msgid "Login"
+msgstr "Авторизация"
+
+#: modules/login/qc-login-form.php:20
+#: modules/registration/class.sld_registration.php:218
+msgid "Password"
+msgstr "Пароль"
+
+#: modules/login/qc-login-form.php:25 modules/login/sld-restore-new.php:21
+msgid "Log in"
+msgstr "Войти"
+
+#: modules/login/qc-login-form.php:34
+msgid "Create Account"
+msgstr "Создать учетную запись"
+
+#: modules/login/qc-login-form.php:39
+msgid "Forgot your password?"
+msgstr "Забыли пароль?"
+
+#: modules/login/qc-login-preview.php:19
+msgid "User already logged in"
+msgstr "Пользователь уже вошел в систему"
+
+#: modules/login/qc-login-preview.php:21
+msgid "Log out"
+msgstr "Выйти"
+
+#: modules/login/qc-restore-form.php:7
+msgid "Reset password"
+msgstr "Сброс пароля"
+
+#: modules/login/qc-restore-form.php:11
+msgid "Username (or E-mail)"
+msgstr "Логин или e-mail"
+
+#: modules/login/qc-restore-form.php:15
+msgid "Website"
+msgstr "Сайт"
+
+#: modules/login/qc-restore-form.php:22
+msgid "Restore password"
+msgstr "Восстановить пароль"
+
+#: modules/login/sld-restore-new.php:12
+msgid "Your new password is"
+msgstr "Ваш новый пароль"
+
+#: modules/package/class.sld_order_list.php:68
+msgid "Order List"
+msgstr "Список заказа"
+
+#: modules/package/class.sld_order_list.php:75
+#: modules/package/class.sld_order_list.php:103
+msgid "Date"
+msgstr "Дата"
+
+#: modules/package/class.sld_order_list.php:78
+#: modules/package/class.sld_order_list.php:107
+msgid "Transaction Id"
+msgstr "Код операции"
+
+#: modules/package/class.sld_order_list.php:81
+#: modules/package/class.sld_order_list.php:111
+msgid "Buyer Name"
+msgstr "Имя покупателя"
+
+#: modules/package/class.sld_order_list.php:84
+#: modules/package/class.sld_order_list.php:115
+msgid "User Name"
+msgstr "Логин"
+
+#: modules/package/class.sld_order_list.php:87
+#: modules/package/class.sld_order_list.php:122
+msgid "Amount"
+msgstr "Количество"
+
+#: modules/package/class.sld_package.php:156
+msgid "Manage Your Package"
+msgstr "Управление вашим пакетом"
+
+#: modules/package/class.sld_package.php:161
+msgid ""
+"<p>You have no package created! Please submit the following information and "
+"press save to Create a Package and charge your client to submit there list "
+"item.</p>"
+msgstr ""
+"<p> Пакет не создан! Подтвердите следующую информацию и нажмите «Сохранить», "
+"чтобы создать пакет, и поручите клиенту отправить туда список. </ P>"
+
+#: modules/package/class.sld_package.php:170
+msgid "Enable Package"
+msgstr "Подключить тариф"
+
+#: modules/package/class.sld_package.php:179
+msgid "Package Title"
+msgstr "Название пакета"
+
+#: modules/package/class.sld_package.php:188
+msgid "Package Description"
+msgstr "Описание тарифа"
+
+#: modules/package/class.sld_package.php:214
+msgid "Lifetime"
+msgstr "Продолжительность жизни"
+
+#: modules/package/class.sld_package.php:216
+msgid "Select duration for how long the items will remain visible."
+msgstr ""
+"Выберите продолжительность, в течение которой элементы будут оставаться "
+"видимыми."
+
+#: modules/package/class.sld_package.php:264
+msgid "Total Item"
+msgstr "Всего элементов"
+
+#: modules/package/class.sld_package.php:269
+msgid "How many links user can add?"
+msgstr "Сколько ссылок пользователь может добавить?"
+
+#: modules/package/class.sld_package.php:274
+msgid "Package Price"
+msgstr "Стоимость пакета"
+
+#: modules/package/class.sld_package.php:279
+msgid "Enter price for the package."
+msgstr "Введите стоимость пакета."
+
+#: modules/package/class.sld_package.php:284
+msgid "Paypal Email Address"
+msgstr "Адрес электронной почты Paypal"
+
+#: modules/package/class.sld_package.php:289
+msgid "Enter business paypal email address for paypal standerd payment getway."
+msgstr "Введите адрес электронной почты для вашего платежного шлюза PayPal."
+
+#: modules/package/class.sld_package.php:294
+msgid "Enable Test Mode"
+msgstr "Включить тестовый режим"
+
+#: modules/package/class.sld_package.php:299
+msgid "Check this option if you want to enable PayPal sandbox for testing."
+msgstr ""
+"Установите этот флажок, если вы хотите включить песочницу PayPal для "
+"тестирования."
+
+#: modules/package/class.sld_package.php:325
+msgid "Reset Package"
+msgstr "Сброс пакета"
+
+#: modules/package/class.sld_package.php:330
+msgid "Reset package"
+msgstr "Сброс пакета"
+
+#: modules/registration/class.sld_registration.php:77
+#, php-format
+msgid "New user registration on your blog %s:"
+msgstr "Регистрация нового пользователя на вашем блоге %s:"
+
+#: modules/registration/class.sld_registration.php:78
+#: modules/registration/class.sld_registration.php:91
+#, php-format
+msgid "Username: %s"
+msgstr "Имя пользователя: %s"
+
+#: modules/registration/class.sld_registration.php:79
+#, php-format
+msgid "E-mail: %s"
+msgstr "E-mail: %s"
+
+#: modules/registration/class.sld_registration.php:81
+#, php-format
+msgid "[%s] New User Registration"
+msgstr "[%s] Регистрация нового пользователя"
+
+#: modules/registration/class.sld_registration.php:89
+#, php-format
+msgid "Welcome to %s! Here's how to log in:"
+msgstr "Добро пожаловать в %s! Вот как войти в:"
+
+#: modules/registration/class.sld_registration.php:98
+#, php-format
+msgid "[%s] Your username and password"
+msgstr "[%s] Ваше имя пользователя и пароль"
+
+#: modules/registration/class.sld_registration.php:110
+msgid "Required form field is missing"
+msgstr "Обязательное поле формы отсутствует"
+
+#: modules/registration/class.sld_registration.php:112
+msgid "Username too short. At least 4 characters is required"
+msgstr "Имя пользователя слишком короткое. Требуется не менее 4 символов"
+
+#: modules/registration/class.sld_registration.php:114
+msgid "Password length must be greater than 5"
+msgstr "Длина пароля должна быть больше 5 символов"
+
+#: modules/registration/class.sld_registration.php:116
+msgid "Email is not valid"
+msgstr "Электронная почта не действительна"
+
+#: modules/registration/class.sld_registration.php:118
+msgid "Email Already in use"
+msgstr "Эта почта уже используется в системе"
+
+#: modules/registration/class.sld_registration.php:120
+msgid "Sorry, the username you entered is not valid"
+msgstr "К сожалению, имя пользователя которое вы ввели не допустимо"
+
+#: modules/registration/class.sld_registration.php:122
+msgid "Captcha does not match!"
+msgstr "Captcha введена неверно!"
+
+#: modules/registration/class.sld_registration.php:126
+msgid "Sorry, that username already exists!"
+msgstr "Извините, это имя пользователя уже используется!"
+
+#: modules/registration/class.sld_registration.php:199
+msgid "Create account"
+msgstr "Создать аккаунт"
+
+#: modules/registration/class.sld_registration.php:201
+msgid "First Name"
+msgstr "Имя"
+
+#: modules/registration/class.sld_registration.php:207
+msgid "Last Name"
+msgstr "Фамилия"
+
+#: modules/registration/class.sld_registration.php:232
+msgid "Code"
+msgstr "Код"
+
+#: modules/registration/class.sld_registration.php:240
+msgid "Register"
+msgstr "Регистрация"
+
+#: templates/simple/search-template.php:6
+#: templates/style-1/search-template.php:6
+#: templates/style-10/search-template.php:6
+#: templates/style-11/search-template.php:6
+#: templates/style-12/search-template.php:6
+#: templates/style-13/search-template.php:6
+#: templates/style-14/search-template.php:6
+#: templates/style-2/search-template.php:6
+#: templates/style-3/search-template.php:6
+#: templates/style-4/search-template.php:6
+#: templates/style-5/search-template.php:6
+#: templates/style-6/search-template.php:6
+#: templates/style-7/search-template.php:6
+#: templates/style-8/search-template.php:6
+#: templates/style-9/search-template.php:6
+msgid "Live Search Items"
+msgstr "Живой поиск элементов"
+
+#. Name of the plugin
+msgid "Simple Link Directory - Pro"
+msgstr "Simple Link Directory - Pro"
+
+#. Description of the plugin
+msgid ""
+"Simple Link Directory is an advanced solution to all link page or partners "
+"page needs on your website. This innovative Link Directory PlugIn allows "
+"admin to create list of website links with website logo and a short "
+"description."
+msgstr ""
+"Simple Link Directory - это продвинутое решение для создания каталога ссылок "
+"для вас и ваших партнеров, необходимых вашему сайту. Это инновационный "
+"плагин для создания каталога ссылок, позволяющего администратору сайта "
+"создавать списки ссылок на сайты с логотипами и кратким описанием."
+
+#. URI of the plugin
+#. Author URI of the plugin
+msgid "https://www.quantumcloud.com/"
+msgstr "https://www.quantumcloud.com/"
+
+#. Author of the plugin
+msgid "QunatumCloud"
+msgstr "QunatumCloud"

@@ -1,0 +1,23 @@
+# WordPress cache and temporary files
+wp-content/uploads/*
+wp-content/cache/*
+wp-content/debug.log
+wp-content/database/.ht.sqlite-wal
+wp-content/database/.ht.sqlite-shm
+
+# Backup files
+*.backup-*
+active-plugins-backup.json
+
+# System files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Node modules (if any)
+node_modules/

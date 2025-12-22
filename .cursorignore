@@ -1,0 +1,14 @@
+WordPress Core (Do not index)
+wp-admin/ wp-includes/
+WordPress Studio Specifics
+
+wp-content/database/ .ht.sqlite .ht.sqlite-journal
+Large Media & Caches
+
+wp-content/uploads/ wp-content/cache/ wp-content/upgrade/
+Dependencies & Build Artifacts
+
+node_modules/ vendor/ .git/ .github/ dist/ build/
+System & Logs
+
+*.log *.zip .DS_Store Thumbs.db
