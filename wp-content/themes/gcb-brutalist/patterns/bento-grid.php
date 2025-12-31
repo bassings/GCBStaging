@@ -69,7 +69,7 @@ if ( ! $grid_posts->have_posts() ) {
 						<img
 							src="<?php echo esc_url( $thumbnail ); ?>"
 							alt="<?php echo esc_attr( get_the_title() ); ?>"
-							style="width: 100%; height: <?php echo $is_featured ? '400px' : '200px'; ?>; object-fit: cover; display: block; border-bottom: 2px solid var(--wp--preset--color--brutal-border);"
+							style="width: 100%; height: <?php echo $is_featured ? '400px' : '200px'; ?>; object-fit: cover; display: block; border-bottom: 2px solid var(--wp--preset--color--brutal-border); filter: grayscale(100%) contrast(1.3);"
 							loading="lazy"
 						/>
 
