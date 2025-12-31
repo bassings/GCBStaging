@@ -3,7 +3,7 @@
  * Title: Hero Section
  * Slug: gcb-brutalist/hero-section
  * Categories: featured, gcb-content
- * Description: Two-column hero section with feature and opinion cards using Editorial Brutalism styling
+ * Description: Two-column hero section with feature and opinion cards using Editorial Brutalism styling (North Star aligned)
  * Keywords: hero, featured, opinion, brutalism, two-column
  */
 
@@ -48,13 +48,15 @@ if ( ! $hero_posts->have_posts() ) {
 			$is_feature   = ( 0 === $index );
 			$card_class   = $is_feature ? 'gcb-hero__feature hero-feature-card' : 'gcb-hero__opinion hero-opinion-card';
 			$grid_span    = $is_feature ? 'grid-column: span 2;' : 'grid-column: span 1;';
-			$card_height  = $is_feature ? '500px' : '256px';
-			$heading_size = $is_feature ? '3rem' : '1.5rem';
 			$heading_tag  = $is_feature ? 'h1' : 'h2';
+
+			// North Star: Opinion badge uses brutal-border (gray), feature uses acid-lime
+			$badge_border_color = $is_feature ? 'var(--wp--preset--color--acid-lime)' : 'var(--wp--preset--color--brutal-border)';
+			$badge_text_color   = $is_feature ? 'var(--wp--preset--color--acid-lime)' : 'var(--wp--preset--color--brutal-border)';
 			?>
 
 			<!-- Hero Card -->
-			<div class="<?php echo esc_attr( $card_class ); ?>" style="<?php echo esc_attr( $grid_span ); ?> height: <?php echo esc_attr( $card_height ); ?>; border: 2px solid var(--wp--preset--color--brutal-border); background: var(--wp--preset--color--void-black); overflow: hidden; position: relative;">
+			<div class="<?php echo esc_attr( $card_class ); ?>" style="<?php echo esc_attr( $grid_span ); ?> border: 2px solid var(--wp--preset--color--brutal-border); background: var(--wp--preset--color--void-black); overflow: hidden; position: relative;">
 
 				<!-- Background Image with Gradient Overlay -->
 				<?php if ( $thumbnail ) : ?>
@@ -73,13 +75,13 @@ if ( ! $hero_posts->have_posts() ) {
 				<!-- Card Content -->
 				<div style="position: relative; z-index: 1; padding: 2rem; height: 100%; display: flex; flex-direction: column; justify-content: flex-end;">
 
-					<!-- Category Badge -->
-					<div class="gcb-category-badge category-label" style="display: inline-block; padding: 6px 12px; border: 1px solid var(--wp--preset--color--acid-lime); color: var(--wp--preset--color--acid-lime); font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1rem; width: fit-content;">
+					<!-- Category Badge (North Star: Opinion uses brutal-border gray) -->
+					<div class="gcb-category-badge category-label <?php echo $is_feature ? '' : 'opinion-badge'; ?>" style="display: inline-block; padding: 6px 12px; border: 1px solid <?php echo esc_attr( $badge_border_color ); ?>; color: <?php echo esc_attr( $badge_text_color ); ?>; font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1rem; width: fit-content;">
 						<?php echo esc_html( $category_name ); ?>
 					</div>
 
-					<!-- Headline -->
-					<<?php echo $heading_tag; ?> class="gcb-hero__<?php echo $is_feature ? 'feature' : 'opinion'; ?>-title" style="font-family: var(--wp--preset--font-family--playfair); font-size: <?php echo esc_attr( $heading_size ); ?>; line-height: 1.2; margin: 0 0 1rem 0; color: var(--wp--preset--color--off-white);">
+					<!-- Headline (North Star: Responsive sizing via CSS classes) -->
+					<<?php echo $heading_tag; ?> class="gcb-hero__<?php echo $is_feature ? 'feature' : 'opinion'; ?>-title <?php echo $is_feature ? 'feature-headline' : 'opinion-headline'; ?>" style="font-family: var(--wp--preset--font-family--playfair); line-height: 1.2; margin: 0 0 1rem 0; color: var(--wp--preset--color--off-white);">
 						<a href="<?php echo esc_url( get_permalink() ); ?>" style="color: inherit; text-decoration: none;">
 							<?php echo esc_html( get_the_title() ); ?>
 						</a>
@@ -96,7 +98,7 @@ if ( ! $hero_posts->have_posts() ) {
 					<div class="gcb-hero__meta" style="display: flex; gap: 1rem; align-items: center; font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; color: var(--wp--preset--color--brutal-grey); margin-top: auto;">
 						<!-- Author -->
 						<span class="gcb-hero__author post-author" data-author="<?php echo esc_attr( $author_name ); ?>">
-							By <?php echo esc_html( $author_name ); ?>
+							<?php echo esc_html( $author_name ); ?>
 						</span>
 
 						<!-- Separator -->
@@ -107,13 +109,15 @@ if ( ! $hero_posts->have_posts() ) {
 							<?php echo esc_html( get_the_date( 'M j, Y' ) ); ?>
 						</time>
 
-						<!-- Separator -->
-						<div style="width: 1px; height: 1rem; background-color: var(--wp--preset--color--brutal-grey);"></div>
+						<!-- Separator (Feature only) -->
+						<?php if ( $is_feature ) : ?>
+							<div style="width: 1px; height: 1rem; background-color: var(--wp--preset--color--brutal-grey);"></div>
 
-						<!-- Read Time -->
-						<span class="gcb-hero__read-time read-time" data-read-time="<?php echo esc_attr( $read_time ); ?>" style="color: var(--wp--preset--color--acid-lime);">
-							Read Time: <?php echo esc_html( $read_time ); ?> min
-						</span>
+							<!-- Read Time (Feature only) -->
+							<span class="gcb-hero__read-time read-time" data-read-time="<?php echo esc_attr( $read_time ); ?>" style="color: var(--wp--preset--color--acid-lime);">
+								Read Time: <?php echo esc_html( $read_time ); ?> min
+							</span>
+						<?php endif; ?>
 					</div>
 				</div>
 			</div>
@@ -130,8 +134,62 @@ if ( ! $hero_posts->have_posts() ) {
 </div>
 <!-- /wp:group -->
 
-<!-- Responsive CSS for Hero Section -->
+<!-- Responsive CSS for Hero Section (North Star Aligned) -->
 <style>
+	/* North Star: Responsive Feature Headline Sizes (text-2xl → text-6xl) */
+	.feature-headline {
+		font-size: 1.5rem; /* Mobile: text-2xl / 24px */
+	}
+	@media (min-width: 640px) {
+		.feature-headline {
+			font-size: 1.875rem; /* sm: text-3xl / 30px */
+		}
+	}
+	@media (min-width: 768px) {
+		.feature-headline {
+			font-size: 2.25rem; /* md: text-4xl / 36px */
+		}
+	}
+	@media (min-width: 1024px) {
+		.feature-headline {
+			font-size: 3rem; /* lg: text-5xl / 48px */
+		}
+	}
+	@media (min-width: 1280px) {
+		.feature-headline {
+			font-size: 3.75rem; /* xl: text-6xl / 60px */
+		}
+	}
+
+	/* North Star: Responsive Opinion Headline Sizes (text-2xl → text-3xl) */
+	.opinion-headline {
+		font-size: 1.5rem; /* Mobile: text-2xl / 24px */
+	}
+	@media (min-width: 640px) {
+		.opinion-headline {
+			font-size: 1.875rem; /* sm: text-3xl / 30px */
+		}
+	}
+
+	/* North Star: Opinion Badge Hover Effect (gray → lime) */
+	.gcb-hero__opinion:hover .opinion-badge {
+		color: var(--wp--preset--color--acid-lime) !important;
+	}
+
+	/* North Star: Responsive Card Heights */
+	.gcb-hero__feature {
+		height: 384px; /* Mobile/tablet: h-96 */
+	}
+	@media (min-width: 1024px) {
+		.gcb-hero__feature {
+			height: 500px; /* Desktop: lg:h-[500px] */
+		}
+	}
+
+	.gcb-hero__opinion {
+		height: 256px; /* All screens: h-64 */
+	}
+
 	/* Desktop: 3-column grid with feature card spanning 2 columns */
 	@media (min-width: 1025px) {
 		.gcb-hero__container {
@@ -159,11 +217,9 @@ if ( ! $hero_posts->have_posts() ) {
 		}
 		.gcb-hero__feature {
 			grid-column: span 1 !important;
-			height: 400px !important;
 		}
 		.gcb-hero__opinion {
 			grid-column: span 1 !important;
-			height: 300px !important;
 		}
 	}
 

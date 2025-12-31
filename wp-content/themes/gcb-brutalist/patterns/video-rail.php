@@ -5,7 +5,7 @@
  * Title: Video Rail
  * Slug: gcb-brutalist/video-rail
  * Categories: featured, gcb-content
- * Description: Horizontal scrolling rail of video posts with Editorial Brutalism styling
+ * Description: Horizontal scrolling rail of video posts with Editorial Brutalism styling (North Star aligned)
  * Keywords: video, rail, horizontal, scroll, brutalism
  */
 
@@ -44,7 +44,7 @@ if ( ! $video_posts->have_posts() ) {
 		</a>
 	</div>
 
-	<!-- Custom Scrollbar Styling -->
+	<!-- Custom Scrollbar & Card Styling (North Star Responsive Design) -->
 	<style>
 		.gcb-video-rail__container::-webkit-scrollbar {
 			height: 6px;
@@ -60,14 +60,48 @@ if ( ! $video_posts->have_posts() ) {
 			background: var(--wp--preset--color--acid-lime);
 		}
 
+		/* Video card: responsive widths (North Star: 224/256/288px) */
+		.gcb-video-card {
+			flex: 0 0 224px; /* Mobile: w-56 */
+		}
+		@media (min-width: 640px) {
+			.gcb-video-card {
+				flex: 0 0 256px; /* Tablet: w-64 */
+			}
+		}
+		@media (min-width: 768px) {
+			.gcb-video-card {
+				flex: 0 0 288px; /* Desktop: w-72 */
+			}
+		}
+
+		/* 9:16 aspect ratio container */
+		.gcb-video-card__aspect {
+			width: 100%;
+			padding-bottom: 177.78%; /* 9:16 = 16/9 = 1.7778 = 177.78% */
+			position: relative;
+		}
+
+		/* Play button: responsive sizing (North Star: 64px → 80px) */
+		.video-play-button {
+			width: 4rem;
+			height: 4rem;
+		}
+		@media (min-width: 640px) {
+			.video-play-button {
+				width: 5rem;
+				height: 5rem;
+			}
+		}
+
 		/* Video card hover effect */
-		.gcb-video-card:hover {
+		.gcb-video-card:hover .gcb-video-card__border {
 			border-color: var(--wp--preset--color--acid-lime) !important;
 		}
 	</style>
 
 	<!-- Video Rail Scroll Container -->
-	<div class="gcb-video-rail__container video-rail-scroll" style="display: flex; gap: 2rem; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding-bottom: 1rem;">
+	<div class="gcb-video-rail__container video-rail-scroll" style="display: flex; gap: 1rem; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding-bottom: 1rem;">
 
 		<?php
 		while ( $video_posts->have_posts() ) :
@@ -81,55 +115,55 @@ if ( ! $video_posts->have_posts() ) {
 			$thumbnail      = $video_id ? "https://img.youtube.com/vi/{$video_id}/maxresdefault.jpg" : get_the_post_thumbnail_url( $post_id, 'medium' );
 			?>
 
-			<!-- Video Card -->
-			<div class="gcb-video-card video-rail-item" style="flex: 0 0 300px; scroll-snap-align: start; border: 1px solid var(--wp--preset--color--brutal-border); background: var(--wp--preset--color--void-black);">
+			<!-- Video Card (North Star Structure: 9:16 Portrait with Overlay Content) -->
+			<div class="gcb-video-card video-rail-item" style="scroll-snap-align: start;">
+				<a href="<?php echo esc_url( get_permalink() ); ?>" style="display: block; text-decoration: none;">
+					<!-- 9:16 Aspect Ratio Container -->
+					<div class="gcb-video-card__aspect gcb-video-card__border" style="border: 1px solid var(--wp--preset--color--brutal-border); overflow: hidden; position: relative;">
 
-				<!-- Thumbnail -->
-				<a href="<?php echo esc_url( get_permalink() ); ?>" style="display: block; position: relative;">
-					<?php if ( $thumbnail ) : ?>
-						<img
-							src="<?php echo esc_url( $thumbnail ); ?>"
-							alt="<?php echo esc_attr( get_the_title() ); ?>"
-							style="width: 100%; height: 169px; object-fit: cover; display: block; border-bottom: 2px solid var(--wp--preset--color--brutal-border); filter: grayscale(100%) contrast(1.3);"
-							loading="lazy"
-						/>
-					<?php endif; ?>
+						<!-- Background Image -->
+						<?php if ( $thumbnail ) : ?>
+							<img
+								src="<?php echo esc_url( $thumbnail ); ?>"
+								alt="<?php echo esc_attr( get_the_title() ); ?>"
+								style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.3);"
+								loading="lazy"
+							/>
+						<?php endif; ?>
 
-					<!-- Play Button Overlay -->
-					<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center;">
-						<svg class="video-play-button" style="width: 4rem; height: 4rem; color: var(--wp--preset--color--acid-lime); filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5)); pointer-events: none;" viewBox="0 0 100 100" fill="currentColor">
-							<polygon points="30,20 30,80 80,50" />
-						</svg>
+						<!-- Dark Overlay (North Star: opacity-40) -->
+						<div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--wp--preset--color--void-black); opacity: 0.4;"></div>
+
+						<!-- Play Button Overlay (Center) -->
+						<div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+							<svg class="video-play-button" style="color: var(--wp--preset--color--acid-lime); filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));" viewBox="0 0 100 100" fill="currentColor">
+								<polygon points="30,20 30,80 80,50" />
+							</svg>
+						</div>
+
+						<!-- Content Overlay at Bottom with Gradient (North Star Structure) -->
+						<div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 1rem; background: linear-gradient(to top, var(--wp--preset--color--void-black) 0%, transparent 100%);">
+							<!-- Title -->
+							<h3 class="gcb-video-card__title video-title" style="font-family: var(--wp--preset--font-family--playfair); font-size: 1rem; line-height: 1.3; margin: 0 0 0.25rem 0; color: var(--wp--preset--color--off-white); font-weight: bold;">
+								<?php echo esc_html( wp_trim_words( get_the_title(), 8 ) ); ?>
+							</h3>
+
+							<!-- Metadata: Duration • Views (North Star Format) -->
+							<p class="gcb-video-card__meta" style="font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; color: var(--wp--preset--color--brutal-grey); text-transform: uppercase; margin: 0; letter-spacing: 0.05em;">
+								<?php if ( $duration ) : ?>
+									<?php echo esc_html( gcb_format_video_duration( $duration ) ); ?>
+								<?php endif; ?>
+								<?php if ( $duration && $view_count ) : ?>
+									<span> • </span>
+								<?php endif; ?>
+								<?php if ( $view_count ) : ?>
+									<?php echo esc_html( gcb_format_view_count( intval( $view_count ) ) ); ?> Views
+								<?php endif; ?>
+							</p>
+						</div>
+
 					</div>
-
-					<!-- Duration Badge -->
-					<?php if ( $duration ) : ?>
-						<span class="gcb-video-card__duration video-duration" data-duration="<?php echo esc_attr( $duration ); ?>" style="position: absolute; bottom: 8px; right: 8px; background: rgba(5, 5, 5, 0.9); color: var(--wp--preset--color--off-white); padding: 4px 8px; font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; border: 1px solid var(--wp--preset--color--acid-lime);">
-							<?php echo esc_html( gcb_format_video_duration( $duration ) ); ?>
-						</span>
-					<?php endif; ?>
 				</a>
-
-				<!-- Card Content -->
-				<div style="padding: 1rem;">
-					<!-- Title -->
-					<h3 class="gcb-video-card__title video-title" style="font-family: var(--wp--preset--font-family--playfair); font-size: 1.125rem; line-height: 1.3; margin: 0 0 0.5rem 0; color: var(--wp--preset--color--off-white);">
-						<a href="<?php echo esc_url( get_permalink() ); ?>" style="color: inherit; text-decoration: none;">
-							<?php echo esc_html( wp_trim_words( get_the_title(), 8 ) ); ?>
-						</a>
-					</h3>
-
-					<!-- Metadata -->
-					<div class="gcb-video-card__meta" style="font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; color: var(--wp--preset--color--brutal-grey); text-transform: uppercase;">
-						<?php if ( $duration ) : ?>
-							<span><?php echo esc_html( gcb_format_video_duration( $duration ) ); ?></span>
-							<span> • </span>
-						<?php endif; ?>
-						<?php if ( $view_count ) : ?>
-							<span><?php echo esc_html( gcb_format_view_count( intval( $view_count ) ) ); ?> Views</span>
-						<?php endif; ?>
-					</div>
-				</div>
 			</div>
 
 		<?php endwhile; ?>

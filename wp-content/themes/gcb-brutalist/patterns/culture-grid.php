@@ -85,7 +85,7 @@ if (!$culture_grid_query->have_posts()) {
                 $post_id = get_the_ID();
                 $post_title = get_the_title();
                 $post_permalink = get_permalink();
-                $post_date = get_the_date('F j, Y');
+                $post_date = get_the_date('M j'); // North Star: Short format (Dec 27)
                 $post_excerpt = get_the_excerpt();
 
                 // Limit excerpt to ~15 words for brutalist aesthetic

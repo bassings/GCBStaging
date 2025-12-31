@@ -1,140 +1,130 @@
-## Gay Car Boys – Local WordPress Dev & Validation
+## Gay Car Boys – Local WordPress Development
 
-Local Dockerised WordPress environment for working on [`gaycarboys.com`](http://gaycarboys.com/) and running automated validation (lint, health checks, Playwright tests).
+Local WordPress Studio environment for working on [`gaycarboys.com`](http://gaycarboys.com/) and running automated validation (lint, health checks, Playwright tests).
 
-This uses a stack approximating typical shared hosting: Apache + PHP 8.1 (`wordpress:php8.1-apache`) and MariaDB 10.6.
+This project uses **WordPress Studio** for local development, which runs PHP via WebAssembly (WASM) and uses SQLite for the database.
 
 ### Prerequisites
 
-- Docker Desktop on macOS
-- Node.js (LTS) + npm
+- WordPress Studio installed and running
+- Node.js (LTS 18+) + npm
 - Composer (for PHP tooling)
 
-### Getting started
+### Getting Started
 
-```bash
-cd /Volumes/Storage/home/scott.b/repos/Gaycarboys
-cp .env.example .env    # create and adjust local env if needed
-make up                 # start containers
-```
+1. **Start WordPress Studio** and ensure the site is accessible at `http://localhost:8881`
 
-Then visit `http://localhost:8080` (or change `WEB_PORT` / `WP_HOME` in `.env`).
-
-### Initial local install (no production data yet)
-
-After containers are up:
-
-```bash
-./scripts/wp-install-local.sh
-```
-
-This will install a fresh WordPress site using the values from environment variables (`WP_HOME`, `WP_ADMIN_USER`, etc.).
-
-### Import from production
-
-**First, determine your hosting type:**
-
-- **WordPress.com** (managed hosting) → See [WordPress.com export guide](docs/EXPORTING_FROM_WORDPRESS_COM.md)
-- **Self-hosted WordPress** → See [self-hosted export guide](docs/EXPORTING_FROM_PRODUCTION.md)
-
-**Quick helper:**
-
-```bash
-./scripts/wp-export-helper.sh
-```
-
-This interactive script will guide you based on your hosting type.
-
-#### For WordPress.com Sites
-
-**Option A: Jetpack Backup (Recommended - Most Complete)**
-
-If you have Jetpack Backup enabled:
-
-1. Export backup: WordPress.com dashboard → **Jetpack → Backups** → Download backup
-2. Import locally:
-
-```bash
-./scripts/wp-import-jetpack-backup.sh ./jetpack-backup-YYYY-MM-DD.zip
-```
-
-This includes: complete database, wp-content (themes, plugins, uploads), and all media files.
-
-**Option B: Standard XML Export (Content Only)**
-
-If Jetpack Backup is not available:
-
-1. Export content: WordPress.com dashboard → **Tools → Export** → Download XML
-2. Import locally:
-
-```bash
-./scripts/wp-import-from-wordpress-com.sh ./gaycarboys-export.xml
-```
-
-**Note:** XML exports only include content (posts, pages, media references), not themes or plugins. You'll need to install a theme locally and configure plugins separately.
-
-#### For Self-Hosted WordPress
-
-**Once you have:**
-
-- A DB dump from production (e.g. `prod.sql`)
-- A copy of `wp-content` from production
-
-**Import locally:**
-
-```bash
-./scripts/wp-import-from-prod.sh /path/to/prod.sql /path/to/wp-content
-```
-
-The script:
-
-- Syncs `wp-content` into `wordpress/wp-content`
-- Imports the DB into the `db` container
-- Runs a search-replace from `http://gaycarboys.com` to your local `WP_HOME`
-
-### Validation pipeline
-
-Install JS/PHP tooling once:
+2. **Install dependencies:**
 
 ```bash
 npm install
 composer install
 ```
 
-Run the full local validation:
+3. **Verify the site is running:**
 
 ```bash
-npm run validate
+curl http://localhost:8881
 ```
 
-This will:
+### Environment Details
 
-- Lint PHP code using WordPress Coding Standards (`phpcs.xml.dist`)
-- Lint JS and CSS (if present under `wordpress/wp-content`)
-- Run HTTP health checks against key URLs
-- Run PHPUnit tests (placeholder bootstrap wired to local config)
-- Run Playwright end-to-end tests (basic homepage/article flows)
+- **Local URL:** `http://localhost:8881`
+- **Runtime:** PHP via WebAssembly (WASM)
+- **Database:** SQLite (stored in `wp-content/database/.ht.sqlite`)
+- **Production:** WordPress.com Managed Hosting (Atomic) running MariaDB/MySQL
 
-You can also run pieces individually:
+### Important: Syncing to Staging
 
-- `npm run lint`
-- `npm run health`
-- `npm run test:phpunit`
-- `npm run test:e2e`
+⚠️ **When syncing to the WordPress.com Atomic staging environment:**
 
-### Common Docker commands
+Always use **Studio Sync** and **UNCHECK the Database** to prevent overwriting remote content. Only sync files (themes, plugins, uploads).
 
-- `make up` – start containers
-- `make down` – stop containers and remove them
-- `make logs` – follow logs
-- `make wp CMD="plugin list"` – run WP-CLI commands
+### Testing
 
-### CI (future)
+This project uses Playwright for end-to-end testing with a Test-Driven Development (TDD) approach.
 
-The same `npm run validate` command is designed to be reusable in CI (e.g. GitHub Actions) once this repo is pushed. A workflow can:
+**Quick Start:**
 
-- Build the Docker stack
-- Run `composer install`, `npm install`
-- Execute `npm run validate` on each push/PR
+1. Ensure WordPress Studio is running at `http://localhost:8881`
+2. Activate the `gcb-test-utils` plugin in WordPress admin
+3. Set up authentication (one-time):
 
+```bash
+npx playwright test auth.setup.ts --project=setup
+```
 
+4. Run tests:
+
+```bash
+npm test
+```
+
+For detailed testing documentation, see [TESTING.md](./TESTING.md).
+
+**Available test commands:**
+
+- `npm test` – Run all Playwright tests
+- `npm run test:ui` – Run tests with Playwright UI
+- `npm run test:debug` – Run tests in debug mode
+- `npm run test:headed` – Run tests with visible browser
+- `npm run test:report` – Show test report
+- `npm run test:codegen` – Generate tests with Playwright codegen
+
+### Development Workflow
+
+This project follows strict Test-Driven Development (TDD):
+
+1. **RED:** Write a Playwright test for the feature
+2. **GREEN:** Write minimum code to make the test pass
+3. **REFACTOR:** Optimize while keeping tests green
+
+See [CLAUDE.md](./CLAUDE.md) for full development guidelines and coding standards.
+
+### Project Structure
+
+- **Themes:** `wp-content/themes/gcb-brutalist/` – Custom block theme with editorial brutalism design
+- **Plugins:** `wp-content/plugins/` – Includes custom plugins:
+  - `gcb-test-utils` – Database reset endpoint for E2E testing
+  - `gcb-content-intelligence` – Content classification and schema generation
+- **Tests:** `tests/e2e/` – Playwright end-to-end tests
+- **Documentation:**
+  - [TESTING.md](./TESTING.md) – Testing guide
+  - [CLAUDE.md](./CLAUDE.md) – Development guidelines and standards
+  - [IMPLEMENTATION-PLAN.md](./IMPLEMENTATION-PLAN.md) – Project progress and status
+  - [DESIGN-SYSTEM-REFERENCE.md](./DESIGN-SYSTEM-REFERENCE.md) – Design tokens and patterns
+
+### SQLite Compatibility Notes
+
+The local environment uses SQLite. When writing code:
+
+- ✅ Use `WP_Query` or `$wpdb` methods (they abstract database differences)
+- ❌ Avoid raw SQL with MySQL-specific functions (e.g., `UNIX_TIMESTAMP`)
+- Always use WordPress APIs for database queries
+
+### Importing Content
+
+For importing content from production, use WordPress Studio's sync feature or WordPress admin import tools.
+
+⚠️ **Important:** When syncing from staging/production, always use **Studio Sync** and **UNCHECK the Database** to prevent overwriting remote content.
+
+### Validation & Code Quality
+
+Install dependencies and run validation:
+
+```bash
+npm install
+composer install
+```
+
+The project uses:
+
+- **PHP:** WordPress Coding Standards (`phpcs.xml.dist`)
+- **TypeScript/JavaScript:** ESLint configuration
+- **E2E Testing:** Playwright with comprehensive test coverage
+
+### Additional Resources
+
+- **Implementation Status:** See [IMPLEMENTATION-PLAN.md](./IMPLEMENTATION-PLAN.md) for current project status
+- **Design System:** See [DESIGN-SYSTEM-REFERENCE.md](./DESIGN-SYSTEM-REFERENCE.md) for design tokens, patterns, and accessibility guidelines
+- **Plugin Management:** See [PLUGIN-CLEANUP-README.md](./PLUGIN-CLEANUP-README.md) for plugin organization details

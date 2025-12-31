@@ -15,6 +15,22 @@ Tags: full-site-editing, block-theme, brutalism, editorial, magazine
 */
 
 /**
+ * Editorial Brutalism: Global No-Transition Rule
+ * Instant state changes - no smooth transitions (per north star design)
+ */
+*,
+*::before,
+*::after {
+	transition: none !important;
+}
+
+/* Exception: Mobile menu slide animation */
+.mobile-menu,
+.menu-overlay {
+	transition: transform 0.3s ease !important;
+}
+
+/**
  * Archive Broken Grid Layout
  * Creates intentional visual disruption with offset rhythm
  */

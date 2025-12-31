@@ -72,12 +72,6 @@
 			<a href="/car-news/" class="mobile-nav-link">Car News</a>
 			<a href="/electric-cars/" class="mobile-nav-link">Electric Cars</a>
 			<a href="/brands/" class="mobile-nav-link">Brands</a>
-
-		<!-- Mobile Search Button (North Star) -->
-		<button class="mobile-search-toggle" aria-label="Search">
-			<span class="search-prompt">&gt;_</span>
-			<span>Search</span>
-		</button>
 		</div>
 	</div>
 </nav>
@@ -365,9 +359,7 @@
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
 		padding: 1rem;
-		padding-bottom: 1rem; /* North Star: border-bottom spacing */
 		border: 1px solid transparent;
-		border-bottom: 1px solid #333333; /* North Star: Brutal Border bottom on each link */
 
 		min-height: 44px;
 		display: flex;
@@ -385,42 +377,6 @@
 	.mobile-nav-link:focus-visible {
 		outline: 2px solid #CCFF00; /* Acid Lime */
 		outline-offset: 2px;
-	}
-
-	/* ===== MOBILE SEARCH TOGGLE (North Star) ===== */
-	.mobile-search-toggle {
-		font-family: 'Space Mono', monospace;
-		font-size: 0.875rem;
-		font-weight: 400;
-		color: #FAFAFA; /* Off-White */
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		padding: 0.75rem 1rem;
-		margin-top: 1.5rem; /* North Star: mt-6 spacing */
-		border: 1px solid #333333; /* Brutal Border */
-		background-color: transparent;
-		cursor: pointer;
-		display: flex;
-		gap: 0.5rem;
-		align-items: center;
-		justify-content: center;
-		min-height: 44px;
-		width: 100%;
-	}
-
-	.mobile-search-toggle:hover {
-		border-color: #CCFF00; /* Acid Lime */
-		background-color: rgba(204, 255, 0, 0.1);
-	}
-
-	.mobile-search-toggle:focus-visible {
-		outline: 2px solid #CCFF00; /* Acid Lime */
-		outline-offset: 2px;
-	}
-
-	.mobile-search-toggle .search-prompt {
-		color: #CCFF00; /* Acid Lime */
-		font-weight: 700;
 	}
 
 	/* ===== BODY SCROLL LOCK ===== */

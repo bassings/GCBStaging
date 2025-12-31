@@ -24,6 +24,17 @@ EVERY feature test MUST include:
    - Images scale/stack correctly
    - No horizontal scroll on mobile (viewport width check)
 
+⚠️ CRITICAL PROTOCOL: DESIGN ALIGNMENT
+North Star Design Reference: north-star-prototype.html (root directory)
+This HTML prototype is the canonical design specification for all patterns.
+
+Design Alignment Plan: ~/.claude/plans/snug-pondering-dove.md
+This plan documents all differences between the north star design and the current WordPress implementation.
+- Created: 2026-01-01
+- Purpose: Identify and prioritize changes needed to achieve pixel-perfect alignment with north star design
+- Status: Ready for implementation
+- Critical changes: Video Rail structure, Hero responsive sizing, Global transitions
+
 ⚠️ CRITICAL PROTOCOL: IMPLEMENTATION PLAN & GIT WORKFLOW
 Project Plan Location: IMPLEMENTATION-PLAN.md (root directory)
 This is our single source of truth for project progress, status, and next steps.
@@ -162,26 +173,30 @@ theme.json
 6. Pattern Specifications
 
 Video Rail Pattern:
-- Aspect ratio: 16:9 (YouTube-optimized landscape format)
-  - Rationale: YouTube native format provides better thumbnail quality and metadata display than forced 9:16 vertical
+⚠️ NOTE: Current implementation differs from north star design. See Design Alignment Plan for required changes.
+- North Star Spec: 9:16 portrait aspect ratio (mobile-first vertical cards)
+- North Star Spec: Card widths 224px/256px/288px (responsive, not fixed 300px)
+- North Star Spec: Title + metadata overlaid ON thumbnail (not below)
 - Horizontal scroll with scroll-snap behavior
 - Grayscale thumbnails with high contrast (filter: grayscale(100%) contrast(1.3))
-- Massive acid lime play triangle (64-80px)
+- Massive acid lime play triangle (64-80px responsive)
 - Metadata display: Duration + View count (e.g., "12:45 • 245K Views")
 - "View All →" link in section header (44px touch target)
 - Custom scrollbar: 6px height with acid lime accent
 - Query: Filters by taxonomy content_format = video
-- Dimensions: 300px × 169px (16:9 ratio maintained across breakpoints)
 - Accessibility: Keyboard navigation with arrow keys, ARIA labels on play buttons
 
 Hero Section Pattern:
+⚠️ NOTE: Current implementation differs from north star design. See Design Alignment Plan for required changes.
+- North Star Spec: Feature headline responsive text-2xl→text-6xl (currently fixed 3rem)
+- North Star Spec: Opinion headline responsive text-2xl→text-3xl (currently fixed 1.5rem)
+- North Star Spec: Opinion badge uses brutal-border gray (currently acid-lime)
+- North Star Spec: Feature card height 384px→500px responsive (currently fixed)
 - Two-column layout using 3-column CSS Grid (feature card spans 2 columns)
-- Feature card: 500px height on desktop, 400px on tablet, 300px on mobile
-- Massive headline: text-6xl desktop, text-4xl tablet, text-3xl mobile
-- Category badge: Acid lime border, uppercase mono font, 44px height (touch target)
+- Category badge: Acid lime border for FEATURE, brutal-border for OPINION
 - Dark gradient overlay: from-void-black via-void-black/70 to-transparent
 - Metadata: Author + Date + Read Time (e.g., "Read Time: 8 min")
-- Opinion card: 256px height desktop, 200px mobile
+- Opinion card: 256px total height (includes image + content)
 - Mobile-First Responsive:
   - <768px: Single column, feature card full width
   - 768-1024px: Two columns, reduced heights

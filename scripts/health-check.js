@@ -2,7 +2,7 @@
 
 import http from 'http';
 
-const host = process.env.WP_HOME || 'http://localhost:8080';
+const host = process.env.WP_HOME || 'http://localhost:8881';
 // Basic health check URLs for fresh install
 // Update these after importing production data to check actual categories/pages
 const urls = [
