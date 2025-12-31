@@ -162,7 +162,8 @@ theme.json
 6. Pattern Specifications
 
 Video Rail Pattern:
-- Aspect ratio: 9:16 (portrait/vertical format for mobile-first)
+- Aspect ratio: 16:9 (YouTube-optimized landscape format)
+  - Rationale: YouTube native format provides better thumbnail quality and metadata display than forced 9:16 vertical
 - Horizontal scroll with scroll-snap behavior
 - Grayscale thumbnails with high contrast (filter: grayscale(100%) contrast(1.3))
 - Massive acid lime play triangle (64-80px)
@@ -170,7 +171,7 @@ Video Rail Pattern:
 - "View All →" link in section header (44px touch target)
 - Custom scrollbar: 6px height with acid lime accent
 - Query: Filters by taxonomy content_format = video
-- Mobile-First: Cards 280px wide on mobile, scale up on larger screens
+- Dimensions: 300px × 169px (16:9 ratio maintained across breakpoints)
 - Accessibility: Keyboard navigation with arrow keys, ARIA labels on play buttons
 
 Hero Section Pattern:

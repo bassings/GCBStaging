@@ -13,7 +13,7 @@ This section documents the complete design system established through the HTML p
 | Color Name | Hex | Usage | Contrast Ratio | WCAG Level |
 |------------|-----|-------|----------------|------------|
 | **Void Black** | `#050505` | Main background (OLED black) | - | - |
-| **Hyper White** | `#FAFAFA` | Primary text, headlines | 19.8:1 | AAA ✓ |
+| **Off-White** | `#FAFAFA` | Primary text, headlines | 19.8:1 | AAA ✓ |
 | **Acid Lime** | `#CCFF00` | Primary CTA, play buttons, accents, hover states | 18.2:1 | AAA ✓ |
 | **Brutal Grey** | `#999999` | Secondary text, metadata, timestamps, author names | 8.6:1 | AAA ✓ |
 | **Chrome** | `#C0C0C0` | **Borders ONLY** (not for text) | - | - |
@@ -21,7 +21,7 @@ This section documents the complete design system established through the HTML p
 ### Color Usage Rules:
 
 ✅ **DO:**
-- Use Hyper White for all headlines and primary body text
+- Use Off-White for all headlines and primary body text
 - Use Brutal Grey for metadata, dates, author names, view counts
 - Use Acid Lime for interactive elements (buttons, links on hover, play icons)
 - Use Chrome for borders and dividers only
@@ -160,12 +160,13 @@ body {
 - Custom scrollbar: 6px height, Chrome with Acid Lime accent
 
 **Video Cards:**
-- **Aspect ratio:** 9:16 (TikTok-style vertical)
-- **Width:**
-  - Mobile: w-56 (224px)
-  - Tablet: w-64 (256px)
-  - Desktop: w-72 (288px)
-- **Border:** 1px solid Chrome
+- **Aspect ratio:** 16:9 (YouTube-optimized landscape)
+  - **Decision Rationale:** While 9:16 vertical format is mobile-first, YouTube's native 16:9 landscape provides better thumbnail quality, metadata display, and desktop viewing experience. This aligns with GCB's primary video platform (YouTube) rather than forcing TikTok-style presentation.
+- **Dimensions:**
+  - Mobile: 280px × 158px (16:9 ratio)
+  - Tablet: 300px × 169px
+  - Desktop: 300px × 169px
+- **Border:** 1px solid Brutal Border (#333)
 - **Hover:** Border changes to Acid Lime
 - **Image:** Grayscale filter (100%) with 1.3x contrast
 
@@ -367,7 +368,7 @@ Exception: Mobile menu slide-out (0.3s ease) - UX requirement
 
 - Videos are **primary content**, not supplementary
 - YouTube integration mandatory
-- 9:16 aspect ratio preferred (mobile-first)
+- 16:9 aspect ratio (YouTube-optimized for better thumbnail quality and desktop experience)
 - Metadata required: duration, view count, upload date
 - VideoObject schema (JSON-LD) on all video content
 
@@ -395,7 +396,7 @@ From original spec: "Authoritative, Witty, Unapologetic. Vogue Man meets Top Gea
     "color": {
       "palette": [
         {"slug": "void-black", "color": "#050505", "name": "Void Black"},
-        {"slug": "hyper-white", "color": "#FAFAFA", "name": "Hyper White"},
+        {"slug": "off-white", "color": "#FAFAFA", "name": "Off-White"},
         {"slug": "acid-lime", "color": "#CCFF00", "name": "Acid Lime"},
         {"slug": "brutal-grey", "color": "#999999", "name": "Brutal Grey"},
         {"slug": "chrome", "color": "#C0C0C0", "name": "Chrome"}
