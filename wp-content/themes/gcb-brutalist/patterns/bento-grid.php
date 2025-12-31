@@ -29,8 +29,8 @@ if ( ! $grid_posts->have_posts() ) {
 	<h2 class="wp-block-heading has-acid-lime-color has-text-color" style="margin-bottom:var(--wp--preset--spacing--40);font-family:var(--wp--preset--font-family--playfair);font-size:2.5rem;line-height:1.2">Featured Stories</h2>
 	<!-- /wp:heading -->
 
-	<!-- wp:separator {"style":{"spacing":{"margin":{"top":"0","bottom":"var:preset|spacing|40"}},"color":{"background":"var:preset|color|chrome"}},"backgroundColor":"chrome","className":"is-style-wide"} -->
-	<hr class="wp-block-separator has-text-color has-chrome-background-color has-alpha-channel-opacity has-chrome-background-color has-background is-style-wide" style="margin-top:0;margin-bottom:var(--wp--preset--spacing--40);color:var(--wp--preset--color--chrome);background-color:var(--wp--preset--color--chrome)"/>
+	<!-- wp:separator {"style":{"spacing":{"margin":{"top":"0","bottom":"var:preset|spacing|40"}},"color":{"background":"var:preset|color|brutal-border"}},"backgroundColor":"brutal-border","className":"is-style-wide"} -->
+	<hr class="wp-block-separator has-text-color has-brutal-border-background-color has-alpha-channel-opacity has-brutal-border-background-color has-background is-style-wide" style="margin-top:0;margin-bottom:var(--wp--preset--spacing--40);color:var(--wp--preset--color--brutal-border);background-color:var(--wp--preset--color--brutal-border)"/>
 	<!-- /wp:separator -->
 
 	<!-- Bento Grid Container -->
@@ -61,7 +61,7 @@ if ( ! $grid_posts->have_posts() ) {
 			?>
 
 			<!-- Bento Grid Item -->
-			<div class="bento-item gcb-bento-card <?php echo esc_attr( $size_class . ' ' . $type_class ); ?>" data-size="<?php echo $is_featured ? 'large' : 'standard'; ?>" style="<?php echo esc_attr( $grid_span ); ?> border: 2px solid var(--wp--preset--color--chrome); background: var(--wp--preset--color--void-black); overflow: hidden; display: flex; flex-direction: column;">
+			<div class="bento-item gcb-bento-card <?php echo esc_attr( $size_class . ' ' . $type_class ); ?>" data-size="<?php echo $is_featured ? 'large' : 'standard'; ?>" style="<?php echo esc_attr( $grid_span ); ?> border: 2px solid var(--wp--preset--color--brutal-border); background: var(--wp--preset--color--void-black); overflow: hidden; display: flex; flex-direction: column;">
 
 				<!-- Thumbnail -->
 				<?php if ( $thumbnail ) : ?>
@@ -69,7 +69,7 @@ if ( ! $grid_posts->have_posts() ) {
 						<img
 							src="<?php echo esc_url( $thumbnail ); ?>"
 							alt="<?php echo esc_attr( get_the_title() ); ?>"
-							style="width: 100%; height: <?php echo $is_featured ? '400px' : '200px'; ?>; object-fit: cover; display: block; border-bottom: 2px solid var(--wp--preset--color--chrome);"
+							style="width: 100%; height: <?php echo $is_featured ? '400px' : '200px'; ?>; object-fit: cover; display: block; border-bottom: 2px solid var(--wp--preset--color--brutal-border);"
 							loading="lazy"
 						/>
 
@@ -99,14 +99,14 @@ if ( ! $grid_posts->have_posts() ) {
 					<?php endif; ?>
 
 					<!-- Metadata -->
-					<div class="gcb-bento-card__meta" style="margin-top: auto; display: flex; gap: 0.75rem; align-items: center; font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; color: var(--wp--preset--color--chrome);">
+					<div class="gcb-bento-card__meta" style="margin-top: auto; display: flex; gap: 0.75rem; align-items: center; font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; color: var(--wp--preset--color--brutal-grey);">
 						<!-- Post Date -->
 						<time class="post-date" datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>">
 							<?php echo esc_html( get_the_date( 'M j, Y' ) ); ?>
 						</time>
 
 						<!-- Content Format Badge -->
-						<span style="padding: 2px 8px; border: 1px solid var(--wp--preset--color--chrome); text-transform: uppercase;">
+						<span style="padding: 2px 8px; border: 1px solid var(--wp--preset--color--brutal-border); text-transform: uppercase;">
 							<?php echo esc_html( $is_video ? 'Video' : 'Article' ); ?>
 						</span>
 					</div>

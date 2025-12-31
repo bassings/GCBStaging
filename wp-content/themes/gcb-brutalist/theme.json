@@ -25,19 +25,14 @@
           "slug": "acid-lime"
         },
         {
-          "color": "#C0C0C0",
-          "name": "Chrome",
-          "slug": "chrome"
+          "color": "#333333",
+          "name": "Brutal Border",
+          "slug": "brutal-border"
         },
         {
-          "color": "#FF3333",
-          "name": "Error Red",
-          "slug": "error-red"
-        },
-        {
-          "color": "#3366FF",
-          "name": "Hyper Blue",
-          "slug": "hyper-blue"
+          "color": "#999999",
+          "name": "Brutal Grey",
+          "slug": "brutal-grey"
         }
       ]
     },
@@ -110,8 +105,9 @@
         },
         ":hover": {
           "color": {
-            "text": "var(--wp--preset--color--hyper-blue)"
-          }
+            "text": "var(--wp--preset--color--hyper-white)"
+          },
+          "textDecoration": "underline"
         }
       },
       "heading": {
@@ -131,7 +127,7 @@
             },
             ":hover": {
               "color": {
-                "text": "var(--wp--preset--color--hyper-blue)"
+                "text": "var(--wp--preset--color--acid-lime)"
               }
             }
           }

@@ -54,7 +54,7 @@ if ( ! $hero_posts->have_posts() ) {
 			?>
 
 			<!-- Hero Card -->
-			<div class="<?php echo esc_attr( $card_class ); ?>" style="<?php echo esc_attr( $grid_span ); ?> height: <?php echo esc_attr( $card_height ); ?>; border: 2px solid var(--wp--preset--color--chrome); background: var(--wp--preset--color--void-black); overflow: hidden; position: relative;">
+			<div class="<?php echo esc_attr( $card_class ); ?>" style="<?php echo esc_attr( $grid_span ); ?> height: <?php echo esc_attr( $card_height ); ?>; border: 2px solid var(--wp--preset--color--brutal-border); background: var(--wp--preset--color--void-black); overflow: hidden; position: relative;">
 
 				<!-- Background Image with Gradient Overlay -->
 				<?php if ( $thumbnail ) : ?>
@@ -93,7 +93,7 @@ if ( ! $hero_posts->have_posts() ) {
 					<?php endif; ?>
 
 					<!-- Metadata -->
-					<div class="gcb-hero__meta" style="display: flex; gap: 1rem; align-items: center; font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; color: var(--wp--preset--color--chrome); margin-top: auto;">
+					<div class="gcb-hero__meta" style="display: flex; gap: 1rem; align-items: center; font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; color: var(--wp--preset--color--brutal-grey); margin-top: auto;">
 						<!-- Author -->
 						<span class="gcb-hero__author post-author" data-author="<?php echo esc_attr( $author_name ); ?>">
 							By <?php echo esc_html( $author_name ); ?>

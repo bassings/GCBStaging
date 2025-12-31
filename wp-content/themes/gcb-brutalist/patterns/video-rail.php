@@ -18,7 +18,7 @@ $video_posts = new WP_Query(
 			array(
 				'taxonomy' => 'content_format',
 				'field'    => 'slug',
-				'terms'    => 'video',
+				'terms'    => array( 'video-quick', 'video-feature' ),
 			),
 		),
 		'orderby'        => 'date',
@@ -66,7 +66,7 @@ if ( ! $video_posts->have_posts() ) {
 						<img
 							src="<?php echo esc_url( $thumbnail ); ?>"
 							alt="<?php echo esc_attr( get_the_title() ); ?>"
-							style="width: 100%; height: 169px; object-fit: cover; display: block; border-bottom: 2px solid var(--wp--preset--color--chrome);"
+							style="width: 100%; height: 169px; object-fit: cover; display: block; border-bottom: 2px solid var(--wp--preset--color--brutal-border);"
 							loading="lazy"
 						/>
 					<?php endif; ?>
@@ -89,7 +89,7 @@ if ( ! $video_posts->have_posts() ) {
 					</h3>
 
 					<!-- Metadata -->
-					<div class="gcb-video-card__meta" style="display: flex; gap: 0.75rem; font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; color: var(--wp--preset--color--chrome);">
+					<div class="gcb-video-card__meta" style="display: flex; gap: 0.75rem; font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; color: var(--wp--preset--color--brutal-grey);">
 						<!-- Post Date -->
 						<time class="gcb-video-card__date video-date post-date" datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>">
 							<?php echo esc_html( get_the_date( 'M j, Y' ) ); ?>
@@ -112,7 +112,7 @@ if ( ! $video_posts->have_posts() ) {
 	</div>
 
 	<!-- Scroll Hint (mobile only) -->
-	<p style="font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; color: var(--wp--preset--color--chrome); margin-top: 1rem; text-align: center;">
+	<p style="font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; color: var(--wp--preset--color--brutal-grey); margin-top: 1rem; text-align: center;">
 		← Scroll horizontally to see more →
 	</p>
 
