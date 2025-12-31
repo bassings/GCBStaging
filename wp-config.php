@@ -50,6 +50,11 @@ define('LOGGED_IN_SALT',   'q=V]FL[78Xh3s$#1kwo*}qK*VT]>jhw@;8BuSz;GFuJl0*,[F>R:
 define('NONCE_SALT',       '<g.~BTU$7Yvrbr)H!9}zDCsrjqBS8x[d]pFGt#~eROZD*uAa~C[sc(zYFP-IKAJG');
 
 /**
+ * GCB Test Key for REST API authentication
+ */
+define('GCB_TEST_KEY', 'test-secret-key-local');
+
+/**
  * WordPress Database Table prefix.
  *
  * You can have multiple installations in one database if you give each
@@ -69,36 +74,7 @@ $table_prefix  = 'wp_';
  *
  * @link https://codex.wordpress.org/Debugging_in_WordPress
  */
-define('WP_DEBUG', true);
-define('WP_DEBUG_LOG', true);
-define('WP_DEBUG_DISPLAY', false);
-@ini_set('display_errors', '0');
-
-/**
- * WordPress Memory Limit
- *
- * Increase memory limit to prevent exhaustion from heavy plugins (LayerSlider, Avada, etc.)
- */
-define('WP_MEMORY_LIMIT', '512M');
-define('WP_MAX_MEMORY_LIMIT', '512M');
-
-/**
- * GCB Test Utils Configuration
- *
- * Security key for database reset endpoint in E2E tests.
- * Only defined in non-production environments.
- */
-if ( ! defined( 'WP_ENVIRONMENT_TYPE' ) || WP_ENVIRONMENT_TYPE !== 'production' ) {
-	define( 'GCB_TEST_KEY', 'test-secret-key-local' );
-}
-
-/**
- * GCB Content Intelligence Configuration
- *
- * YouTube Data API v3 key for fetching video metadata.
- * Get your API key from: https://console.cloud.google.com/apis/credentials
- */
-define( 'GCB_YOUTUBE_API_KEY', 'AIzaSyD8T9fJVQz3xKqP6Hv2RmN7LwY4Xj5K8Gc' ); // Test API key - replace with production key
+define('WP_DEBUG', false);
 
 /* That's all, stop editing! Happy blogging. */
 
