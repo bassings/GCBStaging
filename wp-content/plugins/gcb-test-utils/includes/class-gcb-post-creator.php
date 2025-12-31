@@ -131,8 +131,9 @@ class GCB_Post_Creator {
             'content_format'  => wp_get_object_terms( $post->ID, 'content_format', array( 'fields' => 'ids' ) ),
             // Include meta fields
             'meta'            => array(
-                '_gcb_video_id'        => get_post_meta( $post->ID, '_gcb_video_id', true ),
-                '_gcb_content_format'  => get_post_meta( $post->ID, '_gcb_content_format', true ),
+                '_gcb_video_id'            => get_post_meta( $post->ID, '_gcb_video_id', true ),
+                '_gcb_content_format'      => get_post_meta( $post->ID, '_gcb_content_format', true ),
+                '_gcb_shortcode_converted' => get_post_meta( $post->ID, '_gcb_shortcode_converted', true ),
             ),
         );
 

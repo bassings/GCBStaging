@@ -21,6 +21,7 @@ define( 'GCB_CI_URL', plugin_dir_url( __FILE__ ) );
 // Load classes
 require_once GCB_CI_DIR . 'includes/class-gcb-taxonomy-manager.php';
 require_once GCB_CI_DIR . 'includes/class-gcb-content-detector.php';
+require_once GCB_CI_DIR . 'includes/class-gcb-shortcode-converter.php';
 
 // Initialize hooks
 add_action( 'init', 'gcb_ci_init' );
@@ -38,6 +39,7 @@ function gcb_ci_init(): void {
     GCB_Taxonomy_Manager::register_taxonomy();
     GCB_Taxonomy_Manager::create_default_terms();
     GCB_Content_Detector::register_post_meta();
+    GCB_Shortcode_Converter::register_post_meta();
 }
 
 /**
@@ -56,14 +58,20 @@ function gcb_ci_process_post( int $post_id, WP_Post $post ): void {
         return;
     }
 
-    // Detect content format
-    $detector = new GCB_Content_Detector();
-    $format   = $detector->detect_content_format( $post_id );
+    // Step 1: Convert Avada shortcodes to WordPress blocks (one-time conversion)
+    $converter = new GCB_Shortcode_Converter();
+    $converter->convert_shortcodes( $post_id );
 
-    // Assign taxonomy term
+    // Step 2: Detect content format (after shortcode conversion)
+    // Note: If shortcodes were converted, we need to re-fetch the post
+    $post_after_conversion = get_post( $post_id );
+    $detector              = new GCB_Content_Detector();
+    $format                = $detector->detect_content_format( $post_id );
+
+    // Step 3: Assign taxonomy term
     wp_set_object_terms( $post_id, $format, 'content_format' );
 
-    // Cache format in post meta for quick lookups
+    // Step 4: Cache format in post meta for quick lookups
     update_post_meta( $post_id, '_gcb_content_format', $format );
 }
 
