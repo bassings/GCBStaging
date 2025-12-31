@@ -191,3 +191,40 @@ function gcb_get_hero_section_content(): string {
 	include get_template_directory() . '/patterns/hero-section.php';
 	return ob_get_clean();
 }
+
+/**
+ * Register Culture Grid block pattern
+ *
+ * Registers the PHP-generated culture grid pattern for use in templates.
+ */
+function gcb_register_culture_grid_pattern(): void {
+	// Only register on frontend
+	if ( is_admin() ) {
+		return;
+	}
+
+	register_block_pattern(
+		'gcb-brutalist/culture-grid',
+		array(
+			'title'       => __( 'Culture Grid', 'gcb-brutalist' ),
+			'description' => __( '4-column responsive grid displaying text-only editorial content cards with Editorial Brutalism styling', 'gcb-brutalist' ),
+			'categories'  => array( 'featured', 'gcb-content' ),
+			'keywords'    => array( 'culture', 'grid', 'editorial', 'text-only', 'brutalism' ),
+			'content'     => gcb_get_culture_grid_content(),
+		)
+	);
+}
+add_action( 'init', 'gcb_register_culture_grid_pattern' );
+
+/**
+ * Get culture grid pattern content
+ *
+ * Generates the HTML for the culture grid pattern by querying standard posts.
+ *
+ * @return string Culture grid HTML
+ */
+function gcb_get_culture_grid_content(): string {
+	ob_start();
+	include get_template_directory() . '/patterns/culture-grid.php';
+	return ob_get_clean();
+}
