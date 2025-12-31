@@ -236,3 +236,40 @@ function gcb_add_content_format_body_classes( array $classes ): array {
 	return $classes;
 }
 add_filter( 'body_class', 'gcb_add_content_format_body_classes' );
+
+/**
+ * Register Video Rail block pattern
+ *
+ * Registers the PHP-generated video rail pattern for use in templates.
+ */
+function gcb_register_video_rail_pattern(): void {
+	// Only register on frontend
+	if ( is_admin() ) {
+		return;
+	}
+
+	register_block_pattern(
+		'gcb-brutalist/video-rail',
+		array(
+			'title'       => __( 'Video Rail', 'gcb-brutalist' ),
+			'description' => __( 'Horizontal scrolling rail of video posts with Editorial Brutalism styling', 'gcb-brutalist' ),
+			'categories'  => array( 'featured', 'gcb-content' ),
+			'keywords'    => array( 'video', 'rail', 'horizontal', 'scroll', 'brutalism' ),
+			'content'     => gcb_get_video_rail_content(),
+		)
+	);
+}
+add_action( 'init', 'gcb_register_video_rail_pattern' );
+
+/**
+ * Get video rail pattern content
+ *
+ * Generates the HTML for the video rail pattern by querying video posts.
+ *
+ * @return string Video rail HTML
+ */
+function gcb_get_video_rail_content(): string {
+	ob_start();
+	include get_template_directory() . '/patterns/video-rail.php';
+	return ob_get_clean();
+}
