@@ -9,6 +9,21 @@ REFACTOR: Optimize the code (clean up CSS, improve PHP efficiency) while ensurin
 State Management Rule:
 Before every test, you must reset the database state to prevent "flaky" tests. Use the gcb-test-utils REST endpoint: DELETE /wp-json/gcb-testing/v1/reset.
 
+Testing Requirements:
+EVERY feature test MUST include:
+1. Mobile Viewport Tests: Test at 375px width (iPhone), 768px (tablet), 1920px (desktop)
+2. Accessibility Tests:
+   - Tab navigation works (all interactive elements reachable via keyboard)
+   - Focus indicators visible (outline present and visible)
+   - ARIA labels present on icon-only buttons
+   - Touch targets ≥ 44px (use page.locator().boundingBox())
+   - Color contrast verified (text readability)
+3. Responsive Layout Tests:
+   - Grid columns change at breakpoints (1 col mobile, 2 tablet, 4 desktop)
+   - Text sizes scale appropriately (no text smaller than 16px on mobile)
+   - Images scale/stack correctly
+   - No horizontal scroll on mobile (viewport width check)
+
 ⚠️ CRITICAL PROTOCOL: IMPLEMENTATION PLAN & GIT WORKFLOW
 Project Plan Location: IMPLEMENTATION-PLAN.md (root directory)
 This is our single source of truth for project progress, status, and next steps.
@@ -73,14 +88,42 @@ Headings: Playfair Display (Serif). Usage: Massive sizes, italicized for "Featur
 Body: Inter or System Sans. Usage: Clean, legible, high contrast.
 Meta/UI: Space Mono or JetBrains Mono. Usage: Dates, Author names, Video timestamps.
 
-Accessibility (WCAG AAA)
-All text contrast ratios meet or exceed 7:1 (AAA standard).
-- Off-White on Void Black: 19.8:1 (maximum readability)
-- Brutal Grey on Void Black: 8.6:1 (secondary text)
-- Acid Lime on Void Black: 18.2:1 (accent text)
-Touch Targets: Minimum 44px × 44px for mobile UX.
-Focus States: 2px solid Acid Lime outline with 2px offset.
-Color-blind Friendly: No red/green reliance in critical UI elements.
+Accessibility (WCAG 2.2 Level AA Compliance)
+All text contrast ratios meet or exceed 4.5:1 (AA standard for normal text, 3:1 for large text).
+Our implementation exceeds AA requirements:
+- Off-White on Void Black: 19.8:1 (exceeds AAA 7:1)
+- Brutal Grey on Void Black: 8.6:1 (exceeds AAA 7:1)
+- Acid Lime on Void Black: 18.2:1 (exceeds AAA 7:1)
+
+Touch Targets (WCAG 2.2 Success Criterion 2.5.8 - Level AA):
+- Minimum 44px × 44px for ALL interactive elements (exceeds 24px AA requirement)
+- 24px minimum spacing between targets on mobile
+- Applies to buttons, links, form controls, custom controls
+
+Focus States (WCAG 2.2 Success Criterion 2.4.13 - Level AA):
+- 2px solid Acid Lime outline with 2px offset
+- Visible on ALL interactive elements (no outline: none)
+- Focus indicator contrast ratio ≥ 3:1
+- Keyboard navigation: Tab order follows visual order
+
+Screen Reader Support:
+- Semantic HTML5 elements (nav, main, article, aside)
+- ARIA labels for icon-only buttons (e.g., hamburger menu)
+- ARIA-live regions for dynamic content updates
+- Skip navigation link for keyboard users
+
+Color Independence:
+- Never rely solely on color to convey information
+- Underlines on text links (not just color)
+- Icon + text labels for buttons where possible
+- Pattern/texture differentiation where needed
+
+Mobile-First Responsive Design:
+- Design for mobile (320px) first, then scale up
+- Breakpoints: Mobile (<768px), Tablet (768-1024px), Desktop (>1024px)
+- Touch-friendly interactions (no hover-dependent critical features)
+- Viewport meta tag: width=device-width, initial-scale=1
+- Test on real devices (iOS Safari, Android Chrome)
 
 UI Patterns
 Borders: 1px solid Brutal Border (#333) or Acid Lime (#CCFF00). Visible grid lines.
@@ -124,26 +167,35 @@ Video Rail Pattern:
 - Grayscale thumbnails with high contrast (filter: grayscale(100%) contrast(1.3))
 - Massive acid lime play triangle (64-80px)
 - Metadata display: Duration + View count (e.g., "12:45 • 245K Views")
-- "View All →" link in section header
+- "View All →" link in section header (44px touch target)
 - Custom scrollbar: 6px height with acid lime accent
 - Query: Filters by taxonomy content_format = video
+- Mobile-First: Cards 280px wide on mobile, scale up on larger screens
+- Accessibility: Keyboard navigation with arrow keys, ARIA labels on play buttons
 
 Hero Section Pattern:
 - Two-column layout using 3-column CSS Grid (feature card spans 2 columns)
-- Feature card: 500px height, massive headline (up to text-6xl on desktop)
-- Category badge: Acid lime border, uppercase mono font
+- Feature card: 500px height on desktop, 400px on tablet, 300px on mobile
+- Massive headline: text-6xl desktop, text-4xl tablet, text-3xl mobile
+- Category badge: Acid lime border, uppercase mono font, 44px height (touch target)
 - Dark gradient overlay: from-void-black via-void-black/70 to-transparent
 - Metadata: Author + Date + Read Time (e.g., "Read Time: 8 min")
-- Opinion card: 256px height, smaller headline (text-3xl)
-- Responsive: Stacks to single column on mobile (<768px)
+- Opinion card: 256px height desktop, 200px mobile
+- Mobile-First Responsive:
+  - <768px: Single column, feature card full width
+  - 768-1024px: Two columns, reduced heights
+  - >1024px: Full desktop layout
 - Query: Latest post or manually featured post via meta
+- Accessibility: Focus states on all links, semantic HTML5 (article elements)
 
 Culture Grid Pattern:
-- 4-column responsive grid (1 col mobile, 2 tablet, 4 desktop)
+- Mobile-First Grid: 1 col mobile (<768px), 2 cols tablet (768-1024px), 4 cols desktop (>1024px)
 - Text-only cards (NO images) for high information density
-- Category label: Acid lime text (Technology, Safety, News, Lifestyle)
-- Large Playfair headline (text-2xl)
-- Mono font excerpt (Brutal Grey color)
+- Category label: Acid lime text (Technology, Safety, News, Lifestyle), uppercase mono
+- Playfair headline: text-2xl desktop, text-xl mobile (never smaller than 20px)
+- Mono font excerpt: Brutal Grey color, 15 words max, 16px minimum size
 - Date only (no author displayed on these cards)
-- Border: 1px solid Brutal Border (#333), hover changes to Acid Lime
+- Card padding: 24px (adequate touch target spacing)
+- Border: 1px solid Brutal Border (#333), hover/focus changes to Acid Lime
 - Query: Standard posts, exclude videos
+- Accessibility: Full keyboard navigation, focus indicators on all cards, semantic article tags
