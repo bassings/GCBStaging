@@ -3,6 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('GCB Content Intelligence - Video Rail Pattern', () => {
 
   test('Displays horizontal scrolling video rail with multiple videos', async ({ page, request }) => {
+    test.setTimeout(60000); // Increase timeout for creating 5 posts
     // Reset database
     await request.delete('/wp-json/gcb-testing/v1/reset', {
       headers: { 'GCB-Test-Key': 'test-secret-key-local' }
@@ -33,7 +34,7 @@ test.describe('GCB Content Intelligence - Video Rail Pattern', () => {
     }
 
     // Navigate to homepage (or page with video rail pattern)
-    await page.goto('/', { waitUntil: 'networkidle' });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     // Assert: Video rail container exists
     const videoRail = page.locator('.gcb-video-rail, [data-pattern="video-rail"]');
@@ -83,7 +84,7 @@ test.describe('GCB Content Intelligence - Video Rail Pattern', () => {
 
     // Set mobile viewport
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('/', { waitUntil: 'networkidle' });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     // Assert: Video rail still visible on mobile
     const videoRail = page.locator('.gcb-video-rail, [data-pattern="video-rail"]');
@@ -123,7 +124,7 @@ test.describe('GCB Content Intelligence - Video Rail Pattern', () => {
       }
     });
 
-    await page.goto('/', { waitUntil: 'networkidle' });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     // Assert: Video rail has Acid Lime accent
     const videoRail = page.locator('.gcb-video-rail, [data-pattern="video-rail"]');
@@ -179,16 +180,18 @@ test.describe('GCB Content Intelligence - Video Rail Pattern', () => {
 
     const post = await createResponse.json();
 
-    await page.goto('/', { waitUntil: 'networkidle' });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     // Assert: Video card has link to post
     const videoCard = page.locator('.gcb-video-card, .video-rail-item').first();
-    const cardLink = videoCard.locator('a[href*="clickable-video-test"], a');
+    const cardLink = videoCard.locator('a[href*="clickable-video-test"], a').first();
     await expect(cardLink).toBeVisible();
 
     // Click card and verify navigation to single post
-    await cardLink.click();
-    await page.waitForURL(/clickable-video-test/);
+    await Promise.all([
+      page.waitForURL(/clickable-video-test/, { timeout: 30000 }),
+      cardLink.click()
+    ]);
 
     // Verify we're on the single post page
     const postTitle = page.locator('h1, .wp-block-post-title, .entry-title');
@@ -214,7 +217,7 @@ test.describe('GCB Content Intelligence - Video Rail Pattern', () => {
       }
     });
 
-    await page.goto('/', { waitUntil: 'networkidle' });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     const videoCard = page.locator('.gcb-video-card, .video-rail-item').first();
 
