@@ -9,9 +9,9 @@
 
 The GCB modernization project has successfully completed **Phase 1: Test Infrastructure Setup**. The WordPress environment is fully operational with automated testing, content intelligence, and theme patterns ready for implementation.
 
-### Current Status: ✅ PHASE 2.5 COMPLETE - WCAG 2.2 AA Compliance Achieved! 🎉
+### Current Status: ✅ PHASE 3 COMPLETE - Video Carousel Fix Deployed! 🎉
 
-**Test Results:** 71 E2E tests passing (57 pattern tests + 14 WCAG compliance tests)
+**Test Results:** 77 E2E tests passing (63 pattern tests + 14 WCAG compliance tests)
 
 **What's Working:**
 - ✅ WordPress Studio running on localhost:8881
@@ -20,10 +20,11 @@ The GCB modernization project has successfully completed **Phase 1: Test Infrast
 - ✅ Content Intelligence plugin active and classifying posts
 - ✅ GCB Brutalist theme active with **5 complete patterns:**
   - ✅ Hero Section (2-column feature/opinion cards) - 7 tests
-  - ✅ Video Rail (horizontal scrolling video posts) - 10 tests
+  - ✅ **Video Rail (horizontal scrolling with YouTube thumbnails) - 16 tests ⭐ ENHANCED!**
   - ✅ Bento Grid (mixed layout grid) - 8 tests
   - ✅ Culture Grid (4-column text-only editorial cards) - 10 tests
-  - ✅ **Navigation (sticky header + mobile menu) - 16 tests ⭐ NEW!**
+  - ✅ Navigation (sticky header + mobile menu) - 16 tests
+- ✅ **Video Metadata Extraction** - Video IDs extracted and thumbnails displaying
 - ✅ Schema.org generation for VideoObject and NewsArticle
 - ✅ YouTube API integration with metadata caching
 - ✅ Full TDD workflow implemented for all patterns
@@ -323,26 +324,60 @@ The GCB modernization project has successfully completed **Phase 1: Test Infrast
 
 ---
 
-## Phase 3: Visual Polish & Enhancements ⏳ PENDING
+## Phase 3: Visual Polish & Enhancements 🚧 IN PROGRESS
+
+### 3.0 Video Carousel Thumbnail Fix ✅ COMPLETE
+**Status:** ✅ COMPLETE - December 31, 2025
+**Priority:** CRITICAL (was blocking video rail functionality)
+
+**Problem:** Video carousel images were not displaying because `GCB_Content_Detector` class existed but was never hooked into WordPress lifecycle. Video IDs were never being extracted from post content.
+
+**Solution (TDD Implementation):**
+1. **RED Phase:** Created 6 E2E tests in `tests/e2e/video-metadata-extraction.public.spec.ts`
+   - Test video ID extraction from youtube.com/watch URLs
+   - Test video ID extraction from youtu.be short URLs
+   - Test video ID extraction from embed URLs
+   - Test _gcb_has_video flag for video posts
+   - Test standard posts don't get video metadata
+   - Test video rail displays YouTube thumbnails
+2. **GREEN Phase:** Hooked `GCB_Content_Detector::extract_video_metadata()` to `save_post` action (priority 5)
+   - Added `extract_video_metadata()` static method to handle hook callback
+   - Registered post meta fields for REST API access
+   - Updated test utilities to return video metadata in responses
+3. **REFACTOR Phase:** Code review confirmed clean implementation
+   - All 6 tests passing
+   - Total test count increased from 71 to 77 passing tests
+   - Video rail now displays YouTube thumbnails correctly
+
+**Files Modified:**
+- `wp-content/plugins/gcb-content-intelligence/gcb-content-intelligence.php` (hook registration)
+- `wp-content/plugins/gcb-content-intelligence/includes/class-gcb-content-detector.php` (static method)
+- `wp-content/plugins/gcb-test-utils/includes/class-gcb-post-creator.php` (meta exposure)
+- `tests/e2e/video-metadata-extraction.public.spec.ts` (new test file)
+
+**Git Commits:**
+- `4cdcaed8` - test(video): add 6 E2E tests for video metadata extraction
+- `c0307a63` - feat(video): hook Content Detector to extract video IDs on save
 
 ### 3.1 Design Refinements
-**Priority:** LOW (nice-to-have)
+**Priority:** MEDIUM (align with north-star prototype)
 
-- [ ] Grayscale image filter on all images
-- [ ] Custom brutalist scrollbar styling
+- [ ] Grayscale image filter on all images (filter: grayscale(100%) contrast(1.3))
+- [ ] Custom brutalist scrollbar styling (acid lime accent)
 - [ ] No-transition enforcement (except mobile menu)
-- [ ] Footer with social icons
-- [ ] Update theme.json colors to match north star (#333, #999)
+- [ ] Footer with social icons (YouTube, Instagram, Twitter)
+- [ ] Update theme.json colors to match north star (Brutal Border #333, Brutal Grey #999)
 
-### 3.2 Video Rail Aspect Ratio Decision
-**Status:** NEEDS USER INPUT
+### 3.2 Video Rail Aspect Ratio Decision ✅ RESOLVED
+**Status:** ✅ DECISION MADE - December 31, 2025
 
-**Current:** 16:9 landscape (standard YouTube)
-**North Star:** 9:16 portrait (mobile/TikTok format)
+**Decision:** Keep 16:9 landscape aspect ratio (Option A)
 
-**Question:** Which aspect ratio should we use?
-- Option A: Keep 16:9 (traditional YouTube videos)
-- Option B: Switch to 9:16 (mobile-first vertical format)
+**Rationale:**
+- Matches standard YouTube player format
+- Thumbnails display full content without cropping
+- No code changes required
+- Current implementation already tested and working
 
 ### 3.3 FAQ Schema Auto-Generation
 **Status:** Not implemented
