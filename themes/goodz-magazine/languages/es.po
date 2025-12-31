@@ -1,0 +1,394 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WordPress.com - Themes - Goodz-magazine\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2021-11-13T00:39:12+00:00\n"
+"PO-Revision-Date: 2021-11-12 14:26:26+0000\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/2.4.0-alpha\n"
+
+#: functions.php:127
+msgid "XXL"
+msgstr "XXL"
+
+#: functions.php:126
+msgid "huge"
+msgstr "enorme"
+
+#: functions.php:121
+msgid "XL"
+msgstr "XL"
+
+#: functions.php:120
+msgid "larger"
+msgstr "más grande"
+
+#: functions.php:115
+msgid "L"
+msgstr "L"
+
+#: functions.php:114
+msgid "large"
+msgstr "grande"
+
+#: functions.php:109
+msgid "M"
+msgstr "M"
+
+#: functions.php:108
+msgid "regular"
+msgstr "normal"
+
+#: functions.php:103
+msgid "S"
+msgstr "S"
+
+#: functions.php:102
+msgid "small"
+msgstr "pequeño"
+
+#: functions.php:207
+msgid "Load More"
+msgstr "Cargar más"
+
+#: single.php:97
+msgid "Next Post"
+msgstr "Entrada siguiente"
+
+#: single.php:96
+msgid "Previous Post"
+msgstr "Entrada anterior"
+
+#: header.php:54
+msgid "Press Enter / Return to begin your search."
+msgstr "Presiona la tecla Enter / Return para iniciar la búsqueda"
+
+#. Description of the theme
+msgid "goodz magazine is a modern premium theme for WordPress. It’s perfect for writers (and readers!) who appreciate clean design and elegant minimalism. Goodz serves your content front and center, letting the reader focus more on your work, and less on chrome. It works great on any screen - from phones and tablets to laptops and desktops. If you love your content, give it a clear, crisp way to communicate with your audience. Give it goodz."
+msgstr "goodz magazine es un moderno tema premium para WordPress. Es perfecto para escritores (¡y lectores!) que aprecian el diseño limpio y minimalista elegante. Goodz dispone tu contenido en frente y al centro, permitiendo que el foco del lector se centre más en tu trabajo y menos en el navegador. Funciona muy bien en cualquier pantalla - desde móviles y tabletas a laptops y computadoras de escritorio. Si adoras tu contenido, dale una forma clara y nítida para comunicarte con tu audiencia. Dale goodz."
+
+#: template-parts/content-none.php:29
+msgid "It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps searching can help."
+msgstr "Parece que no podemos encontrar lo que estás buscando. Tal vez la búsqueda te pueda ayudar."
+
+#: template-parts/content-none.php:24
+msgid "Please try again with some different keywords."
+msgstr "Por favor prueba de nuevo con diferentes palabras claves."
+
+#: template-parts/content-none.php:20
+msgid "Ready to publish your first post? <a href=\"%1$s\">Get started here</a>."
+msgstr "¿Estás listo para publicar tu primera entrada? <a href=\"%1$s\">Empieza aquí</a>."
+
+#: template-parts/content-none.php:14
+msgid "Sorry. Nothing found."
+msgstr "Lo sentimos. No encontrado. "
+
+#: single.php:50
+#: template-parts/content-gallery.php:35
+#: template-parts/content-link.php:31
+#: template-parts/content-page.php:33
+#: template-parts/content-quote.php:29
+#: template-parts/content-video.php:35
+#: template-parts/content.php:36
+msgid "Pages:"
+msgstr "Páginas:"
+
+#. translators: %s: Name of current post.
+#: single.php:43
+#: template-parts/content-gallery.php:28
+#: template-parts/content-video.php:28
+#: template-parts/content.php:29
+msgid "Read more. %s"
+msgstr "Leer más. %s"
+
+#: search.php:17
+msgid "Search results:"
+msgstr "Resultados de la búsqueda:"
+
+#: inc/template-tags.php:283
+msgid "loading"
+msgstr "cargando"
+
+#: inc/template-tags.php:147
+msgid "Archives"
+msgstr "Archivos"
+
+#. translators: 1: Taxonomy singular name, 2: Current taxonomy term
+#: inc/template-tags.php:145
+msgid "%1$s: %2$s"
+msgstr "%1$s: %2$s"
+
+#: inc/template-tags.php:138
+msgctxt "post format archive title"
+msgid "Chats"
+msgstr "Chats"
+
+#: inc/template-tags.php:136
+msgctxt "post format archive title"
+msgid "Audio"
+msgstr "Audio"
+
+#: inc/template-tags.php:134
+msgctxt "post format archive title"
+msgid "Statuses"
+msgstr "Estatus"
+
+#: inc/template-tags.php:132
+msgctxt "post format archive title"
+msgid "Links"
+msgstr "Enlaces"
+
+#: inc/template-tags.php:130
+msgctxt "post format archive title"
+msgid "Quotes"
+msgstr "Citas"
+
+#: inc/template-tags.php:128
+msgctxt "post format archive title"
+msgid "Videos"
+msgstr "Vídeos"
+
+#: inc/template-tags.php:126
+msgctxt "post format archive title"
+msgid "Images"
+msgstr "Imágenes"
+
+#: inc/template-tags.php:124
+msgctxt "post format archive title"
+msgid "Galleries"
+msgstr "Galerías"
+
+#: inc/template-tags.php:122
+msgctxt "post format archive title"
+msgid "Asides"
+msgstr "Asides"
+
+#: inc/template-tags.php:119
+msgctxt "daily archives date format"
+msgid "F j, Y"
+msgstr "j F, Y"
+
+#: inc/template-tags.php:117
+msgctxt "monthly archives date format"
+msgid "F Y"
+msgstr "F Y"
+
+#: inc/template-tags.php:115
+msgctxt "yearly archives date format"
+msgid "Y"
+msgstr "Y"
+
+#: inc/template-tags.php:109
+#: inc/template-tags.php:111
+#: inc/template-tags.php:113
+#: inc/template-tags.php:115
+#: inc/template-tags.php:117
+#: inc/template-tags.php:119
+#: inc/template-tags.php:141
+msgid "%s"
+msgstr "%s"
+
+#: inc/template-tags.php:83
+msgid "Quote"
+msgstr "Cita"
+
+#: inc/template-tags.php:80
+msgid "Link"
+msgstr "Enlace"
+
+#. translators: used between list items, there is a space after the comma
+#: inc/template-tags.php:77
+msgid ", "
+msgstr ", "
+
+#: inc/template-tags.php:64
+msgid "Tags: %1$s"
+msgstr "Etiquetas: %1$s"
+
+#: inc/template-tags.php:47
+#: inc/template-tags.php:80
+#: inc/template-tags.php:83
+#: inc/template-tags.php:87
+#: inc/template-tags.php:92
+#: template-parts/content-page.php:21
+msgid "Edit"
+msgstr "Editar"
+
+#: inc/template-tags.php:42
+msgid "% Comments"
+msgstr "% comentarios"
+
+#: inc/template-tags.php:42
+msgid "1 Comment"
+msgstr "1 Comentario"
+
+#: inc/template-tags.php:42
+msgid "Comments"
+msgstr "Comentarios"
+
+#: inc/template-tags.php:33
+msgctxt "post author"
+msgid "by %s"
+msgstr "por %s"
+
+#: inc/template-tags.php:28
+msgctxt "post date"
+msgid "%s"
+msgstr "%s"
+
+#: inc/extras.php:272
+msgid "Read more"
+msgstr "Leer más"
+
+#: inc/customizer.php:129
+msgid "Enable Sticky Header"
+msgstr "Habilitar Encabezado Fijo"
+
+#: inc/customizer.php:119
+msgid "Three columns"
+msgstr "Tres columnas"
+
+#: inc/customizer.php:118
+msgid "Two columns"
+msgstr "Dos columnas"
+
+#: inc/customizer.php:113
+msgid "Blog Layout"
+msgstr "Diseño de Blog"
+
+#: inc/customizer.php:95
+msgid "Single Page/Post Layout"
+msgstr "Diseño de Página/Entrada"
+
+#: inc/customizer.php:85
+#: inc/customizer.php:101
+msgid "Full width"
+msgstr "Ancho completo"
+
+#: inc/customizer.php:84
+#: inc/customizer.php:100
+msgid "Fixed width"
+msgstr "Ancho fijo"
+
+#: inc/customizer.php:79
+msgid "Archive Pages Layout"
+msgstr "Diseño de Páginas de Archivo"
+
+#: inc/customizer.php:67
+msgid "Enable full-width slider display"
+msgstr "Habilitar pantalla deslizante de ancho completo"
+
+#: inc/customizer.php:50
+msgid "Featured Slider"
+msgstr "Pantalla Deslizante Destacada"
+
+#: inc/customizer.php:44
+msgid "Header Settings"
+msgstr "Opciones de Encabezado"
+
+#: inc/customizer.php:38
+msgid "Layout Settings"
+msgstr "Ajustes de Diseño"
+
+#: inc/customizer.php:31
+msgid "Goodz Magazine Theme Options"
+msgstr "Opciones del Tema Goodz Magazine"
+
+#: inc/customizer.php:30
+msgid "Theme Options"
+msgstr "Opciones del Tema"
+
+#: inc/customizer-functions.php:14
+msgid "-- Select --"
+msgstr "-- Seleccionar --"
+
+#: header.php:56
+msgid "close search form"
+msgstr "cerrar formulario de búsqueda"
+
+#: header.php:55
+msgid "open search form"
+msgstr "abrir formulario de búsqueda"
+
+#: header.php:25
+msgid "Skip to content"
+msgstr "Ir al contenido"
+
+#: functions.php:182
+msgid "Footer Widgets 3"
+msgstr "Widgets de Pie de Página 3"
+
+#: functions.php:174
+msgid "Footer Widgets 2"
+msgstr "Widgets de Pie de Página 2"
+
+#: functions.php:166
+msgid "Footer Widgets 1"
+msgstr "Widgets de Pie de Página 1"
+
+#: functions.php:157
+msgid "Sidebar"
+msgstr ""
+"Barra lateral\n"
+"  "
+
+#: functions.php:54
+#: header.php:48
+msgid "Primary Menu"
+msgstr "Menú Principal"
+
+#: footer.php:40
+msgid "Theme: %1$s by %2$s."
+msgstr "Tema: %1$s por %2$s."
+
+#: footer.php:38
+msgid "Proudly powered by %s"
+msgstr "Orgullosamente ofrecido por %s"
+
+#: footer.php:38
+msgid "https://wordpress.org/"
+msgstr "https://wordpress.org/"
+
+#: comments.php:73
+msgid "Comments are closed."
+msgstr "Los comentarios están cerrados."
+
+#: comments.php:39
+#: comments.php:61
+msgid "Newer Comments"
+msgstr "Comentarios Recientes"
+
+#: comments.php:38
+#: comments.php:60
+msgid "Older Comments"
+msgstr "Comentarios Anteriores"
+
+#: comments.php:35
+#: comments.php:57
+msgid "Comment navigation"
+msgstr "Navegación de comentarios"
+
+#: comments.php:26
+msgctxt "comments title"
+msgid "One thought on &ldquo;%2$s&rdquo;"
+msgid_plural "%1$s thoughts on &ldquo;%2$s&rdquo;"
+msgstr[0] "Un comentario sobre &ldquo;%2$s&rdquo;"
+msgstr[1] "%1$s comentarios sobre &ldquo;%2$s&rdquo;"
+
+#: 404.php:26
+msgid "Homepage"
+msgstr "Página de inicio"
+
+#: 404.php:24
+msgid "Try a search or go to our"
+msgstr "Prueba una búsqueda o ve a tu"
+
+#: 404.php:17
+msgid "Oops! That page can&rsquo;t be found."
+msgstr "¡Vaya! No se pudo encontrar esa página."

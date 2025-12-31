@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<ruleset name="GayCarBoys">
+    <description>WordPress Coding Standards for gaycarboys.com theme and plugins.</description>
+
+    <file>wordpress/wp-content/themes</file>
+    <file>wordpress/wp-content/plugins</file>
+
+    <!-- Exclude WordPress placeholder files -->
+    <exclude-pattern>*/index.php</exclude-pattern>
+
+    <!-- Exclude third-party themes -->
+    <exclude-pattern>*/twentytwenty*</exclude-pattern>
+    <exclude-pattern>*/Avada</exclude-pattern>
+    <exclude-pattern>*/goodz-magazine</exclude-pattern>
+
+    <!-- Exclude third-party plugins -->
+    <exclude-pattern>*/advanced-custom-fields-pro</exclude-pattern>
+    <exclude-pattern>*/akismet</exclude-pattern>
+    <exclude-pattern>*/amp</exclude-pattern>
+    <exclude-pattern>*/classic-editor</exclude-pattern>
+    <exclude-pattern>*/coblocks</exclude-pattern>
+    <exclude-pattern>*/code-snippets</exclude-pattern>
+    <exclude-pattern>*/crowdsignal-forms</exclude-pattern>
+    <exclude-pattern>*/duplicate-page</exclude-pattern>
+    <exclude-pattern>*/fusion-builder</exclude-pattern>
+    <exclude-pattern>*/fusion-core</exclude-pattern>
+    <exclude-pattern>*/fusion-white-label-branding</exclude-pattern>
+    <exclude-pattern>*/gutenberg</exclude-pattern>
+    <exclude-pattern>*/header-footer</exclude-pattern>
+    <exclude-pattern>*/health-check</exclude-pattern>
+    <exclude-pattern>*/hello.php</exclude-pattern>
+    <exclude-pattern>*/insert-headers-and-footers</exclude-pattern>
+    <exclude-pattern>*/instagram-feed</exclude-pattern>
+    <exclude-pattern>*/jetpack</exclude-pattern>
+    <exclude-pattern>*/LayerSlider</exclude-pattern>
+    <exclude-pattern>*/layout-grid</exclude-pattern>
+    <exclude-pattern>*/onesignal-free-web-push-notifications</exclude-pattern>
+    <exclude-pattern>*/page-optimize</exclude-pattern>
+    <exclude-pattern>*/polldaddy</exclude-pattern>
+    <exclude-pattern>*/popup-maker</exclude-pattern>
+    <exclude-pattern>*/pwa</exclude-pattern>
+    <exclude-pattern>*/qc-simple-link-directory</exclude-pattern>
+    <exclude-pattern>*/revslider</exclude-pattern>
+    <exclude-pattern>*/rss-importer</exclude-pattern>
+    <exclude-pattern>*/snapshot</exclude-pattern>
+    <exclude-pattern>*/taxonomy-terms-order</exclude-pattern>
+    <exclude-pattern>*/wp-category-permalink</exclude-pattern>
+    <exclude-pattern>*/wp-smush-pro</exclude-pattern>
+    <exclude-pattern>*/wpmu-dev-seo</exclude-pattern>
+    <exclude-pattern>*/wpmudev-updates</exclude-pattern>
+
+    <arg name="basepath" value="."/>
+    <arg value="sp"/>
+
+    <rule ref="WordPress-Core"/>
+    <rule ref="WordPress-Docs"/>
+    <rule ref="WordPress-Extra"/>
+
+    <config name="testVersion" value="8.1-"/>
+</ruleset>
+
+

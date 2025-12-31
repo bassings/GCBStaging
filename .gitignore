@@ -2,8 +2,10 @@
 wp-content/uploads/*
 wp-content/cache/*
 wp-content/debug.log
+wp-content/database/.ht.sqlite
 wp-content/database/.ht.sqlite-wal
 wp-content/database/.ht.sqlite-shm
+wp-content/database/.ht.sqlite.before-restore-*
 
 # Backup files
 *.backup-*
