@@ -102,6 +102,36 @@ class GCB_Content_Detector {
     }
 
     /**
+     * Extract video metadata on post save
+     *
+     * WordPress save_post hook callback that extracts video IDs from post content.
+     * Runs with priority 5 (before content classifier at priority 10).
+     *
+     * @param int     $post_id Post ID.
+     * @param WP_Post $post    Post object.
+     * @param bool    $update  Whether this is an existing post being updated.
+     * @return void
+     */
+    public static function extract_video_metadata( int $post_id, WP_Post $post, bool $update ): void {
+        // Skip autosaves and revisions
+        if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) {
+            return;
+        }
+
+        // Only process 'post' post type
+        if ( 'post' !== $post->post_type ) {
+            return;
+        }
+
+        // Create detector instance and analyze content
+        $detector = new self();
+        $content_format = $detector->detect_content_format( $post_id );
+
+        // Store detected content format in post meta
+        update_post_meta( $post_id, '_gcb_content_format', $content_format );
+    }
+
+    /**
      * Detect content format for a post
      *
      * Analyzes post content and returns the appropriate content format.

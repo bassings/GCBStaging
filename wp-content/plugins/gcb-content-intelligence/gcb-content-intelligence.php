@@ -1,109 +1,82 @@
 <?php
 /**
  * Plugin Name: GCB Content Intelligence
- * Description: Automated video detection and schema.org generation
+ * Plugin URI: https://gaycarboys.com
+ * Description: Automatically classifies posts by content type (video-quick, video-feature, standard) based on video presence and word count. Integrates with Editorial Brutalism design system.
  * Version: 1.0.0
+ * Requires at least: 6.0
  * Requires PHP: 8.3
- * Author: Gay Car Boys
+ * Author: Gay Car Boys Dev Team
+ * License: GPL v2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: gcb-content-intelligence
+ *
+ * @package GCB_Content_Intelligence
  */
 
 declare(strict_types=1);
 
 if ( ! defined( 'ABSPATH' ) ) {
-    exit;
+	exit; // Exit if accessed directly.
 }
 
+// Plugin constants.
 define( 'GCB_CI_VERSION', '1.0.0' );
 define( 'GCB_CI_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GCB_CI_URL', plugin_dir_url( __FILE__ ) );
 
-// Load classes
-require_once GCB_CI_DIR . 'includes/class-gcb-taxonomy-manager.php';
-require_once GCB_CI_DIR . 'includes/class-gcb-content-detector.php';
-require_once GCB_CI_DIR . 'includes/class-gcb-shortcode-converter.php';
-require_once GCB_CI_DIR . 'includes/class-gcb-video-processor.php';
-require_once GCB_CI_DIR . 'includes/class-gcb-schema-generator.php';
-
-// Initialize hooks
-add_action( 'init', 'gcb_ci_init' );
-add_action( 'save_post', 'gcb_ci_process_post', 20, 2 );
-add_action( 'rest_after_insert_post', 'gcb_ci_process_post_rest', 10, 2 );
-add_action( 'wp_footer', array( 'GCB_Schema_Generator', 'output_schema' ), 999 ); // Priority 999 to run after other plugins
-
 /**
- * Initialize plugin on WordPress init hook
+ * Initialize Plugin
  *
- * Registers taxonomy, creates default terms, and registers post meta.
- *
- * @return void
+ * Load taxonomy registration, content classifier, and CLI commands.
  */
 function gcb_ci_init(): void {
-    GCB_Taxonomy_Manager::register_taxonomy();
-    GCB_Taxonomy_Manager::create_default_terms();
-    GCB_Content_Detector::register_post_meta();
-    GCB_Shortcode_Converter::register_post_meta();
-    GCB_Video_Processor::register_post_meta();
+	require_once GCB_CI_DIR . 'includes/class-gcb-taxonomy-registration.php';
+	require_once GCB_CI_DIR . 'includes/class-gcb-content-detector.php';
+	require_once GCB_CI_DIR . 'includes/class-gcb-content-classifier.php';
+	require_once GCB_CI_DIR . 'includes/class-gcb-classification-rest-api.php';
+
+	// Register taxonomy.
+	add_action( 'init', array( 'GCB_Taxonomy_Registration', 'register_content_format_taxonomy' ) );
+
+	// Register post meta fields for REST API access.
+	add_action( 'init', array( 'GCB_Content_Detector', 'register_post_meta' ) );
+
+	// Hook video metadata extraction (priority 5 - runs before classifier).
+	add_action( 'save_post', array( 'GCB_Content_Detector', 'extract_video_metadata' ), 5, 3 );
+
+	// Hook classifier into save_post (priority 10 - runs after video detection).
+	add_action( 'save_post', array( 'GCB_Content_Classifier', 'classify_post_on_save' ), 10, 3 );
+
+	// Register REST API endpoint for bulk classification.
+	add_action( 'rest_api_init', array( 'GCB_Classification_REST_API', 'register_routes' ) );
+
+	// Load WP-CLI commands if available.
+	if ( defined( 'WP_CLI' ) && WP_CLI ) {
+		require_once GCB_CI_DIR . 'includes/class-gcb-cli-commands.php';
+		WP_CLI::add_command( 'gcb', 'GCB_CLI_Commands' );
+	}
 }
+add_action( 'plugins_loaded', 'gcb_ci_init' );
 
 /**
- * Process post on save to detect content format
+ * Activation Hook
  *
- * Automatically detects content format when posts are saved and assigns
- * the appropriate taxonomy term (video/standard/gallery).
- *
- * @param int     $post_id Post ID
- * @param WP_Post $post    Post object
- * @return void
+ * Register taxonomy and flush rewrite rules.
  */
-function gcb_ci_process_post( int $post_id, WP_Post $post ): void {
-    // Skip autosaves and non-post types
-    if ( wp_is_post_autosave( $post_id ) || 'post' !== $post->post_type ) {
-        return;
-    }
-
-    // Step 1: Convert Avada shortcodes to WordPress blocks (one-time conversion)
-    $converter = new GCB_Shortcode_Converter();
-    $converter->convert_shortcodes( $post_id );
-
-    // Step 2: Detect content format (after shortcode conversion)
-    // Note: If shortcodes were converted, we need to re-fetch the post
-    $post_after_conversion = get_post( $post_id );
-    $detector              = new GCB_Content_Detector();
-    $format                = $detector->detect_content_format( $post_id );
-
-    // Step 3: Fetch video metadata from YouTube API (if video detected)
-    if ( 'video' === $format ) {
-        $video_id = get_post_meta( $post_id, '_gcb_video_id', true );
-        if ( ! empty( $video_id ) ) {
-            $video_processor = new GCB_Video_Processor();
-            $video_processor->fetch_video_metadata( $post_id, $video_id );
-        }
-    }
-
-    // Step 4: Assign taxonomy term
-    wp_set_object_terms( $post_id, $format, 'content_format' );
-
-    // Step 5: Cache format in post meta for quick lookups
-    update_post_meta( $post_id, '_gcb_content_format', $format );
+function gcb_ci_activate(): void {
+	require_once GCB_CI_DIR . 'includes/class-gcb-taxonomy-registration.php';
+	GCB_Taxonomy_Registration::register_content_format_taxonomy();
+	flush_rewrite_rules();
 }
+register_activation_hook( __FILE__, 'gcb_ci_activate' );
 
 /**
- * Process post created/updated via REST API
+ * Deactivation Hook
  *
- * Handles content detection for posts created through the WordPress REST API.
- * This runs after the post is fully inserted, ensuring all content is available.
- *
- * @param WP_Post         $post     Inserted or updated post object
- * @param WP_REST_Request $request  Request object
- * @return void
+ * Flush rewrite rules.
  */
-function gcb_ci_process_post_rest( WP_Post $post, WP_REST_Request $request ): void {
-    // Only process standard posts
-    if ( 'post' !== $post->post_type ) {
-        return;
-    }
-
-    // Process the post
-    gcb_ci_process_post( $post->ID, $post );
+function gcb_ci_deactivate(): void {
+	flush_rewrite_rules();
 }
+register_deactivation_hook( __FILE__, 'gcb_ci_deactivate' );

@@ -112,6 +112,7 @@ class GCB_Post_Creator {
         // Prepare response data (similar to WordPress REST API format)
         $response_data = array(
             'id'              => $post->ID,
+            'post_id'         => $post->ID, // Alias for backward compatibility
             'title'           => array(
                 'raw'      => $post->post_title,
                 'rendered' => get_the_title( $post->ID ),
@@ -132,6 +133,7 @@ class GCB_Post_Creator {
             // Include meta fields
             'meta'            => array(
                 '_gcb_video_id'            => get_post_meta( $post->ID, '_gcb_video_id', true ),
+                '_gcb_has_video'           => get_post_meta( $post->ID, '_gcb_has_video', true ),
                 '_gcb_content_format'      => get_post_meta( $post->ID, '_gcb_content_format', true ),
                 '_gcb_shortcode_converted' => get_post_meta( $post->ID, '_gcb_shortcode_converted', true ),
                 '_gcb_video_metadata'      => self::decode_json_meta( $post->ID, '_gcb_video_metadata' ),
