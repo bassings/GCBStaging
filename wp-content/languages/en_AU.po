@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the WordPress - 6.9.x - Development package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-11-25 15:42:18+0000\n"
+"PO-Revision-Date: 2025-12-23 16:40:44+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -285,6 +285,186 @@ msgstr "January"
 #, gp-priority: high
 msgid "Uncategorized"
 msgstr "Uncategorised"
+
+#: wp-includes/blocks/terms-query/block.json
+msgctxt "block keyword"
+msgid "tags"
+msgstr "tags"
+
+#: wp-includes/blocks/terms-query/block.json
+msgctxt "block keyword"
+msgid "taxonomy"
+msgstr "taxonomy"
+
+#: wp-includes/blocks/terms-query/block.json
+msgctxt "block keyword"
+msgid "terms"
+msgstr "terms"
+
+#: wp-includes/blocks/terms-query/block.json
+msgctxt "block description"
+msgid "An advanced block that allows displaying taxonomy terms based on different query parameters and visual configurations."
+msgstr "An advanced block that allows displaying taxonomy terms based on different query parameters and visual configurations."
+
+#: wp-includes/blocks/terms-query/block.json
+msgctxt "block title"
+msgid "Terms Query"
+msgstr "Terms Query"
+
+#: wp-includes/blocks/term-template/block.json
+msgctxt "block description"
+msgid "Contains the block elements used to render a taxonomy term, like the name, description, and more."
+msgstr "Contains the block elements used to render a taxonomy term, like the name, description, and more."
+
+#: wp-includes/blocks/term-template/block.json
+msgctxt "block title"
+msgid "Term Template"
+msgstr "Term Template"
+
+#: wp-includes/blocks/term-name/block.json
+msgctxt "block keyword"
+msgid "term title"
+msgstr "term title"
+
+#: wp-includes/blocks/term-name/block.json
+msgctxt "block description"
+msgid "Displays the name of a taxonomy term."
+msgstr "Displays the name of a taxonomy term."
+
+#: wp-includes/blocks/term-name/block.json
+msgctxt "block title"
+msgid "Term Name"
+msgstr "Term Name"
+
+#: wp-includes/blocks/term-count/block.json
+msgctxt "block description"
+msgid "Displays the post count of a taxonomy term."
+msgstr "Displays the post count of a taxonomy term."
+
+#: wp-includes/blocks/term-count/block.json
+msgctxt "block title"
+msgid "Term Count"
+msgstr "Term Count"
+
+#: wp-includes/blocks/site-tagline/block.json
+msgctxt "block description"
+msgid "Describe in a few words what this site is about. This is important for search results, sharing on social media, and gives overall clarity to visitors."
+msgstr "Describe in a few words what this site is about. This is important for search results, sharing on social media, and gives overall clarity to visitors."
+
+#: wp-includes/blocks/post-time-to-read/block.json
+msgctxt "block description"
+msgid "Show minutes required to finish reading the post. Can also show a word count."
+msgstr "Show minutes required to finish reading the post. Can also show a word count."
+
+#: wp-includes/blocks/post-time-to-read/block.json
+msgctxt "block title"
+msgid "Time to Read"
+msgstr "Time to Read"
+
+#: wp-includes/blocks/post-date/block.json
+msgctxt "block description"
+msgid "Display a custom date."
+msgstr "Display a custom date."
+
+#: wp-includes/blocks/post-comments-link/block.json
+msgctxt "block description"
+msgid "Displays the link to the current post comments."
+msgstr "Displays the link to the current post comments."
+
+#: wp-includes/blocks/post-comments-link/block.json
+msgctxt "block title"
+msgid "Comments Link"
+msgstr "Comments Link"
+
+#: wp-includes/blocks/post-comments-count/block.json
+msgctxt "block description"
+msgid "Display a post's comments count."
+msgstr "Display a post's comments count."
+
+#: wp-includes/blocks/post-comments-count/block.json
+msgctxt "block title"
+msgid "Comments Count"
+msgstr "Comments Count"
+
+#: wp-includes/blocks/math/block.json
+msgctxt "block keyword"
+msgid "mathematics"
+msgstr "mathematics"
+
+#: wp-includes/blocks/math/block.json
+msgctxt "block keyword"
+msgid "latex"
+msgstr "latex"
+
+#: wp-includes/blocks/math/block.json
+msgctxt "block keyword"
+msgid "formula"
+msgstr "formula"
+
+#: wp-includes/blocks/math/block.json
+msgctxt "block keyword"
+msgid "equation"
+msgstr "equation"
+
+#: wp-includes/blocks/math/block.json
+msgctxt "block description"
+msgid "Display mathematical notation using LaTeX."
+msgstr "Display mathematical notation using LaTeX."
+
+#: wp-includes/blocks/math/block.json
+msgctxt "block title"
+msgid "Math"
+msgstr "Math"
+
+#: wp-includes/blocks/accordion/block.json
+msgctxt "block description"
+msgid "Displays a foldable layout that groups content in collapsible sections."
+msgstr "Displays a foldable layout that groups content in collapsible sections."
+
+#: wp-includes/blocks/accordion/block.json
+msgctxt "block title"
+msgid "Accordion"
+msgstr "Accordion"
+
+#: wp-includes/blocks/accordion-panel/block.json
+msgctxt "block description"
+msgid "Contains the hidden or revealed content beneath the heading."
+msgstr "Contains the hidden or revealed content beneath the heading."
+
+#: wp-includes/blocks/accordion-panel/block.json
+msgctxt "block title"
+msgid "Accordion Panel"
+msgstr "Accordion Panel"
+
+#: wp-includes/blocks/accordion-item/block.json
+msgctxt "block description"
+msgid "Wraps the heading and panel in one unit."
+msgstr "Wraps the heading and panel in one unit."
+
+#: wp-includes/blocks/accordion-item/block.json
+msgctxt "block title"
+msgid "Accordion Item"
+msgstr "Accordion Item"
+
+#: wp-includes/blocks/accordion-heading/block.json
+msgctxt "block description"
+msgid "Displays a heading that toggles the accordion panel."
+msgstr "Displays a heading that toggles the accordion panel."
+
+#: wp-includes/blocks/accordion-heading/block.json
+msgctxt "block title"
+msgid "Accordion Heading"
+msgstr "Accordion Heading"
+
+#: wp-includes/js/dist/editor.js:6946
+#: wp-admin/includes/class-wp-posts-list-table.php:1934
+#: wp-admin/includes/class-wp-posts-list-table.php:1947
+msgid "Allow"
+msgstr "Allow"
+
+#: wp-includes/js/dist/components.js:73641 wp-admin/options-permalink.php:408
+msgid "Optional"
+msgstr "Optional"
 
 #: wp-includes/js/dist/block-editor.js:51903
 #: wp-admin/includes/class-wp-links-list-table.php:139
@@ -1118,6 +1298,11 @@ msgstr "Ability categories must be registered on the %1$s action. The ability ca
 msgid "Abilities must be registered on the %1$s action. The ability %2$s was not registered."
 msgstr "Abilities must be registered on the %1$s action. The ability %2$s was not registered."
 
+#: wp-includes/rest-api/endpoints/class-wp-rest-users-controller.php:223
+#: wp-admin/users.php:237
+msgid "Sorry, you are not allowed to edit users."
+msgstr "Sorry, you are not allowed to edit users."
+
 #: wp-includes/blocks/query/block.json
 msgctxt "block keyword"
 msgid "custom post types"
@@ -1257,6 +1442,11 @@ msgstr "The context element must be a start tag."
 msgid "No valid context element was detected."
 msgstr "No valid context element was detected."
 
+#. translators: %s: The parameter name.
+#: wp-includes/functions.php:8072
+msgid "The %s parameter must not be empty."
+msgstr "The %s parameter must not be empty."
+
 #: wp-includes/customize/class-wp-customize-header-image-control.php:243
 msgid "Add Image"
 msgstr "Add Image"
@@ -1390,6 +1580,11 @@ msgstr " mailer is not supported."
 msgid "Invalid host: "
 msgstr "Invalid host: "
 
+#. translators: There is a space after the colon.
+#: wp-includes/class-wp-phpmailer.php:68
+msgid "Invalid host entry: "
+msgstr "Invalid host entry: "
+
 #: wp-includes/class-wp-phpmailer.php:66
 msgid "Invalid header name or value"
 msgstr "Invalid header name or value"
@@ -1436,6 +1631,10 @@ msgstr "Unknown encoding: "
 #: wp-includes/class-wp-phpmailer.php:50
 msgid "Message body empty"
 msgstr "Message body empty"
+
+#: wp-includes/class-wp-phpmailer.php:49
+msgid "SMTP Error: Data not accepted."
+msgstr "SMTP Error: Data not accepted."
 
 #: wp-includes/class-wp-phpmailer.php:48
 msgid "SMTP Error: Could not connect to SMTP host."
@@ -1942,6 +2141,11 @@ msgstr "Display footnotes added to the page."
 msgctxt "block description"
 msgid "Reuse this design across your site."
 msgstr "Reuse this design across your site."
+
+#. translators: 1: Menu label, 2: Submenu label.
+#: wp-includes/script-loader.php:3496
+msgid "%1$s > %2$s"
+msgstr "%1$s > %2$s"
 
 #. translators: Hidden accessibility text.
 #: wp-includes/js/dist/block-library.js:18065
@@ -3327,19 +3531,19 @@ msgstr "Please check that the %s PHP extension is installed and enabled."
 msgid "When using the %1$s constant, make sure to set these globals to an array: %2$s."
 msgstr "When using the %1$s constant, make sure to set these globals to an array: %2$s."
 
-#: wp-includes/html-api/class-wp-html-tag-processor.php:4343
+#: wp-includes/html-api/class-wp-html-tag-processor.php:4345
 msgid "The query argument must be an array or a tag name."
 msgstr "The query argument must be an array or a tag name."
 
-#: wp-includes/html-api/class-wp-html-tag-processor.php:3961
+#: wp-includes/html-api/class-wp-html-tag-processor.php:3963
 msgid "Invalid attribute name."
 msgstr "Invalid attribute name."
 
-#: wp-includes/html-api/class-wp-html-tag-processor.php:2629
+#: wp-includes/html-api/class-wp-html-tag-processor.php:2631
 msgid "Too many calls to seek() - this can lead to performance issues."
 msgstr "Too many calls to seek() - this can lead to performance issues."
 
-#: wp-includes/html-api/class-wp-html-tag-processor.php:2611
+#: wp-includes/html-api/class-wp-html-tag-processor.php:2613
 msgid "Unknown bookmark name."
 msgstr "Unknown bookmark name."
 
@@ -4766,6 +4970,10 @@ msgstr "Global styles."
 #: wp-includes/rest-api/endpoints/class-wp-rest-global-styles-controller.php:465
 msgid "ID of global styles config."
 msgstr "ID of global styles config."
+
+#: wp-includes/rest-api/endpoints/class-wp-rest-global-styles-controller.php:141
+msgid "No global styles config exists with that ID."
+msgstr "No global styles config exists with that ID."
 
 #: wp-includes/rest-api/endpoints/class-wp-rest-global-styles-controller.php:183
 msgid "Sorry, you are not allowed to view this global style."
@@ -7464,7 +7672,7 @@ msgstr "This theme does not work with your version of WordPress."
 #: wp-admin/includes/class-wp-plugins-list-table.php:1457
 #: wp-admin/includes/plugin.php:1153 wp-admin/includes/theme.php:928
 #: wp-admin/includes/theme.php:959 wp-admin/includes/theme.php:1005
-#: wp-admin/includes/theme.php:1028 wp-admin/includes/update-core.php:1152
+#: wp-admin/includes/theme.php:1028 wp-admin/includes/update-core.php:1153
 #: wp-admin/includes/update.php:786 wp-admin/includes/update.php:813
 #: wp-admin/install.php:248 wp-admin/theme-install.php:358
 #: wp-admin/theme-install.php:381 wp-admin/theme-install.php:563
@@ -14425,7 +14633,7 @@ msgstr "Mission complete. Message %s deleted."
 msgid "Posted title:"
 msgstr "Posted title:"
 
-#: wp-mail.php:256 wp-admin/includes/plugin-install.php:660
+#: wp-mail.php:256 wp-admin/includes/plugin-install.php:658
 msgid "Author:"
 msgstr "Author:"
 
@@ -17214,6 +17422,10 @@ msgstr "The theme directory \"%s\" does not exist."
 msgctxt "Comma-separated list of search stopwords in your language"
 msgid "about,an,are,as,at,be,by,com,for,from,how,in,is,it,of,on,or,that,the,this,to,was,what,when,where,who,will,with,www"
 msgstr "about,an,are,as,at,be,by,com,for,from,how,in,is,it,of,on,or,that,the,this,to,was,what,when,where,who,will,with,www"
+
+#: wp-includes/post-template.php:1810
+msgid "This content is password-protected. To view it, please enter the password below."
+msgstr "This content is password-protected. To view it, please enter the password below."
 
 #: wp-includes/class-wp-http-curl.php:298
 #: wp-includes/class-wp-http-streams.php:336
@@ -20109,6 +20321,10 @@ msgstr "[%1$s] Trackback: \"%2$s\""
 msgid "[%1$s] Comment: \"%2$s\""
 msgstr "[%1$s] Comment: \"%2$s\""
 
+#: wp-includes/pluggable.php:1908
+msgid "You can see all notes on this post here:"
+msgstr "You can see all notes on this post here:"
+
 #: wp-includes/ms-load.php:502
 msgid "If you are still stuck with this message, then check that your database contains the following tables:"
 msgstr "If you are still stuck with this message, then check that your database contains the following tables:"
@@ -22465,7 +22681,7 @@ msgstr "Search Results for &#8220;%s&#8221;"
 #: wp-admin/includes/class-wp-media-list-table.php:554
 #: wp-admin/includes/class-wp-plugin-install-list-table.php:710
 #: wp-admin/includes/class-wp-privacy-requests-table.php:487
-#: wp-admin/includes/plugin-install.php:665 wp-admin/includes/revision.php:254
+#: wp-admin/includes/plugin-install.php:663 wp-admin/includes/revision.php:254
 #: wp-admin/includes/revision.php:297
 msgid "%s ago"
 msgstr "%s ago"

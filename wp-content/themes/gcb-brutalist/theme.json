@@ -16,8 +16,8 @@
         },
         {
           "color": "#FAFAFA",
-          "name": "Hyper White",
-          "slug": "hyper-white"
+          "name": "Off-White",
+          "slug": "off-white"
         },
         {
           "color": "#CCFF00",
@@ -91,13 +91,14 @@
   "styles": {
     "color": {
       "background": "var(--wp--preset--color--void-black)",
-      "text": "var(--wp--preset--color--hyper-white)"
+      "text": "var(--wp--preset--color--off-white)"
     },
     "typography": {
       "fontFamily": "var(--wp--preset--font-family--system-sans)",
       "fontSize": "var(--wp--preset--font-size--medium)",
       "lineHeight": "1.6"
     },
+    "css": "body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }",
     "elements": {
       "link": {
         "color": {
@@ -105,7 +106,7 @@
         },
         ":hover": {
           "color": {
-            "text": "var(--wp--preset--color--hyper-white)"
+            "text": "var(--wp--preset--color--off-white)"
           },
           "textDecoration": "underline"
         }
@@ -123,7 +124,7 @@
         "elements": {
           "link": {
             "color": {
-              "text": "var(--wp--preset--color--hyper-white)"
+              "text": "var(--wp--preset--color--off-white)"
             },
             ":hover": {
               "color": {

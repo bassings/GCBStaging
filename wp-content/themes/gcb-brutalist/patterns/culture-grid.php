@@ -74,7 +74,7 @@ if (!$culture_grid_query->have_posts()) {
     <div class="culture-grid-wrapper">
         <!-- Section Header -->
         <div class="culture-grid-header">
-            <h2 class="culture-grid-title">Culture & Commentary</h2>
+            <h2 class="culture-grid-title">LATEST REVIEWS & NEWS</h2>
         </div>
 
         <!-- 4-Column Responsive Grid -->

@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "types": ["node", "@playwright/test"],
+    "baseUrl": ".",
+    "paths": {
+      "@tests/*": ["tests/*"],
+      "@utils/*": ["tests/utils/*"],
+      "@auth/*": ["tests/auth/*"]
+    }
+  },
+  "include": [
+    "tests/**/*.ts",
+    "global-setup.ts",
+    "playwright.config.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "wp-content",
+    "wp-admin",
+    "wp-includes"
+  ]
+}

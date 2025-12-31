@@ -1,0 +1,46 @@
+GCB Magazine - Tag Export Summary
+==================================
+
+Export Date: Wed 31 Dec 2025 10:38:48 AEST
+Total Unique Tags:    12093
+
+File Location: gcb-all-tags.txt
+Sort Order: Alphabetical (A-Z)
+
+Sample Tags:
+------------
+First 10:
+"writer" kia ev6 ad
+# Series News
+#2023hondacivicTypeR
+#2023jeepwranglerrubicon
+#2023subarucrosstrek #gaycarboys #gaymen
+#2023toyotaklugergrandwawdhybrid
+#2024kiaSportageGTLineHybrid
+#2024toyotalandcruiserprado
+#2025hondaciviceHev
+#2025hundaisantafecalligraphy
+
+Last 10:
+• 2006 Ford Mustang Roush Stage 2 Convertible
+• 2007 Ford Mustang Saleen Parnelli Jones
+• 2015 Ferrari 458 Speciale Aperta
+• AMG DYNAMIC SELECT
+• Cam Waters
+• Chevrolet Bel Air Convertible 1955
+• Chevrolet Bel Air Convertible 1957 version
+• Citroën suspension with Progressive Hydraulic CushionsTM
+• Lamborghini Murcielago Roadster
+• Symmetrical AWD
+
+Tag Categories (based on patterns):
+- Hashtags: 115
+- With bullets (•): 29
+- Plain text: 11949
+
+Most Common Patterns:
+- Car brands mentioned
+- Model years (1950s-2020s)
+- Racing/motorsport terms
+- Technology features
+- LGBTQIA+ automotive content

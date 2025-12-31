@@ -74,12 +74,12 @@ if ( ! $hero_posts->have_posts() ) {
 				<div style="position: relative; z-index: 1; padding: 2rem; height: 100%; display: flex; flex-direction: column; justify-content: flex-end;">
 
 					<!-- Category Badge -->
-					<div class="gcb-category-badge category-label" style="display: inline-block; padding: 6px 12px; border: 2px solid var(--wp--preset--color--acid-lime); color: var(--wp--preset--color--acid-lime); font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1rem; width: fit-content;">
+					<div class="gcb-category-badge category-label" style="display: inline-block; padding: 6px 12px; border: 1px solid var(--wp--preset--color--acid-lime); color: var(--wp--preset--color--acid-lime); font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1rem; width: fit-content;">
 						<?php echo esc_html( $category_name ); ?>
 					</div>
 
 					<!-- Headline -->
-					<<?php echo $heading_tag; ?> class="gcb-hero__<?php echo $is_feature ? 'feature' : 'opinion'; ?>-title" style="font-family: var(--wp--preset--font-family--playfair); font-size: <?php echo esc_attr( $heading_size ); ?>; line-height: 1.2; margin: 0 0 1rem 0; color: var(--wp--preset--color--hyper-white);">
+					<<?php echo $heading_tag; ?> class="gcb-hero__<?php echo $is_feature ? 'feature' : 'opinion'; ?>-title" style="font-family: var(--wp--preset--font-family--playfair); font-size: <?php echo esc_attr( $heading_size ); ?>; line-height: 1.2; margin: 0 0 1rem 0; color: var(--wp--preset--color--off-white);">
 						<a href="<?php echo esc_url( get_permalink() ); ?>" style="color: inherit; text-decoration: none;">
 							<?php echo esc_html( get_the_title() ); ?>
 						</a>
@@ -87,7 +87,7 @@ if ( ! $hero_posts->have_posts() ) {
 
 					<!-- Excerpt (opinion card only) -->
 					<?php if ( ! $is_feature ) : ?>
-						<p class="gcb-hero__excerpt" style="font-family: var(--wp--preset--font-family--system-sans); font-size: 0.875rem; line-height: 1.6; color: var(--wp--preset--color--hyper-white); margin: 0 0 1rem 0;">
+						<p class="gcb-hero__excerpt" style="font-family: var(--wp--preset--font-family--system-sans); font-size: 0.875rem; line-height: 1.6; color: var(--wp--preset--color--off-white); margin: 0 0 1rem 0;">
 							<?php echo esc_html( wp_trim_words( get_the_excerpt(), 15 ) ); ?>
 						</p>
 					<?php endif; ?>
@@ -100,7 +100,7 @@ if ( ! $hero_posts->have_posts() ) {
 						</span>
 
 						<!-- Separator -->
-						<span>•</span>
+						<div style="width: 1px; height: 1rem; background-color: var(--wp--preset--color--brutal-grey);"></div>
 
 						<!-- Date -->
 						<time class="gcb-hero__date post-date" datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>">
@@ -108,11 +108,11 @@ if ( ! $hero_posts->have_posts() ) {
 						</time>
 
 						<!-- Separator -->
-						<span>•</span>
+						<div style="width: 1px; height: 1rem; background-color: var(--wp--preset--color--brutal-grey);"></div>
 
 						<!-- Read Time -->
-						<span class="gcb-hero__read-time read-time" data-read-time="<?php echo esc_attr( $read_time ); ?>">
-							<?php echo esc_html( $read_time ); ?> min read
+						<span class="gcb-hero__read-time read-time" data-read-time="<?php echo esc_attr( $read_time ); ?>" style="color: var(--wp--preset--color--acid-lime);">
+							Read Time: <?php echo esc_html( $read_time ); ?> min
 						</span>
 					</div>
 				</div>

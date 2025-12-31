@@ -34,13 +34,15 @@ if ( ! $video_posts->have_posts() ) {
 <!-- wp:group {"className":"gcb-video-rail","style":{"spacing":{"padding":{"top":"var:preset|spacing|50","bottom":"var:preset|spacing|50"},"margin":{"top":"0","bottom":"var:preset|spacing|50"}}},"layout":{"type":"constrained"}} -->
 <div class="wp-block-group gcb-video-rail" data-pattern="video-rail" style="margin-top:0;margin-bottom:var(--wp--preset--spacing--50);padding-top:var(--wp--preset--spacing--50);padding-bottom:var(--wp--preset--spacing--50)">
 
-	<!-- wp:heading {"level":2,"style":{"typography":{"fontFamily":"var(--wp--preset--font-family--playfair)","fontSize":"2.5rem","lineHeight":"1.2"},"spacing":{"margin":{"bottom":"var:preset|spacing|40"}},"color":{"text":"var:preset|color|acid-lime"}}} -->
-	<h2 class="wp-block-heading has-acid-lime-color has-text-color" style="margin-bottom:var(--wp--preset--spacing--40);font-family:var(--wp--preset--font-family--playfair);font-size:2.5rem;line-height:1.2">Latest Videos</h2>
-	<!-- /wp:heading -->
-
-	<!-- wp:separator {"style":{"spacing":{"margin":{"top":"0","bottom":"var:preset|spacing|40"}},"color":{"background":"var:preset|color|acid-lime"}},"backgroundColor":"acid-lime","className":"is-style-wide"} -->
-	<hr class="wp-block-separator has-text-color has-acid-lime-background-color has-alpha-channel-opacity has-acid-lime-background-color has-background is-style-wide" style="margin-top:0;margin-bottom:var(--wp--preset--spacing--40);color:var(--wp--preset--color--acid-lime);background-color:var(--wp--preset--color--acid-lime)"/>
-	<!-- /wp:separator -->
+	<!-- Section Header -->
+	<div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 2rem;">
+		<h2 style="font-family: var(--wp--preset--font-family--playfair); font-size: 2.5rem; font-weight: bold; color: var(--wp--preset--color--off-white);">
+			LATEST VIDEOS
+		</h2>
+		<a href="/video/" style="font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; text-transform: uppercase; color: var(--wp--preset--color--brutal-grey); text-decoration: none; min-height: 44px; display: flex; align-items: center;">
+			View All →
+		</a>
+	</div>
 
 	<!-- Custom Scrollbar Styling -->
 	<style>
@@ -56,6 +58,11 @@ if ( ! $video_posts->have_posts() ) {
 		}
 		.gcb-video-rail__container::-webkit-scrollbar-thumb:hover {
 			background: var(--wp--preset--color--acid-lime);
+		}
+
+		/* Video card hover effect */
+		.gcb-video-card:hover {
+			border-color: var(--wp--preset--color--acid-lime) !important;
 		}
 	</style>
 
@@ -75,7 +82,7 @@ if ( ! $video_posts->have_posts() ) {
 			?>
 
 			<!-- Video Card -->
-			<div class="gcb-video-card video-rail-item" style="flex: 0 0 300px; scroll-snap-align: start; border: 2px solid var(--wp--preset--color--acid-lime); background: var(--wp--preset--color--void-black);">
+			<div class="gcb-video-card video-rail-item" style="flex: 0 0 300px; scroll-snap-align: start; border: 1px solid var(--wp--preset--color--brutal-border); background: var(--wp--preset--color--void-black);">
 
 				<!-- Thumbnail -->
 				<a href="<?php echo esc_url( get_permalink() ); ?>" style="display: block; position: relative;">
@@ -88,9 +95,16 @@ if ( ! $video_posts->have_posts() ) {
 						/>
 					<?php endif; ?>
 
+					<!-- Play Button Overlay -->
+					<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center;">
+						<svg class="video-play-button" style="width: 4rem; height: 4rem; color: var(--wp--preset--color--acid-lime); filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5)); pointer-events: none;" viewBox="0 0 100 100" fill="currentColor">
+							<polygon points="30,20 30,80 80,50" />
+						</svg>
+					</div>
+
 					<!-- Duration Badge -->
 					<?php if ( $duration ) : ?>
-						<span class="gcb-video-card__duration video-duration" data-duration="<?php echo esc_attr( $duration ); ?>" style="position: absolute; bottom: 8px; right: 8px; background: rgba(5, 5, 5, 0.9); color: var(--wp--preset--color--hyper-white); padding: 4px 8px; font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; border: 1px solid var(--wp--preset--color--acid-lime);">
+						<span class="gcb-video-card__duration video-duration" data-duration="<?php echo esc_attr( $duration ); ?>" style="position: absolute; bottom: 8px; right: 8px; background: rgba(5, 5, 5, 0.9); color: var(--wp--preset--color--off-white); padding: 4px 8px; font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; border: 1px solid var(--wp--preset--color--acid-lime);">
 							<?php echo esc_html( gcb_format_video_duration( $duration ) ); ?>
 						</span>
 					<?php endif; ?>
@@ -99,24 +113,20 @@ if ( ! $video_posts->have_posts() ) {
 				<!-- Card Content -->
 				<div style="padding: 1rem;">
 					<!-- Title -->
-					<h3 class="gcb-video-card__title video-title" style="font-family: var(--wp--preset--font-family--playfair); font-size: 1.125rem; line-height: 1.3; margin: 0 0 0.5rem 0; color: var(--wp--preset--color--hyper-white);">
+					<h3 class="gcb-video-card__title video-title" style="font-family: var(--wp--preset--font-family--playfair); font-size: 1.125rem; line-height: 1.3; margin: 0 0 0.5rem 0; color: var(--wp--preset--color--off-white);">
 						<a href="<?php echo esc_url( get_permalink() ); ?>" style="color: inherit; text-decoration: none;">
 							<?php echo esc_html( wp_trim_words( get_the_title(), 8 ) ); ?>
 						</a>
 					</h3>
 
 					<!-- Metadata -->
-					<div class="gcb-video-card__meta" style="display: flex; gap: 0.75rem; font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; color: var(--wp--preset--color--brutal-grey);">
-						<!-- Post Date -->
-						<time class="gcb-video-card__date video-date post-date" datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>">
-							<?php echo esc_html( get_the_date( 'M j, Y' ) ); ?>
-						</time>
-
-						<!-- View Count -->
+					<div class="gcb-video-card__meta" style="font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; color: var(--wp--preset--color--brutal-grey); text-transform: uppercase;">
+						<?php if ( $duration ) : ?>
+							<span><?php echo esc_html( gcb_format_video_duration( $duration ) ); ?></span>
+							<span> • </span>
+						<?php endif; ?>
 						<?php if ( $view_count ) : ?>
-							<span class="gcb-video-card__views">
-								<?php echo esc_html( number_format( intval( $view_count ) ) ); ?> views
-							</span>
+							<span><?php echo esc_html( gcb_format_view_count( intval( $view_count ) ) ); ?> Views</span>
 						<?php endif; ?>
 					</div>
 				</div>
@@ -158,5 +168,22 @@ function gcb_format_video_duration( string $duration ): string {
 	} else {
 		return sprintf( '%d:%02d', $minutes, $seconds );
 	}
+}
+
+/**
+ * Helper function to format view count
+ *
+ * Converts large numbers to K/M format (e.g., 245000 → "245K")
+ *
+ * @param int $count View count
+ * @return string Formatted view count
+ */
+function gcb_format_view_count( int $count ): string {
+	if ( $count >= 1000000 ) {
+		return round( $count / 1000000, 1 ) . 'M';
+	} elseif ( $count >= 1000 ) {
+		return round( $count / 1000 ) . 'K';
+	}
+	return number_format( $count );
 }
 ?>

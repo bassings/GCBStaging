@@ -21,3 +21,14 @@ Thumbs.db
 
 # Node modules (if any)
 node_modules/
+
+# Playwright Test Results
+/test-results/
+/playwright-report/
+/playwright/.cache/
+
+# Test authentication state
+/tests/auth/.auth/*.json
+
+# Coverage reports
+/coverage/

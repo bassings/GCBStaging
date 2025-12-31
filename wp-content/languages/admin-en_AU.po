@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the WordPress - 6.9.x - Development - Administration package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-05-06 04:26:43+0000\n"
+"PO-Revision-Date: 2025-12-23 16:30:14+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -36,6 +36,143 @@ msgstr "1"
 msgctxt "default GMT offset or timezone string"
 msgid "0"
 msgstr "Australia/Sydney"
+
+#: wp-admin/about.php:141
+msgid "WordPress 6.9 includes a broad set of performance enhancements. A better <abbr>LCP</abbr> (Largest Contentful Paint) metric is achieved through improved loading of conditional and inlined stylesheets, script loading with fetchpriority support, and additional core optimizations. Editor advances include fixes for layout shifts caused by the Video block and faster loading of the terms selector."
+msgstr "WordPress 6.9 includes a broad set of performance enhancements. A better <abbr>LCP</abbr> (Largest Contentful Paint) metric is achieved through improved loading of conditional and inlined style sheets, script loading with fetchpriority support, and additional core optimisations. Editor advances include fixes for layout shifts caused by the Video block and faster loading of the terms selector."
+
+#: wp-admin/theme-editor.php:257
+msgid "It is likely that this unminified stylesheet will not be served to visitors."
+msgstr "It is likely that this unminified style sheet will not be served to visitors."
+
+#: wp-admin/theme-editor.php:256
+msgid "There is a minified version of this stylesheet."
+msgstr "There is a minified version of this style sheet."
+
+#: wp-admin/options-discussion.php:282
+msgid "Color (Generated)"
+msgstr "Colour (Generated)"
+
+#: wp-admin/options-discussion.php:281
+msgid "Initials (Generated)"
+msgstr "Initials (Generated)"
+
+#: wp-admin/options-discussion.php:166
+msgid "Anyone posts a note"
+msgstr "Anyone posts a note"
+
+#: wp-admin/includes/misc.php:1025 wp-admin/user-edit.php:336
+msgid "Administration Color Scheme"
+msgstr "Administration Colour Scheme"
+
+#: wp-admin/includes/class-wp-site-health.php:2846
+msgid "Search Engine Visibility"
+msgstr "Search Engine Visibility"
+
+#: wp-admin/includes/class-wp-site-health.php:2750
+msgid "Your site is hidden from search engines. Consider enabling indexing if this is a public site."
+msgstr "Your site is hidden from search engines. Consider enabling indexing if this is a public site."
+
+#: wp-admin/includes/class-wp-site-health.php:2746
+msgid "Search engines are discouraged from indexing this site."
+msgstr "Search engines are discouraged from indexing this site."
+
+#: wp-admin/includes/class-wp-site-health.php:2738
+msgid "Review your visibility settings"
+msgstr "Review your visibility settings"
+
+#: wp-admin/includes/class-wp-site-health.php:2733
+msgid "Search engines can crawl and index your site. No action needed."
+msgstr "Search engines can crawl and index your site. No action needed."
+
+#: wp-admin/includes/class-wp-site-health.php:2725
+msgid "Search engine indexing is enabled."
+msgstr "Search engine indexing is enabled."
+
+#. translators: %s is the URL to the Serve Happy docs page.
+#: wp-admin/includes/class-wp-site-health.php:763
+msgid "Unable to access the WordPress.org API for <a href=\"%s\">Serve Happy</a>."
+msgstr "Unable to access the WordPress.org API for <a href=\"%s\">Serve Happy</a>."
+
+#. translators: %s: The server PHP version.
+#: wp-admin/includes/class-wp-site-health.php:757
+msgid "Unable to determine the status of the current PHP version (%s)"
+msgstr "Unable to determine the status of the current PHP version (%s)"
+
+#. translators: %s: The server PHP version.
+#: wp-admin/includes/class-wp-site-health.php:732
+msgid "Your site is running PHP %s"
+msgstr "Your site is running PHP %s"
+
+#: wp-admin/includes/class-wp-debug-data.php:699
+msgid "Image format transforms"
+msgstr "Image format transforms"
+
+#: wp-admin/includes/class-wp-debug-data.php:695
+msgid "No format transforms defined"
+msgstr "No format transforms defined"
+
+#. translators: %s: Name of the file that failed to upload.
+#: wp-admin/async-upload.php:144
+msgid "%s has failed to upload."
+msgstr "%s has failed to upload."
+
+#: wp-admin/about.php:150
+msgid "70+ accessibility fixes and enhancements focus on central areas of the WordPress experience. From globally hiding CSS-generated content from assistive technology and improvements to screen reader announcements and user experience, to fixing cursor position and keeping typing focus when clicking on an autocomplete suggestion item."
+msgstr "70+ accessibility fixes and enhancements focus on central areas of the WordPress experience. From globally hiding CSS-generated content from assistive technology and improvements to screen reader announcements and user experience, to fixing cursor position and keeping typing focus when clicking on an autocomplete suggestion item."
+
+#: wp-admin/about.php:125
+msgid "A new typography option for text-based blocks, starting with the Paragraph and Heading blocks, that automatically adjusts font size to fill its container perfectly. Ideal for banners, callouts, and standout moments in your design. No manual tweaks, just an instant clean design."
+msgstr "A new typography option for text-based blocks, starting with the Paragraph and Heading blocks, that automatically adjusts font size to fill its container perfectly. Ideal for banners, callouts, and standout moments in your design. No manual tweaks, just an instant clean design."
+
+#: wp-admin/about.php:124
+msgid "Content that adapts."
+msgstr "Content that adapts."
+
+#: wp-admin/about.php:122
+msgid "Fit text to container"
+msgstr "Fit text to container"
+
+#: wp-admin/about.php:105
+msgid "Access the Command Palette from any part of your site, whether you&#8217;re writing your latest post, deep in design in the Site Editor, or browsing your plugins. Everything you need, just a few keystrokes away."
+msgstr "Access the Command Palette from any part of your site, whether you&#8217;re writing your latest post, deep in design in the Site Editor, or browsing your plugins. Everything you need, just a few keystrokes away."
+
+#: wp-admin/about.php:104
+msgid "Your tools are always at hand."
+msgstr "Your tools are always at hand."
+
+#: wp-admin/about.php:102
+msgid "Command Palette, everywhere"
+msgstr "Command Palette, everywhere"
+
+#: wp-admin/about.php:95
+msgid "Building layouts is now more intuitive and flexible with clear drag handles and a live preview that shows exactly what you&#8217;re moving—a faster way to build pages."
+msgstr "Building layouts is now more intuitive and flexible with clear drag handles and a live preview that shows exactly what you&#8217;re moving—a faster way to build pages."
+
+#: wp-admin/about.php:94
+msgid "Design flows naturally."
+msgstr "Design flows naturally."
+
+#: wp-admin/about.php:92
+msgid "Visual drag and drop"
+msgstr "Visual drag and drop"
+
+#: wp-admin/about.php:75
+msgid "With notes attached directly to blocks, your team can stay aligned, track changes, and turn feedback into action all in one place. Whether you&#8217;re working on copy or refining design, collaboration happens seamlessly on the canvas itself."
+msgstr "With notes attached directly to blocks, your team can stay aligned, track changes, and turn feedback into action all in one place. Whether you&#8217;re working on copy or refining design, collaboration happens seamlessly on the canvas itself."
+
+#: wp-admin/about.php:74
+msgid "Leave feedback right where you’re working."
+msgstr "Leave feedback right where you’re working."
+
+#: wp-admin/about.php:72
+msgctxt "about page section title"
+msgid "Notes"
+msgstr "Notes"
+
+#: wp-admin/about.php:66
+msgid "WordPress 6.9 introduces a more intuitive way to create content, together. Every detail is designed to fit your creative flow, from Notes that let you collaborate directly in the editor to a powerful Command Palette that helps you reach every part of your site."
+msgstr "WordPress 6.9 introduces a more intuitive way to create content, together. Every detail is designed to fit your creative flow, from Notes that let you collaborate directly in the editor to a powerful Command Palette that helps you reach every part of your site."
 
 #. translators: 1: URL to WordPress release notes, 2: WordPress version number,
 #. 3: The PHP extension name needed.
@@ -482,6 +619,11 @@ msgstr "If you are a plugin author, you can learn more about <a href=\"https://d
 msgid "See everything new"
 msgstr "See everything new"
 
+#. translators: %s: WordPress version number.
+#: wp-admin/about.php:33
+msgid "https://wordpress.org/download/releases/%s/"
+msgstr "https://en-au.wordpress.org/download/releases/%s/"
+
 #. translators: %s: Version number.
 #: wp-admin/about.php:163
 msgid "For a comprehensive overview of all the new features and enhancements in WordPress %s, please visit the feature-showcase website."
@@ -508,8 +650,8 @@ msgid_plural "<strong>Error:</strong> %1$s requires %2$d plugins to be installed
 msgstr[0] "<strong>Error:</strong> %1$s requires %2$d plugin to be installed and activated: %3$s."
 msgstr[1] "<strong>Error:</strong> %1$s requires %2$d plugins to be installed and activated: %3$s."
 
-#: wp-admin/includes/plugin-install.php:973
-#: wp-admin/includes/plugin-install.php:978
+#: wp-admin/includes/plugin-install.php:971
+#: wp-admin/includes/plugin-install.php:976
 msgctxt "plugin"
 msgid "Update Now"
 msgstr "Update Now"
@@ -574,9 +716,9 @@ msgstr "Network Deactivate"
 #: wp-admin/includes/class-wp-plugins-list-table.php:611
 #: wp-admin/includes/class-wp-plugins-list-table.php:942
 #: wp-admin/includes/class-wp-plugins-list-table.php:959
-#: wp-admin/includes/plugin-install.php:879
-#: wp-admin/includes/plugin-install.php:993
-#: wp-admin/includes/plugin-install.php:1024 wp-admin/js/updates.js:980
+#: wp-admin/includes/plugin-install.php:877
+#: wp-admin/includes/plugin-install.php:991
+#: wp-admin/includes/plugin-install.php:1022 wp-admin/js/updates.js:980
 #: wp-admin/js/updates.js:1025
 msgctxt "plugin"
 msgid "Activate"
@@ -606,8 +748,8 @@ msgstr "Your WordPress version is %1$s, however the new theme version requires %
 #: wp-admin/includes/class-wp-plugins-list-table.php:611
 #: wp-admin/includes/class-wp-plugins-list-table.php:836
 #: wp-admin/includes/class-wp-plugins-list-table.php:853
-#: wp-admin/includes/plugin-install.php:1006
-#: wp-admin/includes/plugin-install.php:1024 wp-admin/js/updates.js:969
+#: wp-admin/includes/plugin-install.php:1004
+#: wp-admin/includes/plugin-install.php:1022 wp-admin/js/updates.js:969
 msgctxt "plugin"
 msgid "Network Activate"
 msgstr "Network Activate"
@@ -618,8 +760,8 @@ msgid "%s is already active."
 msgstr "%s is already active."
 
 #: wp-admin/import.php:166 wp-admin/includes/plugin-install.php:355
-#: wp-admin/includes/plugin-install.php:951
-#: wp-admin/includes/plugin-install.php:956 wp-admin/press-this.php:63
+#: wp-admin/includes/plugin-install.php:949
+#: wp-admin/includes/plugin-install.php:954 wp-admin/press-this.php:63
 #: wp-admin/js/updates.js:1312 wp-admin/js/updates.js:2637
 #: wp-admin/js/updates.js:2693
 msgctxt "plugin"
@@ -1397,6 +1539,14 @@ msgstr "With a block theme, you can place and edit blocks without affecting your
 msgid "A block theme is a theme that uses blocks for all parts of a site including navigation menus, header, content, and site footer. These themes are built for the features that allow you to edit and customize all parts of your site."
 msgstr "A block theme is a theme that uses blocks for all parts of a site including navigation menus, header, content, and site footer. These themes are built for the features that allow you to edit and customise all parts of your site."
 
+#: wp-admin/site-health.php:277
+msgid "Recommended items are considered beneficial to your site, although not as important to prioritize as a critical issue. They may include improvements in areas such as security, performance, and user experience."
+msgstr "Recommended items are considered beneficial to your site, although not as important to prioritise as a critical issue. They may include improvements in areas such as security, performance, and user experience."
+
+#: wp-admin/site-health.php:264
+msgid "Critical issues are items that may have a high impact on your site&#8217;s performance or security. Resolving these issues should be prioritized."
+msgstr "Critical issues are items that may have a high impact on your site&#8217;s performance or security. Resolving these issues should be prioritised."
+
 #. translators: %s: wp-config.php
 #: wp-admin/setup-config.php:441
 msgid "Configuration rules for %s:"
@@ -1791,7 +1941,7 @@ msgstr "An attempt was made, but your site could not be updated automatically."
 
 #: wp-admin/includes/class-core-upgrader.php:166
 #: wp-admin/includes/class-wp-upgrader.php:206
-#: wp-admin/includes/update-core.php:1108
+#: wp-admin/includes/update-core.php:1109
 msgid "The update cannot be installed because some files could not be copied. This is usually due to inconsistent file permissions."
 msgstr "The update cannot be installed because some files could not be copied. This is usually due to inconsistent file permissions."
 
@@ -3065,7 +3215,7 @@ msgstr "This plugin is already installed."
 
 #. translators: %s: Plugin name and version.
 #. translators: %s: Plugin name.
-#: wp-admin/includes/plugin-install.php:971 wp-admin/includes/update.php:566
+#: wp-admin/includes/plugin-install.php:969 wp-admin/includes/update.php:566
 #: wp-admin/js/updates.js:2544
 msgctxt "plugin"
 msgid "Update %s now"
@@ -3074,7 +3224,7 @@ msgstr "Update %s now"
 #. translators: %s: Importer name.
 #. translators: %s: Plugin name and version.
 #. translators: %s: Plugin name.
-#: wp-admin/import.php:165 wp-admin/includes/plugin-install.php:949
+#: wp-admin/import.php:165 wp-admin/includes/plugin-install.php:947
 #: wp-admin/js/updates.js:1308 wp-admin/js/updates.js:2553
 #: wp-admin/js/updates.js:2689
 msgctxt "plugin"
@@ -3825,7 +3975,7 @@ msgid "The seventh parameter passed to %s should be numeric representing menu po
 msgstr "The seventh parameter passed to %s should be numeric representing menu position."
 
 #. translators: 1: WordPress version number, 2: The PHP extension name needed.
-#: wp-admin/includes/update-core.php:1214
+#: wp-admin/includes/update-core.php:1215
 msgid "The update cannot be installed because WordPress %1$s requires the %2$s PHP extension."
 msgstr "The update cannot be installed because WordPress %1$s requires the %2$s PHP extension."
 
@@ -5674,20 +5824,20 @@ msgid "Removing the old version of the translation&#8230;"
 msgstr "Removing the old version of the translation&#8230;"
 
 #. translators: %s: URL to WordPress Updates screen.
-#: wp-admin/includes/plugin-install.php:845
+#: wp-admin/includes/plugin-install.php:843
 msgid "<a href=\"%s\" target=\"_parent\">Click here to update WordPress</a>."
 msgstr "<a href=\"%s\" target=\"_parent\">Click here to update WordPress</a>."
 
-#: wp-admin/includes/plugin-install.php:841
+#: wp-admin/includes/plugin-install.php:839
 msgid "<strong>Error:</strong> This plugin <strong>requires a newer version of WordPress</strong>."
 msgstr "<strong>Error:</strong> This plugin <strong>requires a newer version of WordPress</strong>."
 
 #. translators: %s: URL to Update PHP page.
-#: wp-admin/includes/plugin-install.php:815
+#: wp-admin/includes/plugin-install.php:813
 msgid "<a href=\"%s\" target=\"_blank\">Click here to learn more about updating PHP</a>."
 msgstr "<a href=\"%s\" target=\"_blank\">Click here to learn more about updating PHP</a>."
 
-#: wp-admin/includes/plugin-install.php:810
+#: wp-admin/includes/plugin-install.php:808
 msgid "<strong>Error:</strong> This plugin <strong>requires a newer version of PHP</strong>."
 msgstr "<strong>Error:</strong> This plugin <strong>requires a newer version of PHP</strong>."
 
@@ -6646,7 +6796,7 @@ msgstr "Eraser index cannot be less than one."
 msgid "Invalid email address in request."
 msgstr "Invalid email address in request."
 
-#: wp-admin/includes/plugin-install.php:680
+#: wp-admin/includes/plugin-install.php:678
 msgid "Requires PHP Version:"
 msgstr "Requires PHP Version:"
 
@@ -6908,11 +7058,11 @@ msgstr "%s is currently editing this post. Do you want to take over?"
 msgid "Custom installation script."
 msgstr "Custom installation script."
 
-#: wp-admin/includes/plugin-install.php:687
+#: wp-admin/includes/plugin-install.php:685
 msgid "Active Installations:"
 msgstr "Active Installations:"
 
-#: wp-admin/includes/plugin-install.php:602 wp-admin/update.php:128
+#: wp-admin/includes/plugin-install.php:600 wp-admin/update.php:128
 msgid "Plugin Installation"
 msgstr "Plugin Installation"
 
@@ -7009,14 +7159,14 @@ msgstr "Allow link notifications from other blogs (pingbacks and trackbacks) on 
 
 #. translators: %s: Plugin name.
 #: wp-admin/includes/class-wp-plugins-list-table.php:852
-#: wp-admin/includes/plugin-install.php:1008 wp-admin/js/updates.js:972
+#: wp-admin/includes/plugin-install.php:1006 wp-admin/js/updates.js:972
 msgctxt "plugin"
 msgid "Network Activate %s"
 msgstr "Network Activate %s"
 
 #. translators: %s: Plugin name.
 #: wp-admin/includes/class-wp-plugins-list-table.php:958
-#: wp-admin/includes/plugin-install.php:995 wp-admin/js/updates.js:983
+#: wp-admin/includes/plugin-install.php:993 wp-admin/js/updates.js:983
 msgctxt "plugin"
 msgid "Activate %s"
 msgstr "Activate %s"
@@ -7181,7 +7331,7 @@ msgid "&#8220;%s&#8221; is locked"
 msgstr "&#8220;%s&#8221; is locked"
 
 #: wp-admin/includes/class-wp-plugin-install-list-table.php:723
-#: wp-admin/includes/plugin-install.php:697
+#: wp-admin/includes/plugin-install.php:695
 msgctxt "Active plugin installations"
 msgid "Less Than 10"
 msgstr "Less Than 10"
@@ -7192,7 +7342,7 @@ msgstr "Sorry, you are not allowed to attach files to this post."
 
 #: wp-admin/freedoms.php:105
 #: wp-admin/includes/class-wp-plugin-install-list-table.php:346
-#: wp-admin/includes/plugin-install.php:704 wp-admin/plugin-install.php:101
+#: wp-admin/includes/plugin-install.php:702 wp-admin/plugin-install.php:101
 #: wp-admin/plugins.php:570
 msgid "https://wordpress.org/plugins/"
 msgstr "https://en-au.wordpress.org/plugins/"
@@ -7495,7 +7645,7 @@ msgstr "Embed 404 Template"
 msgid "Embed Template"
 msgstr "Embed Template"
 
-#: wp-admin/includes/plugin-install.php:989 wp-admin/js/updates.js:1155
+#: wp-admin/includes/plugin-install.php:987 wp-admin/js/updates.js:1155
 #: wp-admin/js/updates.js:1163
 msgctxt "plugin"
 msgid "Active"
@@ -7766,17 +7916,17 @@ msgstr "Click the image to edit or update"
 
 #. translators: 1: Number of stars (used to determine singular/plural), 2:
 #. Number of reviews.
-#: wp-admin/includes/plugin-install.php:745
+#: wp-admin/includes/plugin-install.php:743
 msgid "Reviews with %1$d star: %2$s. Opens in a new tab."
 msgid_plural "Reviews with %1$d stars: %2$s. Opens in a new tab."
 msgstr[0] "Reviews with %1$d star: %2$s. Opens in a new tab."
 msgstr[1] "Reviews with %1$d stars: %2$s. Opens in a new tab."
 
-#: wp-admin/includes/plugin-install.php:737
+#: wp-admin/includes/plugin-install.php:735
 msgid "Read all reviews on WordPress.org or write your own!"
 msgstr "Read all reviews on WordPress.org or write your own!"
 
-#: wp-admin/includes/plugin-install.php:736
+#: wp-admin/includes/plugin-install.php:734
 msgid "Reviews"
 msgstr "Reviews"
 
@@ -8807,7 +8957,7 @@ msgstr "Plugins updated successfully."
 
 #. translators: %s: Number of millions.
 #: wp-admin/includes/class-wp-plugin-install-list-table.php:719
-#: wp-admin/includes/plugin-install.php:693
+#: wp-admin/includes/plugin-install.php:691
 msgctxt "Active plugin installations"
 msgid "%s+ Million"
 msgid_plural "%s+ Million"
@@ -9004,7 +9154,7 @@ msgstr "%1$s %2$s, %3$s at %4$s:%5$s"
 msgid "You are only logged in at this location."
 msgstr "You are only logged in at this location."
 
-#: wp-admin/includes/plugin-install.php:404
+#: wp-admin/includes/plugin-install.php:405
 msgid "These suggestions are based on the plugins you and other users have installed."
 msgstr "These suggestions are based on the plugins you and other users have installed."
 
@@ -9218,7 +9368,7 @@ msgid "<strong>Incompatible</strong> with your version of WordPress"
 msgstr "<strong>Incompatible</strong> with your version of WordPress"
 
 #. translators: %s: Number of stars.
-#: wp-admin/includes/plugin-install.php:763
+#: wp-admin/includes/plugin-install.php:761
 msgid "%d star"
 msgid_plural "%d stars"
 msgstr[0] "%d star"
@@ -9238,16 +9388,16 @@ msgstr "Add the user without sending an email that requires their confirmation"
 msgid "The grid view for the Media Library requires JavaScript. <a href=\"%s\">Switch to the list view</a>."
 msgstr "The grid view for the Media Library requires JavaScript. <a href=\"%s\">Switch to the list view</a>."
 
-#: wp-admin/credits.php:36 wp-admin/includes/plugin-install.php:777
+#: wp-admin/credits.php:36 wp-admin/includes/plugin-install.php:775
 msgid "Contributors"
 msgstr "Contributors"
 
-#: wp-admin/includes/plugin-install.php:708
-#: wp-admin/includes/plugin-install.php:795
+#: wp-admin/includes/plugin-install.php:706
+#: wp-admin/includes/plugin-install.php:793
 msgid "Donate to this plugin &#187;"
 msgstr "Donate to this plugin &#187;"
 
-#: wp-admin/includes/plugin-install.php:578
+#: wp-admin/includes/plugin-install.php:576
 msgctxt "Plugin installer section title"
 msgid "Reviews"
 msgstr "Reviews"
@@ -9733,8 +9883,8 @@ msgstr "Your site at %1$s experienced a critical failure while trying to update 
 msgid "WordPress %s is also now available."
 msgstr "WordPress %s is also now available."
 
-#: wp-admin/includes/update-core.php:1304
-#: wp-admin/includes/update-core.php:1340
+#: wp-admin/includes/update-core.php:1305
+#: wp-admin/includes/update-core.php:1341
 msgid "The update cannot be installed because your site is unable to copy some files. This is usually due to inconsistent file permissions."
 msgstr "The update cannot be installed because your site is unable to copy some files. This is usually due to inconsistent file permissions."
 
@@ -9849,7 +9999,7 @@ msgstr "Update Translations"
 msgid "Background updates"
 msgstr "Background updates"
 
-#: wp-admin/includes/update-core.php:1407
+#: wp-admin/includes/update-core.php:1408
 msgid "There is not enough free disk space to complete the update."
 msgstr "There is not enough free disk space to complete the update."
 
@@ -9927,11 +10077,11 @@ msgstr "The username you provided has invalid characters."
 msgid "Please provide a valid username."
 msgstr "Please provide a valid username."
 
-#: wp-admin/includes/update-core.php:1321
+#: wp-admin/includes/update-core.php:1322
 msgid "Copying the required files&#8230;"
 msgstr "Copying the required files&#8230;"
 
-#: wp-admin/includes/update-core.php:1228
+#: wp-admin/includes/update-core.php:1229
 msgid "Preparing to install the latest version&#8230;"
 msgstr "Preparing to install the latest version&#8230;"
 
@@ -10150,6 +10300,11 @@ msgstr "Repeat New Password"
 msgid "Add menu items from the column on the left."
 msgstr "Add menu items from the column on the left."
 
+#. translators: %s: https://wordpress.org/plugins
+#: wp-admin/includes/class-wp-plugin-install-list-table.php:345
+msgid "Plugins extend and expand the functionality of WordPress. You may install plugins from the <a href=\"%s\">WordPress Plugin Directory</a> right on this page, or upload a plugin in .zip format by clicking the button above."
+msgstr "Plugins extend and expand the functionality of WordPress. You may install plugins from the <a href=\"%s\">WordPress Plugin Directory</a> right on this page, or upload a plugin in .zip format by clicking the button above."
+
 #. Plugin URI of the plugin
 #: hello.php
 msgid "http://wordpress.org/plugins/hello-dolly/"
@@ -10362,6 +10517,11 @@ msgstr "Released: %d."
 #: wp-admin/includes/media.php:349
 msgid "%1$s by %2$s."
 msgstr "%1$s by %2$s."
+
+#: wp-admin/includes/revision.php:252
+msgctxt "revision date short format"
+msgid "j M Y @ H:i"
+msgstr "j M Y @ H:i"
 
 #: wp-admin/includes/revision.php:459
 msgid "Restore This Revision"
@@ -10609,7 +10769,7 @@ msgid "Search engine visibility"
 msgstr "Search engine visibility"
 
 #. translators: 1: WordPress version, 2: URL to About screen.
-#: wp-admin/includes/update-core.php:1709 wp-admin/update-core.php:923
+#: wp-admin/includes/update-core.php:1710 wp-admin/update-core.php:923
 msgid "Welcome to WordPress %1$s. You will be redirected to the About WordPress screen. If not, click <a href=\"%2$s\">here</a>."
 msgstr "Welcome to WordPress %1$s. You will be redirected to the About WordPress screen. If not, click <a href=\"%2$s\">here</a>."
 
@@ -10745,7 +10905,7 @@ msgstr "Collapse"
 msgid "If you do not want a header image to be displayed on your site at all, click the &#8220;Remove Header Image&#8221; button at the bottom of the Header Image section of this page. If you want to re-enable the header image later, you just have to select one of the other image options and click &#8220;Save Changes&#8221;."
 msgstr "If you do not want a header image to be displayed on your site at all, click the &#8220;Remove Header Image&#8221; button at the bottom of the Header Image section of this page. If you want to re-enable the header image later, you just have to select one of the other image options and click &#8220;Save Changes&#8221;."
 
-#: wp-admin/includes/plugin-install.php:1030
+#: wp-admin/includes/plugin-install.php:1028
 msgctxt "plugin"
 msgid "Installed"
 msgstr "Installed"
@@ -10761,6 +10921,11 @@ msgstr "Previewing and Installing"
 #: wp-admin/theme-install.php:129
 msgid "Once you have generated a list of themes, you can preview and install any of them. Click on the thumbnail of the theme you are interested in previewing. It will open up in a full-screen Preview page to give you a better idea of how that theme will look."
 msgstr "Once you have generated a list of themes, you can preview and install any of them. Click on the thumbnail of the theme you are interested in previewing. It will open up in a full-screen Preview page to give you a better idea of how that theme will look."
+
+#. translators: %s: HTML attributes for button.
+#: wp-admin/includes/media.php:3057
+msgid "You are using the browser&#8217;s built-in file uploader. The WordPress uploader includes multiple file selection and drag and drop capability. <button %s>Switch to the multi-file uploader</button>."
+msgstr "You are using the browser&#8217;s built-in file uploader. The WordPress uploader includes multiple file selection and drag and drop capability. <button %s>Switch to the multi-file uploader</button>."
 
 #: wp-admin/tools.php:50
 msgid "The Categories and Tags Converter link on this screen will take you to the Import screen, where that Converter is one of the plugins you can install. Once that plugin is installed, the Activate Plugin &amp; Run Importer link will take you to a screen where you can choose to convert tags into categories or vice versa."
@@ -10895,7 +11060,7 @@ msgstr "No comments yet."
 
 #: wp-admin/includes/class-wp-theme-install-list-table.php:520
 #: wp-admin/includes/class-wp-themes-list-table.php:281
-#: wp-admin/includes/plugin-install.php:658
+#: wp-admin/includes/plugin-install.php:656
 msgid "Version:"
 msgstr "Version:"
 
@@ -11210,37 +11375,37 @@ msgstr "To allow use of this page to automatically repair database problems, ple
 msgid "No comments awaiting moderation."
 msgstr "No comments awaiting moderation."
 
-#: wp-admin/includes/plugin-install.php:579
+#: wp-admin/includes/plugin-install.php:577
 msgctxt "Plugin installer section title"
 msgid "Other Notes"
 msgstr "Other Notes"
 
-#: wp-admin/includes/plugin-install.php:577
+#: wp-admin/includes/plugin-install.php:575
 msgctxt "Plugin installer section title"
 msgid "Changelog"
 msgstr "Changelog"
 
-#: wp-admin/includes/plugin-install.php:576
+#: wp-admin/includes/plugin-install.php:574
 msgctxt "Plugin installer section title"
 msgid "Screenshots"
 msgstr "Screenshots"
 
-#: wp-admin/includes/plugin-install.php:575
+#: wp-admin/includes/plugin-install.php:573
 msgctxt "Plugin installer section title"
 msgid "FAQ"
 msgstr "FAQ"
 
-#: wp-admin/includes/plugin-install.php:574
+#: wp-admin/includes/plugin-install.php:572
 msgctxt "Plugin installer section title"
 msgid "Installation"
 msgstr "Installation"
 
-#: wp-admin/includes/plugin-install.php:573
+#: wp-admin/includes/plugin-install.php:571
 msgctxt "Plugin installer section title"
 msgid "Description"
 msgstr "Description"
 
-#: wp-admin/includes/plugin-install.php:706
+#: wp-admin/includes/plugin-install.php:704
 msgid "Plugin Homepage &#187;"
 msgstr "Plugin Homepage &#187;"
 
@@ -11372,7 +11537,7 @@ msgid "This screen allows you to choose your permalink structure. You can choose
 msgstr "This screen allows you to choose your permalink structure. You can choose from common settings or create custom URL structures."
 
 #. translators: 1: WordPress version, 2: URL to About screen.
-#: wp-admin/includes/update-core.php:1717 wp-admin/update-core.php:931
+#: wp-admin/includes/update-core.php:1718 wp-admin/update-core.php:931
 msgid "Welcome to WordPress %1$s. <a href=\"%2$s\">Learn more</a>."
 msgstr "Welcome to WordPress %1$s. <a href=\"%2$s\">Learn more</a>."
 
@@ -11631,6 +11796,10 @@ msgstr "<strong>Edit</strong> takes you to the editing screen for that post. You
 msgid "Because this is a multisite installation, you may add accounts that already exist on the Network by specifying a username or email, and defining a role. For more options, such as specifying a password, you have to be a Network Administrator and use the hover link under an existing user&#8217;s name to Edit the user profile under Network Admin > All Users."
 msgstr "Because this is a multisite installation, you may add accounts that already exist on the Network by specifying a username or email, and defining a role. For more options, such as specifying a password, you have to be a Network Administrator and use the hover link under an existing user&#8217;s name to Edit the user profile under Network Admin > All Users."
 
+#: wp-admin/about.php:65
+msgid "Welcome to WordPress 6.9"
+msgstr "Welcome to WordPress 6.9"
+
 #: wp-admin/about.php:278
 msgid "Go to Dashboard &rarr; Home"
 msgstr "Go to Dashboard &rarr; Home"
@@ -11642,6 +11811,11 @@ msgstr "Go to Dashboard &rarr; Updates"
 #: wp-admin/user-edit.php:217
 msgid "Profile updated."
 msgstr "Profile updated."
+
+#. translators: %s: HTML attributes for button.
+#: wp-admin/includes/media.php:3038
+msgid "You are using the multi-file uploader. Problems? Try the <button %s>browser uploader</button> instead."
+msgstr "You are using the multi-file uploader. Problems? Try the <button %s>browser uploader</button> instead."
 
 #. translators: 1: Site title, 2: Site URL, 3: User role, 4: Activation URL.
 #: wp-admin/user-new.php:127
@@ -13296,7 +13470,7 @@ msgid "User already exists. Password inherited."
 msgstr "User already exists. Password inherited."
 
 #: wp-admin/includes/class-wp-automatic-updater.php:529
-#: wp-admin/includes/update-core.php:1703 wp-admin/update-core.php:919
+#: wp-admin/includes/update-core.php:1704 wp-admin/update-core.php:919
 msgid "WordPress updated successfully."
 msgstr "WordPress updated successfully."
 
@@ -14454,34 +14628,34 @@ msgstr "Update to %s"
 msgid "You are using a development version (%1$s). Cool! Please <a href=\"%2$s\">stay updated</a>."
 msgstr "You are using a development version (%1$s). Cool! Please <a href=\"%2$s\">stay updated</a>."
 
-#: wp-admin/includes/update-core.php:1576
+#: wp-admin/includes/update-core.php:1577
 msgid "Upgrading database&#8230;"
 msgstr "Upgrading database&#8230;"
 
-#: wp-admin/includes/update-core.php:1092
+#: wp-admin/includes/update-core.php:1093
 msgid "The update could not be unpacked"
 msgstr "The update could not be unpacked"
 
-#: wp-admin/includes/update-core.php:1074
+#: wp-admin/includes/update-core.php:1075
 msgid "Verifying the unpacked files&#8230;"
 msgstr "Verifying the unpacked files&#8230;"
 
 #. translators: 1: WordPress version number, 2: Minimum required MySQL version
 #. number, 3: Current MySQL version number.
-#: wp-admin/includes/update-core.php:1194
+#: wp-admin/includes/update-core.php:1195
 msgid "The update cannot be installed because WordPress %1$s requires MySQL version %2$s or higher. You are running version %3$s."
 msgstr "The update cannot be installed because WordPress %1$s requires MySQL version %2$s or higher. You are running version %3$s."
 
 #. translators: 1: WordPress version number, 2: Minimum required PHP version
 #. number, 3: Current PHP version number.
-#: wp-admin/includes/update-core.php:1183
+#: wp-admin/includes/update-core.php:1184
 msgid "The update cannot be installed because WordPress %1$s requires PHP version %2$s or higher. You are running version %3$s."
 msgstr "The update cannot be installed because WordPress %1$s requires PHP version %2$s or higher. You are running version %3$s."
 
 #. translators: 1: WordPress version number, 2: Minimum required PHP version
 #. number, 3: Minimum required MySQL version number, 4: Current PHP version
 #. number, 5: Current MySQL version number.
-#: wp-admin/includes/update-core.php:1170
+#: wp-admin/includes/update-core.php:1171
 msgid "The update cannot be installed because WordPress %1$s requires PHP version %2$s or higher and MySQL version %3$s or higher. You are running PHP version %4$s and MySQL version %5$s."
 msgstr "The update cannot be installed because WordPress %1$s requires PHP version %2$s or higher and MySQL version %3$s or higher. You are running PHP version %4$s and MySQL version %5$s."
 
@@ -14761,39 +14935,39 @@ msgstr "One of the plugins is invalid."
 msgid "The plugin generated unexpected output."
 msgstr "The plugin generated unexpected output."
 
-#: wp-admin/includes/plugin-install.php:834
+#: wp-admin/includes/plugin-install.php:832
 msgid "<strong>Warning:</strong> This plugin <strong>has not been tested</strong> with your current version of WordPress."
 msgstr "<strong>Warning:</strong> This plugin <strong>has not been tested</strong> with your current version of WordPress."
 
-#: wp-admin/includes/plugin-install.php:712
+#: wp-admin/includes/plugin-install.php:710
 msgid "Average Rating"
 msgstr "Average Rating"
 
-#: wp-admin/includes/plugin-install.php:704
+#: wp-admin/includes/plugin-install.php:702
 msgid "WordPress.org Plugin Page &#187;"
 msgstr "WordPress.org Plugin Page &#187;"
 
-#: wp-admin/includes/plugin-install.php:677
+#: wp-admin/includes/plugin-install.php:675
 msgid "Compatible up to:"
 msgstr "Compatible up to:"
 
 #. translators: %s: Version number.
-#: wp-admin/includes/plugin-install.php:673
-#: wp-admin/includes/plugin-install.php:683
+#: wp-admin/includes/plugin-install.php:671
+#: wp-admin/includes/plugin-install.php:681
 msgid "%s or higher"
 msgstr "%s or higher"
 
-#: wp-admin/includes/plugin-install.php:670
+#: wp-admin/includes/plugin-install.php:668
 msgid "Requires WordPress Version:"
 msgstr "Requires WordPress Version:"
 
 #: wp-admin/includes/class-wp-plugin-install-list-table.php:707
-#: wp-admin/includes/plugin-install.php:662
+#: wp-admin/includes/plugin-install.php:660
 msgid "Last Updated:"
 msgstr "Last Updated:"
 
 #. translators: %s: Number of ratings.
-#: wp-admin/includes/plugin-install.php:726
+#: wp-admin/includes/plugin-install.php:724
 msgid "(based on %s rating)"
 msgid_plural "(based on %s ratings)"
 msgstr[0] "(based on %s rating)"
@@ -15344,7 +15518,7 @@ msgid "Empty archive."
 msgstr "Empty archive."
 
 #: wp-admin/includes/file.php:1831 wp-admin/includes/file.php:1985
-#: wp-admin/includes/file.php:2043 wp-admin/includes/update-core.php:1514
+#: wp-admin/includes/file.php:2043 wp-admin/includes/update-core.php:1515
 msgid "Could not copy file."
 msgstr "Could not copy file."
 
@@ -15649,12 +15823,12 @@ msgid "The plugin is at the latest version."
 msgstr "The plugin is at the latest version."
 
 #: wp-admin/includes/class-wp-upgrader.php:210
-#: wp-admin/includes/update-core.php:1461
+#: wp-admin/includes/update-core.php:1462
 msgid "Disabling Maintenance mode&#8230;"
 msgstr "Disabling Maintenance mode&#8230;"
 
 #: wp-admin/includes/class-wp-upgrader.php:209
-#: wp-admin/includes/update-core.php:1312
+#: wp-admin/includes/update-core.php:1313
 msgid "Enabling Maintenance mode&#8230;"
 msgstr "Enabling Maintenance mode&#8230;"
 

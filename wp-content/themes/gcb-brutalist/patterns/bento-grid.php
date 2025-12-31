@@ -85,7 +85,7 @@ if ( ! $grid_posts->have_posts() ) {
 				<!-- Card Content -->
 				<div style="padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column;">
 					<!-- Title -->
-					<<?php echo $is_featured ? 'h2' : 'h3'; ?> class="gcb-bento-card__title" style="font-family: var(--wp--preset--font-family--playfair); font-size: <?php echo $is_featured ? '2rem' : '1.25rem'; ?>; line-height: 1.3; margin: 0 0 1rem 0; color: var(--wp--preset--color--hyper-white);">
+					<<?php echo $is_featured ? 'h2' : 'h3'; ?> class="gcb-bento-card__title" style="font-family: var(--wp--preset--font-family--playfair); font-size: <?php echo $is_featured ? '2rem' : '1.25rem'; ?>; line-height: 1.3; margin: 0 0 1rem 0; color: var(--wp--preset--color--off-white);">
 						<a href="<?php echo esc_url( get_permalink() ); ?>" style="color: inherit; text-decoration: none;">
 							<?php echo esc_html( get_the_title() ); ?>
 						</a>
@@ -93,7 +93,7 @@ if ( ! $grid_posts->have_posts() ) {
 
 					<!-- Excerpt (featured posts only) -->
 					<?php if ( $is_featured ) : ?>
-						<p style="font-family: var(--wp--preset--font-family--system); font-size: 1rem; line-height: 1.6; color: var(--wp--preset--color--hyper-white); margin: 0 0 1rem 0;">
+						<p style="font-family: var(--wp--preset--font-family--system); font-size: 1rem; line-height: 1.6; color: var(--wp--preset--color--off-white); margin: 0 0 1rem 0;">
 							<?php echo esc_html( wp_trim_words( get_the_excerpt(), 20 ) ); ?>
 						</p>
 					<?php endif; ?>

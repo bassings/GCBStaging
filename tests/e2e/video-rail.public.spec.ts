@@ -229,4 +229,123 @@ test.describe('GCB Content Intelligence - Video Rail Pattern', () => {
     const hasDate = await videoCard.locator('.gcb-video-card__date, .video-date, time, .post-date').count() > 0;
     expect(hasDate).toBeTruthy();
   });
+
+  test('Video rail cards display acid lime play button overlay', async ({ page, request }) => {
+    // Reset database
+    await request.delete('/wp-json/gcb-testing/v1/reset', {
+      headers: { 'GCB-Test-Key': 'test-secret-key-local' }
+    });
+
+    // Create video post
+    await request.post('/wp-json/gcb-testing/v1/create-post', {
+      data: {
+        title: 'Play Button Test Video',
+        content: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        status: 'publish'
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'GCB-Test-Key': 'test-secret-key-local'
+      }
+    });
+
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+
+    // Assert: Play button SVG exists with acid lime color
+    const playButton = page.locator('.video-play-button, svg[viewBox="0 0 100 100"]').first();
+    await expect(playButton).toBeVisible();
+
+    const color = await playButton.evaluate(el => window.getComputedStyle(el).color);
+    expect(color).toBe('rgb(204, 255, 0)'); // Acid Lime
+  });
+
+  test('Video rail displays metadata in prototype format (duration • views)', async ({ page, request }) => {
+    // Reset database
+    await request.delete('/wp-json/gcb-testing/v1/reset', {
+      headers: { 'GCB-Test-Key': 'test-secret-key-local' }
+    });
+
+    // Create video post
+    await request.post('/wp-json/gcb-testing/v1/create-post', {
+      data: {
+        title: 'Metadata Format Test',
+        content: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        status: 'publish'
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'GCB-Test-Key': 'test-secret-key-local'
+      }
+    });
+
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+
+    const videoCard = page.locator('.gcb-video-card, .video-rail-item').first();
+    const metaText = await videoCard.locator('.gcb-video-card__meta').textContent();
+
+    // Assert: Metadata format matches "duration • views" pattern
+    expect(metaText).toMatch(/\d+:\d+ • \d+[KM]? Views/); // e.g., "3:33 • 245K Views"
+  });
+
+  test('Video rail cards have brutal border that changes to acid lime on hover', async ({ page, request }) => {
+    // Reset database
+    await request.delete('/wp-json/gcb-testing/v1/reset', {
+      headers: { 'GCB-Test-Key': 'test-secret-key-local' }
+    });
+
+    // Create video post
+    await request.post('/wp-json/gcb-testing/v1/create-post', {
+      data: {
+        title: 'Border Hover Test',
+        content: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        status: 'publish'
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'GCB-Test-Key': 'test-secret-key-local'
+      }
+    });
+
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+
+    const card = page.locator('.gcb-video-card, .video-rail-item').first();
+
+    // Default state: Brutal Border
+    const defaultBorder = await card.evaluate(el => window.getComputedStyle(el).borderColor);
+    expect(defaultBorder).toBe('rgb(51, 51, 51)'); // #333333
+
+    // Hover state: Acid Lime
+    await card.hover();
+    const hoverBorder = await card.evaluate(el => window.getComputedStyle(el).borderColor);
+    expect(hoverBorder).toBe('rgb(204, 255, 0)'); // #CCFF00
+  });
+
+  test('Video rail header includes "View All" link', async ({ page, request }) => {
+    // Reset database
+    await request.delete('/wp-json/gcb-testing/v1/reset', {
+      headers: { 'GCB-Test-Key': 'test-secret-key-local' }
+    });
+
+    // Create video post
+    await request.post('/wp-json/gcb-testing/v1/create-post', {
+      data: {
+        title: 'View All Link Test',
+        content: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        status: 'publish'
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'GCB-Test-Key': 'test-secret-key-local'
+      }
+    });
+
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+
+    const viewAllLink = page.locator('a[href*="video"]:has-text("View All")');
+    await expect(viewAllLink).toBeVisible();
+
+    // Verify touch target
+    const bbox = await viewAllLink.boundingBox();
+    expect(bbox?.height).toBeGreaterThanOrEqual(44);
+  });
 });

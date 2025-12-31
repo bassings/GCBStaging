@@ -39,6 +39,7 @@
 		<!-- Terminal Search Button (Desktop) -->
 		<button class="search-toggle" aria-label="Search">
 			<span class="search-prompt">&gt;_</span>
+			<span>Search</span>
 		</button>
 
 		<!-- Mobile Menu Toggle -->
@@ -179,11 +180,14 @@
 		display: none; /* Hidden on mobile, shown on desktop */
 		background: transparent;
 		border: 1px solid #333333; /* Brutal Border */
-		color: #CCFF00; /* Acid Lime */
+		color: #FAFAFA; /* Off-White */
 		font-family: 'Space Mono', monospace;
-		font-size: 1rem;
+		font-size: 0.75rem;
+		text-transform: uppercase;
 		padding: 0.5rem 1rem;
 		cursor: pointer;
+		gap: 0.5rem;
+		align-items: center;
 
 		min-height: 44px;
 		min-width: 44px;
@@ -389,7 +393,7 @@
 		}
 
 		.search-toggle {
-			display: block;
+			display: flex;
 		}
 
 		.menu-toggle {
