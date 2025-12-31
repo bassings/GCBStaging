@@ -42,6 +42,23 @@ if ( ! $video_posts->have_posts() ) {
 	<hr class="wp-block-separator has-text-color has-acid-lime-background-color has-alpha-channel-opacity has-acid-lime-background-color has-background is-style-wide" style="margin-top:0;margin-bottom:var(--wp--preset--spacing--40);color:var(--wp--preset--color--acid-lime);background-color:var(--wp--preset--color--acid-lime)"/>
 	<!-- /wp:separator -->
 
+	<!-- Custom Scrollbar Styling -->
+	<style>
+		.gcb-video-rail__container::-webkit-scrollbar {
+			height: 6px;
+		}
+		.gcb-video-rail__container::-webkit-scrollbar-track {
+			background: var(--wp--preset--color--void-black);
+		}
+		.gcb-video-rail__container::-webkit-scrollbar-thumb {
+			background: var(--wp--preset--color--brutal-border);
+			border: 1px solid var(--wp--preset--color--acid-lime);
+		}
+		.gcb-video-rail__container::-webkit-scrollbar-thumb:hover {
+			background: var(--wp--preset--color--acid-lime);
+		}
+	</style>
+
 	<!-- Video Rail Scroll Container -->
 	<div class="gcb-video-rail__container video-rail-scroll" style="display: flex; gap: 2rem; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding-bottom: 1rem;">
 
