@@ -273,3 +273,40 @@ function gcb_get_video_rail_content(): string {
 	include get_template_directory() . '/patterns/video-rail.php';
 	return ob_get_clean();
 }
+
+/**
+ * Register Bento Grid block pattern
+ *
+ * Registers the PHP-generated bento grid pattern for use in templates.
+ */
+function gcb_register_bento_grid_pattern(): void {
+	// Only register on frontend
+	if ( is_admin() ) {
+		return;
+	}
+
+	register_block_pattern(
+		'gcb-brutalist/bento-grid',
+		array(
+			'title'       => __( 'Bento Grid', 'gcb-brutalist' ),
+			'description' => __( 'Mixed layout grid combining video and standard posts with Editorial Brutalism styling', 'gcb-brutalist' ),
+			'categories'  => array( 'featured', 'gcb-content' ),
+			'keywords'    => array( 'bento', 'grid', 'mixed', 'layout', 'brutalism' ),
+			'content'     => gcb_get_bento_grid_content(),
+		)
+	);
+}
+add_action( 'init', 'gcb_register_bento_grid_pattern' );
+
+/**
+ * Get bento grid pattern content
+ *
+ * Generates the HTML for the bento grid pattern by querying mixed posts.
+ *
+ * @return string Bento grid HTML
+ */
+function gcb_get_bento_grid_content(): string {
+	ob_start();
+	include get_template_directory() . '/patterns/bento-grid.php';
+	return ob_get_clean();
+}
