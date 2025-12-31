@@ -15,6 +15,9 @@
  */
 ?>
 
+<!-- Skip Navigation Link (WCAG 2.4.1 - Bypass Blocks) -->
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
 <!-- Sticky Header with Mobile Menu -->
 <header class="site-header" role="banner">
 	<div class="header-wrapper">
@@ -73,6 +76,30 @@
 </nav>
 
 <style>
+	/* ===== SKIP NAVIGATION LINK (WCAG 2.4.1) ===== */
+	.skip-link {
+		position: absolute;
+		top: -40px;
+		left: 0;
+		z-index: 1000;
+		padding: 0.75rem 1.5rem;
+		background-color: #CCFF00; /* Acid Lime */
+		color: #050505; /* Void Black */
+		font-family: 'Space Mono', monospace;
+		font-size: 0.875rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		text-decoration: none;
+		border: 2px solid #050505;
+		transition: top 0.2s ease;
+	}
+
+	.skip-link:focus {
+		top: 0;
+		outline: 2px solid #CCFF00;
+		outline-offset: 2px;
+	}
+
 	/* ===== STICKY HEADER ===== */
 	.site-header {
 		position: sticky;
@@ -104,8 +131,12 @@
 	}
 
 	.site-logo a {
+		display: inline-block;
+		min-height: 44px; /* WCAG 2.5.8 touch target */
+		padding: 0.5rem 0; /* Ensure minimum touch target size */
 		text-decoration: none;
 		color: #FAFAFA; /* Off-White */
+		line-height: 1.2;
 	}
 
 	.logo-text {
