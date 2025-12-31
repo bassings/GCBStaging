@@ -75,7 +75,7 @@ if ( ! $video_posts->have_posts() ) {
 			?>
 
 			<!-- Video Card -->
-			<div class="gcb-video-card video-rail-item" style="flex: 0 0 300px; scroll-snap-align: start; border: 2px solid var(--wp--preset--color--acid-lime); background: var(--wp--preset--color--void-black); transition: border-color 0.2s ease;">
+			<div class="gcb-video-card video-rail-item" style="flex: 0 0 300px; scroll-snap-align: start; border: 2px solid var(--wp--preset--color--acid-lime); background: var(--wp--preset--color--void-black);">
 
 				<!-- Thumbnail -->
 				<a href="<?php echo esc_url( get_permalink() ); ?>" style="display: block; position: relative;">

@@ -185,7 +185,6 @@ if (!$culture_grid_query->have_posts()) {
         background-color: #050505; /* Void Black */
         border: 1px solid #333333; /* Brutal Border */
         padding: 1.5rem;
-        transition: border-color 0.2s ease;
         min-height: 200px;
         display: flex;
         flex-direction: column;

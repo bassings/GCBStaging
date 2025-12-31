@@ -171,7 +171,6 @@ if ( ! $hero_posts->have_posts() ) {
 	.gcb-hero__feature:hover,
 	.gcb-hero__opinion:hover {
 		border-color: var(--wp--preset--color--acid-lime);
-		transition: border-color 0.2s ease;
 	}
 
 	/* Ensure link covers entire card for better UX */

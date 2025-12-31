@@ -91,7 +91,7 @@
 		text-transform: uppercase;
 		text-decoration: none;
 		border: 2px solid #050505;
-		transition: top 0.2s ease;
+		
 	}
 
 	.skip-link:focus {
@@ -107,7 +107,7 @@
 		z-index: 100;
 		background-color: #050505; /* Void Black */
 		border-bottom: 2px solid #333333; /* Brutal Border */
-		transition: box-shadow 0.2s ease;
+		
 	}
 
 	/* Shadow on scroll (applied via JS) */
@@ -160,7 +160,7 @@
 		text-decoration: none;
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
-		transition: color 0.2s ease;
+		
 	}
 
 	.nav-link:hover,
@@ -184,7 +184,7 @@
 		font-size: 1rem;
 		padding: 0.5rem 1rem;
 		cursor: pointer;
-		transition: all 0.2s ease;
+
 		min-height: 44px;
 		min-width: 44px;
 	}
@@ -356,7 +356,7 @@
 		letter-spacing: 0.05em;
 		padding: 1rem;
 		border: 1px solid transparent;
-		transition: all 0.2s ease;
+
 		min-height: 44px;
 		display: flex;
 		align-items: center;
