@@ -154,3 +154,40 @@ function gcb_get_bento_grid_content(): string {
 	include get_template_directory() . '/patterns/bento-grid.php';
 	return ob_get_clean();
 }
+
+/**
+ * Register Hero Section block pattern
+ *
+ * Registers the PHP-generated hero section pattern for use in templates.
+ */
+function gcb_register_hero_section_pattern(): void {
+	// Only register on frontend
+	if ( is_admin() ) {
+		return;
+	}
+
+	register_block_pattern(
+		'gcb-brutalist/hero-section',
+		array(
+			'title'       => __( 'Hero Section', 'gcb-brutalist' ),
+			'description' => __( 'Two-column hero section with feature and opinion cards using Editorial Brutalism styling', 'gcb-brutalist' ),
+			'categories'  => array( 'featured', 'gcb-content' ),
+			'keywords'    => array( 'hero', 'featured', 'opinion', 'brutalism', 'two-column' ),
+			'content'     => gcb_get_hero_section_content(),
+		)
+	);
+}
+add_action( 'init', 'gcb_register_hero_section_pattern' );
+
+/**
+ * Get hero section pattern content
+ *
+ * Generates the HTML for the hero section pattern by querying latest posts.
+ *
+ * @return string Hero section HTML
+ */
+function gcb_get_hero_section_content(): string {
+	ob_start();
+	include get_template_directory() . '/patterns/hero-section.php';
+	return ob_get_clean();
+}
