@@ -23,11 +23,13 @@ require_once GCB_CI_DIR . 'includes/class-gcb-taxonomy-manager.php';
 require_once GCB_CI_DIR . 'includes/class-gcb-content-detector.php';
 require_once GCB_CI_DIR . 'includes/class-gcb-shortcode-converter.php';
 require_once GCB_CI_DIR . 'includes/class-gcb-video-processor.php';
+require_once GCB_CI_DIR . 'includes/class-gcb-schema-generator.php';
 
 // Initialize hooks
 add_action( 'init', 'gcb_ci_init' );
 add_action( 'save_post', 'gcb_ci_process_post', 20, 2 );
 add_action( 'rest_after_insert_post', 'gcb_ci_process_post_rest', 10, 2 );
+add_action( 'wp_footer', array( 'GCB_Schema_Generator', 'output_schema' ), 999 ); // Priority 999 to run after other plugins
 
 /**
  * Initialize plugin on WordPress init hook
