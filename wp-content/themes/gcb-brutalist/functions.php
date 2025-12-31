@@ -228,3 +228,40 @@ function gcb_get_culture_grid_content(): string {
 	include get_template_directory() . '/patterns/culture-grid.php';
 	return ob_get_clean();
 }
+
+/**
+ * Register Header Navigation block pattern
+ *
+ * Registers the PHP-generated header navigation pattern for use in templates.
+ */
+function gcb_register_header_navigation_pattern(): void {
+	// Only register on frontend
+	if ( is_admin() ) {
+		return;
+	}
+
+	register_block_pattern(
+		'gcb-brutalist/header-navigation',
+		array(
+			'title'       => __( 'Header Navigation', 'gcb-brutalist' ),
+			'description' => __( 'Sticky header with desktop navigation and mobile slide-out menu using Editorial Brutalism styling', 'gcb-brutalist' ),
+			'categories'  => array( 'header', 'gcb-content' ),
+			'keywords'    => array( 'header', 'navigation', 'mobile', 'menu', 'sticky', 'brutalism' ),
+			'content'     => gcb_get_header_navigation_content(),
+		)
+	);
+}
+add_action( 'init', 'gcb_register_header_navigation_pattern' );
+
+/**
+ * Get header navigation pattern content
+ *
+ * Generates the HTML for the header navigation pattern.
+ *
+ * @return string Header navigation HTML
+ */
+function gcb_get_header_navigation_content(): string {
+	ob_start();
+	include get_template_directory() . '/patterns/header-navigation.php';
+	return ob_get_clean();
+}
