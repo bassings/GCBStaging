@@ -1,0 +1,75 @@
+/*
+Theme Name: GCB Brutalist
+Theme URI: https://gaycarboys.com
+Author: Gay Car Boys Editorial Team
+Author URI: https://gaycarboys.com
+Description: Editorial Brutalism meets automotive culture. A bold FSE block theme featuring the "Neon Noir" design system with intentional disruption and hard edges.
+Version: 1.0.0
+Requires at least: 6.9
+Tested up to: 6.9
+Requires PHP: 8.3
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: gcb-brutalist
+Tags: full-site-editing, block-theme, brutalism, editorial, magazine
+*/
+
+/**
+ * Archive Broken Grid Layout
+ * Creates intentional visual disruption with offset rhythm
+ */
+
+/* Post cards - base styling */
+.gcb-post-card {
+	transition: none !important; /* Brutalist = no smooth transitions */
+}
+
+/* Broken grid effect: every 2nd card offset vertically */
+.wp-block-post:nth-child(2n) {
+	margin-top: 50px !important;
+}
+
+/* Post title hover effect - Hyper Blue */
+.gcb-post-title a {
+	color: var(--wp--preset--color--hyper-white) !important;
+	text-decoration: none !important;
+	transition: none !important; /* Instant color snap */
+}
+
+.gcb-post-title a:hover {
+	color: var(--wp--preset--color--hyper-blue) !important;
+}
+
+/* Hard borders on post cards */
+.gcb-post-card {
+	border: 2px solid var(--wp--preset--color--void-black) !important;
+	border-radius: 0 !important; /* No rounded corners */
+}
+
+/* Responsive: 2 columns on tablet */
+@media (max-width: 782px) {
+	.wp-block-post-template {
+		grid-template-columns: repeat(2, 1fr) !important;
+	}
+
+	.wp-block-post:nth-child(2n) {
+		margin-top: 30px !important;
+	}
+}
+
+/* Responsive: 1 column on mobile */
+@media (max-width: 600px) {
+	.wp-block-post-template {
+		grid-template-columns: 1fr !important;
+	}
+
+	.wp-block-post:nth-child(2n) {
+		margin-top: 0 !important;
+	}
+}
+
+/* Focus states for accessibility */
+.gcb-post-title a:focus {
+	outline: 2px solid var(--wp--preset--color--acid-lime) !important;
+	outline-offset: 2px;
+}
