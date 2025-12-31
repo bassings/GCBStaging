@@ -22,6 +22,7 @@ define( 'GCB_CI_URL', plugin_dir_url( __FILE__ ) );
 require_once GCB_CI_DIR . 'includes/class-gcb-taxonomy-manager.php';
 require_once GCB_CI_DIR . 'includes/class-gcb-content-detector.php';
 require_once GCB_CI_DIR . 'includes/class-gcb-shortcode-converter.php';
+require_once GCB_CI_DIR . 'includes/class-gcb-video-processor.php';
 
 // Initialize hooks
 add_action( 'init', 'gcb_ci_init' );
@@ -40,6 +41,7 @@ function gcb_ci_init(): void {
     GCB_Taxonomy_Manager::create_default_terms();
     GCB_Content_Detector::register_post_meta();
     GCB_Shortcode_Converter::register_post_meta();
+    GCB_Video_Processor::register_post_meta();
 }
 
 /**
@@ -68,10 +70,19 @@ function gcb_ci_process_post( int $post_id, WP_Post $post ): void {
     $detector              = new GCB_Content_Detector();
     $format                = $detector->detect_content_format( $post_id );
 
-    // Step 3: Assign taxonomy term
+    // Step 3: Fetch video metadata from YouTube API (if video detected)
+    if ( 'video' === $format ) {
+        $video_id = get_post_meta( $post_id, '_gcb_video_id', true );
+        if ( ! empty( $video_id ) ) {
+            $video_processor = new GCB_Video_Processor();
+            $video_processor->fetch_video_metadata( $post_id, $video_id );
+        }
+    }
+
+    // Step 4: Assign taxonomy term
     wp_set_object_terms( $post_id, $format, 'content_format' );
 
-    // Step 4: Cache format in post meta for quick lookups
+    // Step 5: Cache format in post meta for quick lookups
     update_post_meta( $post_id, '_gcb_content_format', $format );
 }
 

@@ -134,9 +134,30 @@ class GCB_Post_Creator {
                 '_gcb_video_id'            => get_post_meta( $post->ID, '_gcb_video_id', true ),
                 '_gcb_content_format'      => get_post_meta( $post->ID, '_gcb_content_format', true ),
                 '_gcb_shortcode_converted' => get_post_meta( $post->ID, '_gcb_shortcode_converted', true ),
+                '_gcb_video_metadata'      => self::decode_json_meta( $post->ID, '_gcb_video_metadata' ),
+                '_gcb_api_cache_time'      => get_post_meta( $post->ID, '_gcb_api_cache_time', true ),
             ),
         );
 
         return new WP_REST_Response( $response_data, 201 );
+    }
+
+    /**
+     * Decode JSON post meta
+     *
+     * @param int    $post_id  Post ID
+     * @param string $meta_key Meta key
+     * @return mixed Decoded JSON or original value
+     */
+    private static function decode_json_meta( int $post_id, string $meta_key ) {
+        $value = get_post_meta( $post_id, $meta_key, true );
+
+        if ( empty( $value ) ) {
+            return $value;
+        }
+
+        $decoded = json_decode( $value, true );
+
+        return null !== $decoded ? $decoded : $value;
     }
 }
