@@ -25,8 +25,8 @@ if ( ! $grid_posts->have_posts() ) {
 <!-- wp:group {"className":"gcb-bento-grid","style":{"spacing":{"padding":{"top":"var:preset|spacing|50","bottom":"var:preset|spacing|50"},"margin":{"bottom":"var:preset|spacing|50"}}},"layout":{"type":"constrained"}} -->
 <div class="wp-block-group gcb-bento-grid" data-pattern="bento-grid" style="margin-bottom:var(--wp--preset--spacing--50);padding-top:var(--wp--preset--spacing--50);padding-bottom:var(--wp--preset--spacing--50)">
 
-	<!-- wp:heading {"level":2,"style":{"typography":{"fontFamily":"var(--wp--preset--font-family--playfair)","fontSize":"2.5rem","lineHeight":"1.2"},"spacing":{"margin":{"bottom":"var:preset|spacing|40"}},"color":{"text":"var:preset|color|acid-lime"}}} -->
-	<h2 class="wp-block-heading has-acid-lime-color has-text-color" style="margin-bottom:var(--wp--preset--spacing--40);font-family:var(--wp--preset--font-family--playfair);font-size:2.5rem;line-height:1.2">Featured Stories</h2>
+	<!-- wp:heading {"level":2,"style":{"typography":{"fontFamily":"var(--wp--preset--font-family--playfair)","fontSize":"2.5rem","lineHeight":"1.2"},"spacing":{"margin":{"bottom":"var:preset|spacing|40"}},"color":{"text":"var:preset|color|off-white"}}} -->
+	<h2 class="wp-block-heading has-off-white-color has-text-color" style="margin-bottom:var(--wp--preset--spacing--40);font-family:var(--wp--preset--font-family--playfair);font-size:2.5rem;line-height:1.2">FEATURED STORIES</h2>
 	<!-- /wp:heading -->
 
 	<!-- wp:separator {"style":{"spacing":{"margin":{"top":"0","bottom":"var:preset|spacing|40"}},"color":{"background":"var:preset|color|brutal-border"}},"backgroundColor":"brutal-border","className":"is-style-wide"} -->
@@ -99,7 +99,7 @@ if ( ! $grid_posts->have_posts() ) {
 					<?php endif; ?>
 
 					<!-- Metadata -->
-					<div class="gcb-bento-card__meta" style="margin-top: auto; display: flex; gap: 0.75rem; align-items: center; font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; color: var(--wp--preset--color--brutal-grey);">
+					<div class="gcb-bento-card__meta" style="margin-top: auto; display: flex; gap: 0.75rem; align-items: center; font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; color: #999999;">
 						<!-- Post Date -->
 						<time class="post-date" datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>">
 							<?php echo esc_html( get_the_date( 'M j, Y' ) ); ?>
@@ -153,6 +153,6 @@ if ( ! $grid_posts->have_posts() ) {
 
 	/* Hover effect */
 	.bento-item:hover {
-		border-color: var(--wp--preset--color--acid-lime);
+		border-color: var(--wp--preset--color--acid-lime) !important;
 	}
 </style>

@@ -186,4 +186,141 @@ test.describe('GCB Content Intelligence - Bento Grid Pattern', () => {
     });
     expect(headingFont).toMatch(/Playfair/i);
   });
+
+  test('Bento Grid section heading is uppercase "FEATURED STORIES"', async ({ page, request }) => {
+    // Reset database
+    await request.delete('/wp-json/gcb-testing/v1/reset', {
+      headers: { 'GCB-Test-Key': 'test-secret-key-local' }
+    });
+
+    // Create 1 post
+    await request.post('/wp-json/gcb-testing/v1/create-post', {
+      data: {
+        title: 'Heading Test Post',
+        content: '<p>Test content</p>',
+        status: 'publish'
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'GCB-Test-Key': 'test-secret-key-local'
+      }
+    });
+
+    await page.goto('/', { waitUntil: 'networkidle' });
+
+    // Assert: Section heading exists and is uppercase
+    const sectionHeading = page.locator('.gcb-bento-grid h2.wp-block-heading, .culture-grid-title');
+    await expect(sectionHeading.first()).toBeVisible();
+
+    const headingText = await sectionHeading.first().textContent();
+    expect(headingText).toBe('FEATURED STORIES');
+  });
+
+  test('Bento Grid section heading uses off-white color', async ({ page, request }) => {
+    // Reset database
+    await request.delete('/wp-json/gcb-testing/v1/reset', {
+      headers: { 'GCB-Test-Key': 'test-secret-key-local' }
+    });
+
+    // Create 1 post
+    await request.post('/wp-json/gcb-testing/v1/create-post', {
+      data: {
+        title: 'Heading Color Test',
+        content: '<p>Test content</p>',
+        status: 'publish'
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'GCB-Test-Key': 'test-secret-key-local'
+      }
+    });
+
+    await page.goto('/', { waitUntil: 'networkidle' });
+
+    // Assert: Section heading uses off-white color (#FAFAFA)
+    const sectionHeading = page.locator('.gcb-bento-grid h2.wp-block-heading').first();
+    const headingColor = await sectionHeading.evaluate((el) => {
+      return window.getComputedStyle(el).color;
+    });
+
+    // RGB for #FAFAFA is rgb(250, 250, 250)
+    expect(headingColor).toBe('rgb(250, 250, 250)');
+  });
+
+  test('Bento Grid cards show acid-lime border on hover', async ({ page, request }) => {
+    // Reset database
+    await request.delete('/wp-json/gcb-testing/v1/reset', {
+      headers: { 'GCB-Test-Key': 'test-secret-key-local' }
+    });
+
+    // Create 1 post
+    await request.post('/wp-json/gcb-testing/v1/create-post', {
+      data: {
+        title: 'Hover Test Post',
+        content: '<p>Hover test content</p>',
+        status: 'publish'
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'GCB-Test-Key': 'test-secret-key-local'
+      }
+    });
+
+    await page.goto('/', { waitUntil: 'networkidle' });
+
+    // Get the first bento card
+    const bentoCard = page.locator('.bento-item, .gcb-bento-card').first();
+    await expect(bentoCard).toBeVisible();
+
+    // Get initial border color (should be brutal-border #333333 = rgb(51, 51, 51))
+    const initialBorderColor = await bentoCard.evaluate((el) => {
+      return window.getComputedStyle(el).borderColor;
+    });
+    expect(initialBorderColor).toBe('rgb(51, 51, 51)');
+
+    // Hover over the card
+    await bentoCard.hover();
+
+    // Wait a moment for hover state to apply
+    await page.waitForTimeout(100);
+
+    // Get border color after hover (should be acid-lime #CCFF00 = rgb(204, 255, 0))
+    const hoverBorderColor = await bentoCard.evaluate((el) => {
+      return window.getComputedStyle(el).borderColor;
+    });
+    expect(hoverBorderColor).toBe('rgb(204, 255, 0)');
+  });
+
+  test('Bento Grid metadata uses brutal-grey color (#999999)', async ({ page, request }) => {
+    // Reset database
+    await request.delete('/wp-json/gcb-testing/v1/reset', {
+      headers: { 'GCB-Test-Key': 'test-secret-key-local' }
+    });
+
+    // Create 1 post
+    await request.post('/wp-json/gcb-testing/v1/create-post', {
+      data: {
+        title: 'Metadata Color Test',
+        content: '<p>Test content for metadata</p>',
+        status: 'publish'
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'GCB-Test-Key': 'test-secret-key-local'
+      }
+    });
+
+    await page.goto('/', { waitUntil: 'networkidle' });
+
+    // Assert: Metadata div uses brutal-grey color
+    const metadata = page.locator('.gcb-bento-card__meta, .bento-item .post-date').first();
+    await expect(metadata).toBeVisible();
+
+    const metadataColor = await metadata.evaluate((el) => {
+      return window.getComputedStyle(el).color;
+    });
+
+    // RGB for #999999 is rgb(153, 153, 153)
+    expect(metadataColor).toBe('rgb(153, 153, 153)');
+  });
 });

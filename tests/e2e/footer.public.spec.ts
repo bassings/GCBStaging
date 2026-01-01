@@ -21,7 +21,7 @@ test.describe('Footer - Social Media Icons & Branding', () => {
 		await expect(tagline).toContainText('Gay Car Reviews & Gay Lifestyle');
 	});
 
-	test('Footer displays all 4 social media icons', async ({ page }) => {
+	test('Footer displays all 5 social media icons', async ({ page }) => {
 		// YouTube
 		const youtube = page.locator('a[href*="youtube"][aria-label="YouTube"]');
 		await expect(youtube).toBeVisible();
@@ -34,6 +34,10 @@ test.describe('Footer - Social Media Icons & Branding', () => {
 		const twitter = page.locator('a[href*="twitter"][aria-label="Twitter"]');
 		await expect(twitter).toBeVisible();
 
+		// Bluesky (NEW)
+		const bluesky = page.locator('a[href*="bsky"][aria-label="Bluesky"]');
+		await expect(bluesky).toBeVisible();
+
 		// Facebook (NEW)
 		const facebook = page.locator('a[href*="facebook"][aria-label="Facebook"]');
 		await expect(facebook).toBeVisible();
@@ -42,7 +46,7 @@ test.describe('Footer - Social Media Icons & Branding', () => {
 	test('Social media icons meet WCAG touch target requirements', async ({ page }) => {
 		const socialIcons = page.locator('.social-icon');
 		const count = await socialIcons.count();
-		expect(count).toBe(4); // YouTube, Instagram, Twitter, Facebook
+		expect(count).toBe(5); // YouTube, Instagram, Twitter, Bluesky, Facebook
 
 		for (let i = 0; i < count; i++) {
 			const icon = socialIcons.nth(i);
@@ -113,6 +117,7 @@ test.describe('Footer - Social Media Icons & Branding', () => {
 			{ label: 'YouTube', href: 'youtube' },
 			{ label: 'Instagram', href: 'instagram' },
 			{ label: 'Twitter', href: 'twitter' },
+			{ label: 'Bluesky', href: 'bsky' },
 			{ label: 'Facebook', href: 'facebook' }
 		];
 
