@@ -331,3 +331,20 @@ function gcb_add_fusion_builder_support(): void {
 	add_filter( 'fusion_builder_enabled', '__return_true' );
 }
 add_action( 'after_setup_theme', 'gcb_add_fusion_builder_support' );
+
+/**
+ * Enqueue jQuery for Fusion Builder compatibility
+ *
+ * Fusion Builder requires jQuery to render shortcodes.
+ * WordPress includes jQuery by default, but FSE themes don't automatically enqueue it.
+ */
+function gcb_enqueue_jquery(): void {
+	// Only on frontend, not in admin
+	if ( is_admin() ) {
+		return;
+	}
+
+	// Enqueue WordPress's bundled jQuery (in no-conflict mode)
+	wp_enqueue_script( 'jquery' );
+}
+add_action( 'wp_enqueue_scripts', 'gcb_enqueue_jquery' );
