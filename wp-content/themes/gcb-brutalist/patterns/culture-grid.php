@@ -15,51 +15,20 @@
  * - Responsive: 1 col mobile, 2 col tablet, 4 col desktop
  */
 
-// Query for standard posts (exclude videos)
-// Note: We get all posts first, then filter out videos in PHP
-// This is because posts without the content_format taxonomy won't match a NOT IN query
+// Query for standard posts (exclude videos by using content_format taxonomy)
 $culture_grid_args = array(
     'post_type'      => 'post',
-    'posts_per_page' => 12, // Get more posts to ensure we have 8 after filtering
+    'posts_per_page' => 8,
     'post_status'    => 'publish',
     'orderby'        => 'date',
     'order'          => 'DESC',
-);
-
-$culture_grid_query = new WP_Query($culture_grid_args);
-
-// Filter out video posts manually
-$culture_grid_posts = array();
-if ($culture_grid_query->have_posts()) {
-    while ($culture_grid_query->have_posts()) {
-        $culture_grid_query->the_post();
-        $post_id = get_the_ID();
-
-        // Check if post has content_format taxonomy
-        $terms = wp_get_object_terms($post_id, 'content_format', array('fields' => 'slugs'));
-
-        // Include post if it's NOT a video (either no taxonomy or not 'video')
-        if (!is_wp_error($terms) && !in_array('video', $terms, true)) {
-            $culture_grid_posts[] = $post_id;
-            if (count($culture_grid_posts) >= 8) {
-                break; // Only need 8 posts
-            }
-        }
-    }
-    wp_reset_postdata();
-}
-
-// If no posts found after filtering, return early
-if (empty($culture_grid_posts)) {
-    return;
-}
-
-// Create a new query with the filtered post IDs
-$culture_grid_args = array(
-    'post_type'      => 'post',
-    'post__in'       => $culture_grid_posts,
-    'orderby'        => 'post__in', // Maintain our filtered order
-    'posts_per_page' => 8,
+    'tax_query'      => array(
+        array(
+            'taxonomy' => 'content_format',
+            'field'    => 'slug',
+            'terms'    => 'standard', // Only get standard (non-video) posts
+        ),
+    ),
 );
 
 $culture_grid_query = new WP_Query($culture_grid_args);
