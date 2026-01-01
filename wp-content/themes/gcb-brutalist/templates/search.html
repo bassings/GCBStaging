@@ -23,11 +23,11 @@
 	<!-- /wp:group -->
 
 	<!-- Search Results Query (inherits ?s=query automatically) -->
-	<!-- wp:query {"queryId":2,"query":{"perPage":12,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":true},"align":"wide"} -->
+	<!-- wp:query {"queryId":2,"query":{"perPage":9,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":true},"align":"wide"} -->
 	<div class="wp-block-query alignwide search-results-grid">
 
-		<!-- Bento Grid Container (reuse existing pattern layout) -->
-		<div class="gcb-bento-grid__container bento-grid-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; grid-auto-rows: minmax(200px, auto);">
+		<!-- Bento Grid Container (3x3 grid on desktop) -->
+		<div class="gcb-bento-grid__container bento-grid-container" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; grid-auto-rows: minmax(200px, auto);">
 
 			<!-- wp:post-template {"style":{"spacing":{"blockGap":"var:preset|spacing|40"}}} -->
 

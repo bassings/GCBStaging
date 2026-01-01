@@ -243,9 +243,11 @@
 		searchOverlay.setAttribute('aria-hidden', 'false');
 		body.classList.add('menu-open'); // Reuse scroll lock
 
-		// Focus input
+		// Focus input after animation completes (300ms transition)
 		if (searchInput) {
-			searchInput.focus();
+			setTimeout(function() {
+				searchInput.focus();
+			}, 350);
 		}
 	}
 
