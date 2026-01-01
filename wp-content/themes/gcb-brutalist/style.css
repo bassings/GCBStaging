@@ -106,13 +106,22 @@ Tags: full-site-editing, block-theme, brutalism, editorial, magazine
 	margin: 0 !important;
 }
 
+/* List Item (grid child) - Fill Grid Cell */
+ul.gcb-bento-grid__container.wp-block-post-template > li.wp-block-post {
+	list-style: none !important;
+	height: 100% !important; /* Fill grid cell */
+	display: flex !important; /* Make inner card stretch */
+	margin: 0 !important; /* Remove default list item margin */
+}
+
 /* Card Styling - Fill Grid Cell */
 .search-results-page .bento-item.gcb-bento-card {
 	overflow: hidden !important;
 	display: flex !important;
 	flex-direction: column !important;
 	transition: none !important;
-	height: 100% !important; /* Fill grid cell */
+	height: 100% !important; /* Fill parent li */
+	width: 100% !important;
 	box-sizing: border-box !important; /* Include border in height */
 }
 
