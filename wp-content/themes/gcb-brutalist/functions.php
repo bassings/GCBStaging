@@ -503,50 +503,50 @@ add_action( 'wp_enqueue_scripts', 'gcb_enqueue_jquery' );
  */
 function gcb_process_fusion_video_fallback( $content ): string {
 	// Only apply fallback if Fusion Builder is NOT active
-	if ( class_exists( 'FusionBuilder' ) ) {
+	// Check both class existence and if shortcode is actually registered
+	$fusion_active = class_exists( 'FusionBuilder' ) && shortcode_exists( 'fusion_youtube' );
+
+	if ( $fusion_active ) {
 		return $content;
 	}
 
-	// Look for fusion_youtube shortcode pattern
-	$pattern = '/\[fusion_youtube[^\]]*id=["\']([^"\']+)["\'][^\]]*\]/i';
+	// Look for fusion_youtube shortcode pattern with id parameter
+	$pattern = '/\[fusion_youtube[^\]]*id=["\']?([^"\'\s\]]+)["\']?[^\]]*\]/i';
 	$content = preg_replace_callback( $pattern, function( $matches ) {
-		$youtube_id = $matches[1];
+		$youtube_id = trim( $matches[1] );
 
-		// Generate responsive YouTube embed HTML
-		$embed_html = sprintf(
-			'<div class="fusion-youtube video-shortcode wp-block-embed__wrapper" style="position:relative;padding-bottom:56.25%%;height:0;overflow:hidden;max-width:100%%;">
-				<iframe
-					src="https://www.youtube.com/embed/%s"
-					style="position:absolute;top:0;left:0;width:100%%;height:100%%;"
-					frameborder="0"
-					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-					allowfullscreen>
-				</iframe>
-			</div>',
-			esc_attr( $youtube_id )
-		);
+		// Generate responsive YouTube embed HTML with explicit dimensions
+		// Using absolute positioning for the iframe ensures it fills the container
+		$embed_html = '<div class="fusion-youtube video-shortcode" style="position: relative; width: 100%; max-width: 100%; padding-bottom: 56.25%; height: 0; overflow: hidden; margin: 1rem 0;">' .
+			'<iframe ' .
+				'src="' . esc_url( 'https://www.youtube.com/embed/' . $youtube_id ) . '" ' .
+				'style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" ' .
+				'frameborder="0" ' .
+				'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' .
+				'referrerpolicy="strict-origin-when-cross-origin" ' .
+				'allowfullscreen>' .
+			'</iframe>' .
+		'</div>';
 
 		return $embed_html;
 	}, $content );
 
 	// Also handle generic [fusion_code] wrapped YouTube URLs
-	$pattern = '/\[fusion_code\](https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)[^\]]*)\[\/fusion_code\]/i';
+	$pattern = '/\[fusion_code[^\]]*\](https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)[^\[]*)\[\/fusion_code\]/i';
 	$content = preg_replace_callback( $pattern, function( $matches ) {
-		$youtube_id = $matches[2];
+		$youtube_id = trim( $matches[2] );
 
 		// Generate responsive YouTube embed HTML
-		$embed_html = sprintf(
-			'<div class="fusion-youtube video-shortcode wp-block-embed__wrapper" style="position:relative;padding-bottom:56.25%%;height:0;overflow:hidden;max-width:100%%;">
-				<iframe
-					src="https://www.youtube.com/embed/%s"
-					style="position:absolute;top:0;left:0;width:100%%;height:100%%;"
-					frameborder="0"
-					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-					allowfullscreen>
-				</iframe>
-			</div>',
-			esc_attr( $youtube_id )
-		);
+		$embed_html = '<div class="fusion-youtube video-shortcode" style="position: relative; width: 100%; max-width: 100%; padding-bottom: 56.25%; height: 0; overflow: hidden; margin: 1rem 0;">' .
+			'<iframe ' .
+				'src="' . esc_url( 'https://www.youtube.com/embed/' . $youtube_id ) . '" ' .
+				'style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" ' .
+				'frameborder="0" ' .
+				'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' .
+				'referrerpolicy="strict-origin-when-cross-origin" ' .
+				'allowfullscreen>' .
+			'</iframe>' .
+		'</div>';
 
 		return $embed_html;
 	}, $content );
@@ -560,3 +560,97 @@ function gcb_process_fusion_video_fallback( $content ): string {
 	return $content;
 }
 add_filter( 'the_content', 'gcb_process_fusion_video_fallback', 8 ); // Run before do_shortcode (priority 11)
+
+/**
+ * Register fallback shortcode handlers for Fusion Builder shortcodes
+ *
+ * These only register if Fusion Builder hasn't already registered them.
+ * This ensures videos work even when Fusion Builder plugin is inactive.
+ */
+function gcb_register_fusion_fallback_shortcodes(): void {
+	// Only register if fusion_youtube shortcode doesn't already exist
+	if ( ! shortcode_exists( 'fusion_youtube' ) ) {
+		add_shortcode( 'fusion_youtube', 'gcb_fusion_youtube_shortcode_fallback' );
+	}
+
+	// Only register if fusion_code shortcode doesn't already exist
+	if ( ! shortcode_exists( 'fusion_code' ) ) {
+		add_shortcode( 'fusion_code', 'gcb_fusion_code_shortcode_fallback' );
+	}
+}
+add_action( 'init', 'gcb_register_fusion_fallback_shortcodes', 999 ); // Run very late
+
+/**
+ * Fallback handler for [fusion_youtube] shortcode
+ *
+ * @param array $atts Shortcode attributes.
+ * @return string YouTube embed HTML.
+ */
+function gcb_fusion_youtube_shortcode_fallback( array $atts ): string {
+	$atts = shortcode_atts(
+		array(
+			'id'     => '',
+			'width'  => '',
+			'height' => '',
+		),
+		$atts,
+		'fusion_youtube'
+	);
+
+	$youtube_id = trim( $atts['id'] );
+
+	if ( empty( $youtube_id ) ) {
+		return '<!-- YouTube ID missing -->';
+	}
+
+	// Generate responsive YouTube embed
+	return '<div class="fusion-youtube video-shortcode" style="position: relative; width: 100%; max-width: 100%; padding-bottom: 56.25%; height: 0; overflow: hidden; margin: 1rem 0;">' .
+		'<iframe ' .
+			'src="' . esc_url( 'https://www.youtube.com/embed/' . $youtube_id ) . '" ' .
+			'style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" ' .
+			'frameborder="0" ' .
+			'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' .
+			'referrerpolicy="strict-origin-when-cross-origin" ' .
+			'allowfullscreen' .
+			'title="YouTube video player">' .
+		'</iframe>' .
+	'</div>';
+}
+
+/**
+ * Fallback handler for [fusion_code] shortcode
+ *
+ * @param array  $atts Shortcode attributes.
+ * @param string $content Shortcode content.
+ * @return string Processed content.
+ */
+function gcb_fusion_code_shortcode_fallback( array $atts, string $content = '' ): string {
+	// Check if content contains a YouTube URL
+	if ( preg_match( '/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/i', $content, $matches ) ) {
+		$youtube_id = $matches[1];
+
+		// Return YouTube embed
+		return '<div class="fusion-youtube video-shortcode" style="position: relative; width: 100%; max-width: 100%; padding-bottom: 56.25%; height: 0; overflow: hidden; margin: 1rem 0;">' .
+			'<iframe ' .
+				'src="' . esc_url( 'https://www.youtube.com/embed/' . $youtube_id ) . '" ' .
+				'style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" ' .
+				'frameborder="0" ' .
+				'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' .
+				'referrerpolicy="strict-origin-when-cross-origin" ' .
+				'allowfullscreen' .
+				'title="YouTube video player">' .
+			'</iframe>' .
+		'</div>';
+	}
+
+	// Otherwise, decode and return as-is (base64 encoded content)
+	if ( ! empty( $content ) ) {
+		// Fusion Builder encodes content in base64
+		$decoded = base64_decode( $content );
+		if ( $decoded !== false ) {
+			return $decoded;
+		}
+	}
+
+	return $content;
+}
