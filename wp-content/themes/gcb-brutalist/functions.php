@@ -315,3 +315,19 @@ function gcb_force_search_order_by_date( $query ) {
 	return $query;
 }
 add_action( 'pre_get_posts', 'gcb_force_search_order_by_date' );
+
+/**
+ * Add Fusion Builder theme support
+ *
+ * Enables Fusion Builder to work with this FSE theme by declaring compatibility.
+ * Required for legacy content created with Fusion Builder shortcodes.
+ */
+function gcb_add_fusion_builder_support(): void {
+	// Declare Fusion Builder compatibility
+	add_theme_support( 'fusion-builder' );
+	add_theme_support( 'fusion-core' );
+
+	// Allow Fusion Builder to load its assets
+	add_filter( 'fusion_builder_enabled', '__return_true' );
+}
+add_action( 'after_setup_theme', 'gcb_add_fusion_builder_support' );
