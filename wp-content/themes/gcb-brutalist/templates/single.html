@@ -47,6 +47,88 @@
 	box-shadow: none !important;
 }
 
+/* Brutalist Table Styling - Override all inline styles from legacy content */
+#main-content .wp-block-post-content table {
+	width: 100% !important;
+	border-collapse: collapse !important;
+	margin: 2rem 0 !important;
+	background: transparent !important;
+	background-color: transparent !important;
+	font-family: var(--wp--preset--font-family--mono) !important;
+	font-size: 0.875rem !important;
+	line-height: 1.6 !important;
+}
+
+/* Table headers - Acid Lime accent */
+#main-content .wp-block-post-content table thead,
+#main-content .wp-block-post-content table thead tr,
+#main-content .wp-block-post-content table thead th {
+	background: var(--wp--preset--color--void-black) !important;
+	background-color: var(--wp--preset--color--void-black) !important;
+	color: var(--wp--preset--color--off-white) !important;
+	border: 2px solid var(--wp--preset--color--acid-lime) !important;
+	border-bottom: 2px solid var(--wp--preset--color--acid-lime) !important;
+	font-weight: 700 !important;
+	text-transform: uppercase !important;
+	letter-spacing: 0.05em !important;
+	padding: 12px 16px !important;
+	text-align: left !important;
+}
+
+/* Table body cells - Void black background, off-white text */
+#main-content .wp-block-post-content table tbody tr,
+#main-content .wp-block-post-content table tbody td {
+	background: var(--wp--preset--color--void-black) !important;
+	background-color: var(--wp--preset--color--void-black) !important;
+	color: var(--wp--preset--color--off-white) !important;
+	border: 1px solid var(--wp--preset--color--brutal-border) !important;
+	padding: 12px 16px !important;
+	text-align: left !important;
+}
+
+/* Alternating row striping - Subtle brutal-border background */
+#main-content .wp-block-post-content table tbody tr:nth-child(even) td {
+	background: #0a0a0a !important;
+	background-color: #0a0a0a !important;
+}
+
+/* Override any inline text color styles */
+#main-content .wp-block-post-content table thead th,
+#main-content .wp-block-post-content table thead th *,
+#main-content .wp-block-post-content table tbody td,
+#main-content .wp-block-post-content table tbody td * {
+	color: var(--wp--preset--color--off-white) !important;
+}
+
+/* Table captions */
+#main-content .wp-block-post-content table caption {
+	color: var(--wp--preset--color--brutal-grey) !important;
+	font-family: var(--wp--preset--font-family--mono) !important;
+	font-size: 0.75rem !important;
+	text-transform: uppercase !important;
+	letter-spacing: 0.1em !important;
+	padding: 8px 0 !important;
+	text-align: left !important;
+}
+
+/* Ensure table doesn't overflow on mobile */
+#main-content .wp-block-post-content table {
+	display: block !important;
+	overflow-x: auto !important;
+	-webkit-overflow-scrolling: touch !important;
+}
+
+@media (max-width: 767px) {
+	#main-content .wp-block-post-content table {
+		font-size: 0.75rem !important;
+	}
+
+	#main-content .wp-block-post-content table thead th,
+	#main-content .wp-block-post-content table tbody td {
+		padding: 8px 12px !important;
+	}
+}
+
 /* Preserve Fusion Builder grid and flex layouts */
 #main-content .wp-block-post-content .fusion-gallery {
 	display: flex !important;
