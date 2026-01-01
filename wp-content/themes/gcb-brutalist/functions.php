@@ -265,3 +265,40 @@ function gcb_get_header_navigation_content(): string {
 	include get_template_directory() . '/patterns/header-navigation.php';
 	return ob_get_clean();
 }
+
+/**
+ * Register Terminal Search Modal block pattern
+ *
+ * Registers the PHP-generated search modal pattern for use in templates.
+ */
+function gcb_register_search_terminal_pattern(): void {
+	// Only register on frontend
+	if ( is_admin() ) {
+		return;
+	}
+
+	register_block_pattern(
+		'gcb-brutalist/search-terminal',
+		array(
+			'title'       => __( 'Terminal Search Modal', 'gcb-brutalist' ),
+			'description' => __( 'Full-screen terminal-style search modal with Editorial Brutalism styling', 'gcb-brutalist' ),
+			'categories'  => array( 'search', 'gcb-content' ),
+			'keywords'    => array( 'search', 'terminal', 'modal', 'brutalism' ),
+			'content'     => gcb_get_search_terminal_content(),
+		)
+	);
+}
+add_action( 'init', 'gcb_register_search_terminal_pattern' );
+
+/**
+ * Get terminal search modal pattern content
+ *
+ * Generates the HTML for the terminal search modal pattern.
+ *
+ * @return string Terminal search modal HTML
+ */
+function gcb_get_search_terminal_content(): string {
+	ob_start();
+	include get_template_directory() . '/patterns/search-terminal.php';
+	return ob_get_clean();
+}
