@@ -304,14 +304,160 @@ function gcb_get_search_terminal_content(): string {
 }
 
 /**
+ * Register Search Results Grid block pattern
+ *
+ * Registers the PHP-generated search results pattern for use in templates.
+ */
+function gcb_register_search_results_pattern(): void {
+	// Only register on frontend
+	if ( is_admin() ) {
+		return;
+	}
+
+	register_block_pattern(
+		'gcb-brutalist/search-results',
+		array(
+			'title'       => __( 'Search Results Grid', 'gcb-brutalist' ),
+			'description' => __( '3x3 bento-style grid displaying search results with Editorial Brutalism styling', 'gcb-brutalist' ),
+			'categories'  => array( 'search', 'gcb-content' ),
+			'keywords'    => array( 'search', 'results', 'bento', 'grid', 'brutalism' ),
+			'content'     => gcb_get_search_results_content(),
+		)
+	);
+}
+add_action( 'init', 'gcb_register_search_results_pattern' );
+
+/**
+ * Get search results pattern content
+ *
+ * Generates the HTML for the search results pattern by querying search term.
+ *
+ * @return string Search results HTML
+ */
+function gcb_get_search_results_content(): string {
+	ob_start();
+	include get_template_directory() . '/patterns/search-results.php';
+	return ob_get_clean();
+}
+
+/**
+ * Search Results Grid Shortcode
+ *
+ * Displays filtered search results in a bento-style grid.
+ * Usage: [gcb_search_results]
+ */
+function gcb_search_results_shortcode() {
+	// Get the search query
+	$search_query = get_search_query();
+	if ( empty( $search_query ) && isset( $_GET['s'] ) ) {
+		$search_query = sanitize_text_field( wp_unslash( $_GET['s'] ) );
+	}
+
+	// Build query args - search only in titles for more relevant results
+	$args = array(
+		'post_type'      => 'post',
+		'post_status'    => 'publish',
+		'posts_per_page' => 9,
+		'orderby'        => 'date',
+		'order'          => 'DESC',
+	);
+
+	// Use custom title search for better relevance
+	if ( ! empty( $search_query ) ) {
+		// Instead of 's' parameter, use a custom meta query approach
+		// We'll filter by title using posts_where filter
+		add_filter( 'posts_where', function( $where ) use ( $search_query ) {
+			global $wpdb;
+			// Search only in post_title for more relevant results
+			$where .= $wpdb->prepare(
+				" AND {$wpdb->posts}.post_title LIKE %s",
+				'%' . $wpdb->esc_like( $search_query ) . '%'
+			);
+			return $where;
+		}, 10, 1 );
+	}
+
+	// Execute search query
+	$search_results = new WP_Query( $args );
+
+	// Remove the filter after query executes
+	if ( ! empty( $search_query ) ) {
+		remove_all_filters( 'posts_where' );
+	}
+
+	// Start output buffering
+	ob_start();
+
+	if ( $search_results->have_posts() ) :
+		?>
+		<div class="wp-block-group alignwide search-results-grid">
+			<ul class="gcb-bento-grid__container wp-block-post-template">
+				<?php
+				while ( $search_results->have_posts() ) :
+					$search_results->the_post();
+					?>
+					<li class="wp-block-post bento-item gcb-bento-card" style="border:2px solid var(--wp--preset--color--brutal-border);background:var(--wp--preset--color--void-black)">
+						<?php if ( has_post_thumbnail() ) : ?>
+							<a href="<?php the_permalink(); ?>" class="wp-block-post-featured-image">
+								<?php the_post_thumbnail( 'large' ); ?>
+							</a>
+						<?php endif; ?>
+						<div class="wp-block-group">
+							<h3 class="wp-block-post-title">
+								<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+							</h3>
+							<div class="search-card-meta wp-block-group">
+								<time class="wp-block-post-date" datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>">
+									<?php echo esc_html( strtoupper( get_the_date( 'M j, Y' ) ) ); ?>
+								</time>
+								<span class="post-type-badge" style="padding:2px 8px;border:1px solid var(--wp--preset--color--brutal-border);font-family:var(--wp--preset--font-family--mono);font-size:0.75rem;text-transform:uppercase;color:var(--wp--preset--color--brutal-grey);">ARTICLE</span>
+							</div>
+						</div>
+					</li>
+					<?php
+				endwhile;
+				wp_reset_postdata();
+				?>
+			</ul>
+		</div>
+		<?php
+	else :
+		?>
+		<div class="wp-block-query-no-results">
+			<p class="search-no-results has-brutal-grey-color" style="padding:var(--wp--preset--spacing--50) 0;font-family:var(--wp--preset--font-family--mono);font-size:1.25rem;color:var(--wp--preset--color--brutal-grey);">No results found. Try a different search term.</p>
+		</div>
+		<?php
+	endif;
+
+	return ob_get_clean();
+}
+add_shortcode( 'gcb_search_results', 'gcb_search_results_shortcode' );
+
+/**
  * Force search results to order by date descending instead of relevance
  * Ensures most recent articles appear first on search results page
+ * Applies to both main query and query blocks on search pages
  */
 function gcb_force_search_order_by_date( $query ) {
-	if ( ! is_admin() && $query->is_search() && $query->is_main_query() ) {
+	// Skip admin queries
+	if ( is_admin() ) {
+		return $query;
+	}
+
+	// Apply to main search query
+	if ( $query->is_search() && $query->is_main_query() ) {
 		$query->set( 'orderby', 'date' );
 		$query->set( 'order', 'DESC' );
 	}
+
+	// Also apply to query blocks on search pages (not main query)
+	// Query blocks have is_search() false, so check if we're on a search page
+	if ( $query->is_search() && ! $query->is_main_query() ) {
+		// This is a query block on a search page - ensure it uses search term
+		$query->set( 'orderby', 'date' );
+		$query->set( 'order', 'DESC' );
+	}
+
 	return $query;
 }
 add_action( 'pre_get_posts', 'gcb_force_search_order_by_date' );
