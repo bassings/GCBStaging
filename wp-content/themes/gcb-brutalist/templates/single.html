@@ -25,9 +25,25 @@
 <!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->
 
 <style>
-/* Remove white border from post content */
-.wp-block-post-content {
+/* Remove Fusion Builder white backgrounds and borders */
+#main-content .wp-block-post-content,
+#main-content .wp-block-post-content > *,
+#main-content .wp-block-post-content .fusion-builder-row,
+#main-content .wp-block-post-content .fusion-column-wrapper,
+#main-content .wp-block-post-content .fusion-column,
+#main-content .wp-block-post-content .fusion-column-wrapper.fusion-column-has-shadow {
+	background: transparent !important;
+	background-color: transparent !important;
 	border: none !important;
 	outline: none !important;
+	box-shadow: none !important;
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+}
+
+/* Remove all borders and backgrounds from content area */
+#main-content .wp-block-group {
+	outline: none !important;
+	box-shadow: none !important;
 }
 </style>
