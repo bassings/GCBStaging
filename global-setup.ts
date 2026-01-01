@@ -2,6 +2,7 @@ import { chromium, type FullConfig } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
+import { SessionManager } from './tests/utils/session-manager.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -9,34 +10,101 @@ const __dirname = path.dirname(__filename);
 /**
  * Global Setup for GCB Magazine E2E Tests
  *
- * 1. Creates a backup of the SQLite database
- * 2. Validates that WordPress Studio is running and accessible
- * 3. Fails fast if environment is not ready
+ * Session-Based Isolation:
+ * 1. Announces test session ID
+ * 2. Creates baseline database from development database (if needed)
+ * 3. Creates session-specific database from baseline
+ * 4. Swaps database symlink to point to session database
+ * 5. Validates that WordPress Studio is running and accessible
  *
- * The database backup will be restored in global-teardown.ts
+ * This enables multiple Claude Code instances to run tests simultaneously
+ * without interfering with each other's database state.
  */
 async function globalSetup(config: FullConfig) {
   const baseURL = config.projects[0].use.baseURL || 'http://localhost:8881';
+  const sessionId = SessionManager.getSessionId();
 
-  // Backup database before tests run
-  console.log('\n💾 Creating database backup...\n');
+  console.log('\n🎯 Test Session ID:', sessionId);
+  console.log('ℹ️  Each session uses an isolated database to prevent interference\n');
 
-  const dbPath = path.join(__dirname, 'wp-content', 'database', '.ht.sqlite');
-  const backupPath = path.join(__dirname, 'wp-content', 'database', '.ht.sqlite.backup');
+  // Check for existing session databases (might indicate another session is running)
+  const databaseDir = path.join(__dirname, 'wp-content', 'database');
+  const existingSessionDbs = fs.readdirSync(databaseDir)
+    .filter(file => file.startsWith('.ht.sqlite.session-') && file !== `.ht.sqlite.session-${sessionId}`);
+
+  if (existingSessionDbs.length > 0) {
+    console.log('⚠️  Warning: Found existing session databases:', existingSessionDbs.join(', '));
+    console.log('ℹ️  If another Claude instance is running tests, they may conflict.');
+    console.log('ℹ️  Current implementation supports sequential sessions only.\n');
+  }
+
+  // Define paths
+  const devDbPath = path.join(__dirname, SessionManager.getDevelopmentDatabasePath());
+  const baselineDbPath = path.join(__dirname, SessionManager.getBaselineDatabasePath());
+  const sessionDbPath = path.join(__dirname, SessionManager.getDatabasePath());
+  const dbLinkPath = path.join(__dirname, 'wp-content', 'database', '.ht.sqlite');
 
   try {
-    if (fs.existsSync(dbPath)) {
-      fs.copyFileSync(dbPath, backupPath);
-      const stats = fs.statSync(backupPath);
-      const sizeMB = (stats.size / 1024 / 1024).toFixed(2);
-      console.log(`✅ Database backed up to: .ht.sqlite.backup (${sizeMB} MB)`);
-      console.log(`ℹ️  Original content will be restored after tests complete\n`);
+    // Step 1: Create baseline database if it doesn't exist
+    if (!fs.existsSync(baselineDbPath)) {
+      console.log('📦 Creating baseline database from development database...');
+
+      if (fs.existsSync(devDbPath)) {
+        fs.copyFileSync(devDbPath, baselineDbPath);
+        const stats = fs.statSync(baselineDbPath);
+        const sizeMB = (stats.size / 1024 / 1024).toFixed(2);
+        console.log(`✅ Baseline created: .ht.sqlite.baseline (${sizeMB} MB)\n`);
+      } else {
+        console.log('⚠️  Warning: No development database found');
+        console.log('ℹ️  Tests will start with empty database\n');
+      }
     } else {
-      console.log('ℹ️  No database file found - skipping backup\n');
+      const stats = fs.statSync(baselineDbPath);
+      const sizeMB = (stats.size / 1024 / 1024).toFixed(2);
+      console.log(`✅ Using existing baseline: .ht.sqlite.baseline (${sizeMB} MB)\n`);
     }
+
+    // Step 2: Create session database from baseline
+    console.log(`💾 Creating session database: .ht.sqlite.session-${sessionId}`);
+
+    if (fs.existsSync(baselineDbPath)) {
+      fs.copyFileSync(baselineDbPath, sessionDbPath);
+      const stats = fs.statSync(sessionDbPath);
+      const sizeMB = (stats.size / 1024 / 1024).toFixed(2);
+      console.log(`✅ Session database created (${sizeMB} MB)\n`);
+    } else {
+      console.log('⚠️  Warning: No baseline database found, session will start empty\n');
+    }
+
+    // Step 3: Backup original .ht.sqlite if it exists and isn't a symlink
+    const originalBackupPath = path.join(__dirname, 'wp-content', 'database', '.ht.sqlite.original');
+
+    if (fs.existsSync(dbLinkPath)) {
+      const stats = fs.lstatSync(dbLinkPath);
+
+      if (!stats.isSymbolicLink()) {
+        // It's a real file, back it up
+        console.log('💾 Backing up original development database...');
+        fs.copyFileSync(dbLinkPath, originalBackupPath);
+        console.log('✅ Original database backed up to .ht.sqlite.original\n');
+      }
+
+      // Remove existing file or symlink
+      fs.unlinkSync(dbLinkPath);
+    }
+
+    // Step 4: Create symlink to session database
+    console.log('🔗 Creating symlink to session database...');
+    const relativePath = path.relative(
+      path.dirname(dbLinkPath),
+      sessionDbPath
+    );
+    fs.symlinkSync(relativePath, dbLinkPath);
+    console.log(`✅ Symlink created: .ht.sqlite → ${relativePath}\n`);
+
   } catch (error) {
-    console.error('⚠️  Warning: Database backup failed:', error);
-    console.error('Tests will continue, but content may not be restored.\n');
+    console.error('❌ Session database setup failed:', error);
+    throw error;
   }
 
   console.log('🔍 Validating WordPress Studio environment...\n');

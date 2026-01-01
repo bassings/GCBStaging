@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
+import { SessionManager } from './tests/utils/session-manager.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -8,34 +9,59 @@ const __dirname = path.dirname(__filename);
 /**
  * Global Teardown for GCB Magazine E2E Tests
  *
- * Restores the database backup created before tests ran.
- * This ensures any pre-existing content is preserved.
+ * Session Cleanup:
+ * 1. Removes session-specific database
+ * 2. Removes .ht.sqlite symlink
+ * 3. Restores original .ht.sqlite file (if backed up)
+ *
+ * This cleanup ensures the development database is restored after tests complete.
  */
 async function globalTeardown() {
-  const dbPath = path.join(__dirname, 'wp-content', 'database', '.ht.sqlite');
-  const backupPath = path.join(__dirname, 'wp-content', 'database', '.ht.sqlite.backup');
+  const sessionId = SessionManager.getSessionId();
 
-  console.log('\n🔄 Restoring database from backup...\n');
+  console.log('\n🧹 Cleaning up test session:', sessionId, '\n');
+
+  const sessionDbPath = path.join(__dirname, SessionManager.getDatabasePath());
+  const dbLinkPath = path.join(__dirname, 'wp-content', 'database', '.ht.sqlite');
+  const originalBackupPath = path.join(__dirname, 'wp-content', 'database', '.ht.sqlite.original');
 
   try {
-    if (fs.existsSync(backupPath)) {
-      // Restore backup
-      fs.copyFileSync(backupPath, dbPath);
-      console.log(`✅ Database restored from backup`);
+    // Step 1: Remove symlink
+    if (fs.existsSync(dbLinkPath)) {
+      const stats = fs.lstatSync(dbLinkPath);
 
-      // Remove backup file
-      fs.unlinkSync(backupPath);
-      console.log(`✅ Backup file removed`);
-
-      console.log('\n🎉 Database restoration complete!\n');
-    } else {
-      console.log('ℹ️  No backup file found - skipping restoration\n');
+      if (stats.isSymbolicLink()) {
+        fs.unlinkSync(dbLinkPath);
+        console.log('✅ Symlink removed: .ht.sqlite');
+      }
     }
+
+    // Step 2: Restore original .ht.sqlite if backup exists
+    if (fs.existsSync(originalBackupPath)) {
+      fs.copyFileSync(originalBackupPath, dbLinkPath);
+      console.log('✅ Original database restored: .ht.sqlite');
+
+      // Remove backup
+      fs.unlinkSync(originalBackupPath);
+      console.log('✅ Backup removed: .ht.sqlite.original');
+    } else {
+      console.log('ℹ️  No original database backup found - development database was symlink');
+    }
+
+    // Step 3: Remove session database
+    if (fs.existsSync(sessionDbPath)) {
+      fs.unlinkSync(sessionDbPath);
+      console.log(`✅ Session database removed: .ht.sqlite.session-${sessionId}`);
+    } else {
+      console.log(`ℹ️  Session database not found: .ht.sqlite.session-${sessionId}`);
+    }
+
+    console.log('\n🎉 Session cleanup complete!\n');
+
   } catch (error) {
-    console.error('\n⚠️  Warning: Database restoration failed:', error);
-    console.error('The backup file may still exist at:', backupPath);
-    console.error('You can manually restore it if needed.\n');
-    // Don't throw - we don't want to fail the entire test run if restoration fails
+    console.error('\n⚠️  Warning: Session cleanup failed:', error);
+    console.error('You may need to manually restore .ht.sqlite.original\n');
+    // Don't throw - we don't want to fail the entire test run if cleanup fails
   }
 }
 
