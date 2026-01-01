@@ -428,6 +428,53 @@ test.describe('Search - Results Grid Layout', () => {
 		const viewportWidth = 375;
 		expect(bodyScrollWidth).toBeLessThanOrEqual(viewportWidth + 1);
 	});
+
+	test('Desktop (1920px) - All cards have uniform height for neat grid alignment', async ({ page }) => {
+		// Set desktop viewport
+		await page.setViewportSize({ width: 1920, height: 1080 });
+
+		// Navigate to search results
+		await page.goto('/?s=Polestar', { waitUntil: 'networkidle' });
+
+		// Get all bento cards
+		const cards = page.locator('.bento-item.gcb-bento-card');
+		await expect(cards.first()).toBeVisible();
+
+		// Verify we have 9 cards
+		expect(await cards.count()).toBe(9);
+
+		// Get heights of all cards
+		const cardHeights = await cards.evaluateAll((cardElements) => {
+			return cardElements.map(card => card.getBoundingClientRect().height);
+		});
+
+		// All cards should have the same height (within 1px tolerance for rounding)
+		const firstHeight = cardHeights[0];
+		cardHeights.forEach((height, index) => {
+			expect(Math.abs(height - firstHeight)).toBeLessThanOrEqual(1);
+		});
+
+		// Verify cards are in a neat 3x3 grid by checking positions
+		// Row 1 (cards 0, 1, 2), Row 2 (cards 3, 4, 5), Row 3 (cards 6, 7, 8)
+		const cardPositions = await cards.evaluateAll((cardElements) => {
+			return cardElements.map(card => {
+				const rect = card.getBoundingClientRect();
+				return { top: rect.top, left: rect.left, height: rect.height, width: rect.width };
+			});
+		});
+
+		// Row 1: cards 0, 1, 2 should have same top position
+		expect(Math.abs(cardPositions[0].top - cardPositions[1].top)).toBeLessThanOrEqual(1);
+		expect(Math.abs(cardPositions[0].top - cardPositions[2].top)).toBeLessThanOrEqual(1);
+
+		// Row 2: cards 3, 4, 5 should have same top position
+		expect(Math.abs(cardPositions[3].top - cardPositions[4].top)).toBeLessThanOrEqual(1);
+		expect(Math.abs(cardPositions[3].top - cardPositions[5].top)).toBeLessThanOrEqual(1);
+
+		// Row 3: cards 6, 7, 8 should have same top position
+		expect(Math.abs(cardPositions[6].top - cardPositions[7].top)).toBeLessThanOrEqual(1);
+		expect(Math.abs(cardPositions[6].top - cardPositions[8].top)).toBeLessThanOrEqual(1);
+	});
 });
 
 test.describe('Search - Responsive Behavior', () => {

@@ -91,6 +91,95 @@ Tags: full-site-editing, block-theme, brutalism, editorial, magazine
 }
 
 /**
+ * Search Results Grid Layout - Uniform 3x3 Grid
+ * Ensures all cards are exactly the same size for neat alignment
+ */
+
+/* Grid Container - Fixed Row Heights */
+.search-results-grid .wp-block-post-template.gcb-bento-grid__container {
+	display: grid !important;
+	grid-template-columns: repeat(3, 1fr) !important;
+	gap: 2rem !important;
+	grid-auto-rows: 400px !important; /* Fixed row height for uniform grid */
+	list-style: none !important;
+	padding: 0 !important;
+	margin: 0 !important;
+}
+
+/* Card Styling - Fill Grid Cell */
+.search-results-page .bento-item.gcb-bento-card {
+	overflow: hidden !important;
+	display: flex !important;
+	flex-direction: column !important;
+	transition: none !important;
+	height: 100% !important; /* Fill grid cell */
+	box-sizing: border-box !important; /* Include border in height */
+}
+
+/* Featured Image - Fixed Height */
+.search-results-grid .wp-block-post-featured-image {
+	flex-shrink: 0 !important; /* Prevent image from shrinking */
+}
+
+.search-results-grid .wp-block-post-featured-image img,
+.search-result-thumbnail img {
+	filter: grayscale(100%) contrast(1.3) !important;
+	width: 100% !important;
+	height: 200px !important;
+	object-fit: cover !important;
+	display: block !important;
+}
+
+/* Content Area - Fill Remaining Space */
+.search-results-page .bento-item.gcb-bento-card > .wp-block-group {
+	flex: 1 !important; /* Fill remaining space after image */
+	display: flex !important;
+	flex-direction: column !important;
+	overflow: hidden !important; /* Prevent content overflow */
+}
+
+/* Text Content Overflow Handling */
+.search-results-page .wp-block-post-excerpt {
+	overflow: hidden !important;
+	text-overflow: ellipsis !important;
+}
+
+.search-results-page .wp-block-post-excerpt p {
+	display: -webkit-box !important;
+	-webkit-line-clamp: 3 !important; /* Limit to 3 lines */
+	-webkit-box-orient: vertical !important;
+	overflow: hidden !important;
+	text-overflow: ellipsis !important;
+}
+
+/* Hover Effect: Acid Lime Border */
+.search-results-page .bento-item.gcb-bento-card:hover {
+	border-color: var(--wp--preset--color--acid-lime, #CCFF00) !important;
+}
+
+/* Responsive Grid */
+@media (max-width: 768px) {
+	.search-results-grid .wp-block-post-template.gcb-bento-grid__container {
+		grid-template-columns: 1fr !important;
+		grid-auto-rows: 380px !important;
+	}
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+	.search-results-grid .wp-block-post-template.gcb-bento-grid__container {
+		grid-template-columns: repeat(2, 1fr) !important;
+		grid-auto-rows: 400px !important;
+	}
+}
+
+@media (min-width: 1025px) {
+	.search-results-grid .wp-block-post-template.gcb-bento-grid__container {
+		grid-template-columns: repeat(3, 1fr) !important;
+		grid-auto-rows: 400px !important;
+	}
+}
+
+/**
  * Single Post Content Styling
  * Images and videos within post content
  */
@@ -124,4 +213,90 @@ Tags: full-site-editing, block-theme, brutalism, editorial, magazine
 	left: 0;
 	width: 100%;
 	height: 100%;
+}
+
+/**
+ * Brutalist Table Styling
+ * Override inline styles with Editorial Brutalism design system
+ */
+
+/* Base table styling */
+.wp-block-post-content table {
+	font-family: var(--wp--preset--font-family--mono) !important;
+	border-collapse: collapse !important;
+	width: 100% !important;
+	border: 2px solid var(--wp--preset--color--brutal-border) !important;
+	background-color: var(--wp--preset--color--void-black) !important;
+	margin: 2rem 0 !important;
+}
+
+/* Table headers */
+.wp-block-post-content table th {
+	background-color: var(--wp--preset--color--void-black) !important;
+	color: var(--wp--preset--color--acid-lime) !important;
+	padding: 12px !important;
+	text-align: left !important;
+	border: 1px solid var(--wp--preset--color--brutal-border) !important;
+	font-weight: bold !important;
+	text-transform: uppercase !important;
+	font-size: 0.875rem !important;
+	letter-spacing: 0.05em !important;
+}
+
+/* Table rows */
+.wp-block-post-content table tr {
+	background-color: var(--wp--preset--color--void-black) !important;
+	border: 1px solid var(--wp--preset--color--brutal-border) !important;
+}
+
+/* Remove alternating row colors (no striping in brutalist design) */
+.wp-block-post-content table tr:nth-child(even),
+.wp-block-post-content table tbody tr:nth-child(even) {
+	background-color: var(--wp--preset--color--void-black) !important;
+}
+
+/* Table data cells */
+.wp-block-post-content table td {
+	padding: 12px !important;
+	border: 1px solid var(--wp--preset--color--brutal-border) !important;
+	color: var(--wp--preset--color--off-white) !important;
+	background-color: var(--wp--preset--color--void-black) !important;
+	font-size: 0.875rem !important;
+	line-height: 1.6 !important;
+}
+
+/* Table header row styling */
+.wp-block-post-content table thead tr {
+	background-color: var(--wp--preset--color--void-black) !important;
+	border-bottom: 2px solid var(--wp--preset--color--brutal-border) !important;
+}
+
+/* Table body styling */
+.wp-block-post-content table tbody {
+	background-color: var(--wp--preset--color--void-black) !important;
+}
+
+/* Hover effect on table rows (acid lime accent) */
+.wp-block-post-content table tr:hover {
+	border-color: var(--wp--preset--color--acid-lime) !important;
+}
+
+/* Focus states for accessibility */
+.wp-block-post-content table th:focus,
+.wp-block-post-content table td:focus {
+	outline: 2px solid var(--wp--preset--color--acid-lime) !important;
+	outline-offset: 2px;
+}
+
+/* Responsive table styling */
+@media (max-width: 768px) {
+	.wp-block-post-content table {
+		font-size: 0.75rem !important;
+	}
+
+	.wp-block-post-content table th,
+	.wp-block-post-content table td {
+		padding: 8px !important;
+		font-size: 0.75rem !important;
+	}
 }
