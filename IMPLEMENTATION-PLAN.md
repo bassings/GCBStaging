@@ -5,7 +5,37 @@
 
 ---
 
-## 🎉 Latest Update: Design Consistency Bug Fixes (January 1, 2026)
+## 🎉 Latest Update: Search Results Grid Layout Fix (January 1, 2026)
+
+**Completed:** Fixed search results page to display 3x3 bento grid on desktop (was displaying single column)
+
+**Issue:**
+- Search results at `/?s=query` were displaying in a single column on desktop instead of a 3x3 grid
+- Template had incorrect HTML structure with grid container wrapping the `wp-block-post-template`
+
+**Root Cause:**
+- WordPress Query Loop's `post-template` block must BE the grid container, not be nested inside one
+- Previous structure: `<div class="grid-container"><ul class="post-template">` (incorrect)
+- Fixed structure: `<ul class="post-template grid-container">` (correct)
+
+**Changes Implemented:**
+1. ✅ **Template Structure Fix** - Removed wrapper div, applied grid classes directly to `wp-block-post-template`
+2. ✅ **CSS Update** - Updated selectors to target `.wp-block-post-template.gcb-bento-grid__container`
+3. ✅ **E2E Tests Added** - 3 new responsive grid layout tests (desktop/tablet/mobile)
+4. ✅ **Test Timeout Fix** - Increased timeout to 60s for post creation in grid layout tests
+
+**Test Results:**
+- ✅ Desktop (1920px): 3-column grid test passing
+- ✅ Tablet (768px): 2-column grid test passing (with increased timeout)
+- ✅ Mobile (375px): 1-column grid test passing (with increased timeout)
+
+**Files Modified:**
+- `/wp-content/themes/gcb-brutalist/templates/search.html` - Fixed grid structure and CSS
+- `/tests/e2e/search.public.spec.ts` - Added 3 new grid layout tests, increased timeout
+
+---
+
+## Previous Update: Design Consistency Bug Fixes (January 1, 2026)
 
 **Completed:** 9 bug fixes and feature additions for design alignment with north star prototype
 

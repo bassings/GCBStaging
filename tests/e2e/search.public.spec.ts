@@ -331,6 +331,105 @@ test.describe('Search - Results Display', () => {
 	});
 });
 
+test.describe('Search - Results Grid Layout', () => {
+	// Increase timeout for post creation
+	test.setTimeout(60000);
+
+	test.beforeEach(async ({ page, request }) => {
+		// Reset database
+		await request.delete('/wp-json/gcb-testing/v1/reset', {
+			headers: { 'GCB-Test-Key': 'test-secret-key-local' },
+		});
+
+		// Create 9 test posts for full 3x3 grid
+		for (let i = 1; i <= 9; i++) {
+			await request.post('/wp-json/gcb-testing/v1/create-post', {
+				data: {
+					title: `Polestar ${i} Review`,
+					content: `<p>Review of the Polestar ${i} electric vehicle</p>`,
+					status: 'publish',
+				},
+				headers: {
+					'Content-Type': 'application/json',
+					'GCB-Test-Key': 'test-secret-key-local',
+				},
+			});
+		}
+	});
+
+	test('Desktop (1920px) - Results display in 3-column grid', async ({ page }) => {
+		// Set desktop viewport
+		await page.setViewportSize({ width: 1920, height: 1080 });
+
+		// Navigate to search results
+		await page.goto('/?s=Polestar', { waitUntil: 'networkidle' });
+
+		// Verify grid container exists and has correct styles
+		const gridContainer = page.locator('.wp-block-post-template');
+		await expect(gridContainer).toBeVisible();
+
+		// Check grid columns via computed style
+		const gridTemplateColumns = await gridContainer.evaluate((el) => {
+			return window.getComputedStyle(el).gridTemplateColumns;
+		});
+
+		// Should have 3 equal columns: "repeat(3, 1fr)" = "X X X" (3 values)
+		const columnCount = gridTemplateColumns.split(' ').length;
+		expect(columnCount).toBe(3);
+
+		// Verify 9 cards are displayed
+		const cards = page.locator('.bento-item, .gcb-bento-card');
+		expect(await cards.count()).toBe(9);
+	});
+
+	test('Tablet (768px) - Results display in 2-column grid', async ({ page }) => {
+		// Set tablet viewport
+		await page.setViewportSize({ width: 768, height: 1024 });
+
+		// Navigate to search results
+		await page.goto('/?s=Polestar', { waitUntil: 'networkidle' });
+
+		// Verify grid container exists
+		const gridContainer = page.locator('.wp-block-post-template');
+		await expect(gridContainer).toBeVisible();
+
+		// Check grid columns
+		const gridTemplateColumns = await gridContainer.evaluate((el) => {
+			return window.getComputedStyle(el).gridTemplateColumns;
+		});
+
+		// Should have 2 equal columns
+		const columnCount = gridTemplateColumns.split(' ').length;
+		expect(columnCount).toBe(2);
+	});
+
+	test('Mobile (375px) - Results display in single column', async ({ page }) => {
+		// Set mobile viewport
+		await page.setViewportSize({ width: 375, height: 667 });
+
+		// Navigate to search results
+		await page.goto('/?s=Polestar', { waitUntil: 'networkidle' });
+
+		// Verify grid container exists
+		const gridContainer = page.locator('.wp-block-post-template');
+		await expect(gridContainer).toBeVisible();
+
+		// Check grid columns
+		const gridTemplateColumns = await gridContainer.evaluate((el) => {
+			return window.getComputedStyle(el).gridTemplateColumns;
+		});
+
+		// Should have 1 column
+		const columnCount = gridTemplateColumns.split(' ').length;
+		expect(columnCount).toBe(1);
+
+		// Verify no horizontal scroll
+		const bodyScrollWidth = await page.evaluate(() => document.body.scrollWidth);
+		const viewportWidth = 375;
+		expect(bodyScrollWidth).toBeLessThanOrEqual(viewportWidth + 1);
+	});
+});
+
 test.describe('Search - Responsive Behavior', () => {
 	test.beforeEach(async ({ page, request }) => {
 		// Reset database
