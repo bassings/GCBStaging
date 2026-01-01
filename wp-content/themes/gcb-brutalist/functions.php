@@ -302,3 +302,16 @@ function gcb_get_search_terminal_content(): string {
 	include get_template_directory() . '/patterns/search-terminal.php';
 	return ob_get_clean();
 }
+
+/**
+ * Force search results to order by date descending instead of relevance
+ * Ensures most recent articles appear first on search results page
+ */
+function gcb_force_search_order_by_date( $query ) {
+	if ( ! is_admin() && $query->is_search() && $query->is_main_query() ) {
+		$query->set( 'orderby', 'date' );
+		$query->set( 'order', 'DESC' );
+	}
+	return $query;
+}
+add_action( 'pre_get_posts', 'gcb_force_search_order_by_date' );

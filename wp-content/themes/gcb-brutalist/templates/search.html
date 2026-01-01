@@ -7,7 +7,7 @@
 	display: grid !important;
 	grid-template-columns: repeat(3, 1fr) !important;
 	gap: 2rem !important;
-	grid-auto-rows: 400px !important;
+	grid-auto-rows: 440px !important; /* Increased to show dates */
 	align-items: stretch !important;
 }
 
@@ -18,25 +18,34 @@ ul.gcb-bento-grid__container > li.wp-block-post {
 	margin-block-end: 0 !important;
 }
 
-/* Force all cards to 400px height */
+/* Force all cards to uniform height */
 .search-results-grid .bento-item.gcb-bento-card,
 .search-results-page .bento-item.gcb-bento-card {
-	height: 400px !important;
-	min-height: 400px !important;
-	max-height: 400px !important;
+	height: 440px !important; /* Increased to show dates */
+	min-height: 440px !important;
+	max-height: 440px !important;
 	box-sizing: border-box !important;
+	display: flex !important;
+	flex-direction: column !important;
+}
+
+/* Ensure content area fills space and shows all elements */
+.search-results-page .bento-item.gcb-bento-card > .wp-block-group {
+	flex: 1 !important;
+	display: flex !important;
+	flex-direction: column !important;
 }
 
 /* Responsive grid heights */
 @media (max-width: 768px) {
 	.search-results-grid .wp-block-post-template.gcb-bento-grid__container {
 		grid-template-columns: 1fr !important;
-		grid-auto-rows: 380px !important;
+		grid-auto-rows: 420px !important;
 	}
 	.search-results-grid .bento-item.gcb-bento-card {
-		height: 380px !important;
-		min-height: 380px !important;
-		max-height: 380px !important;
+		height: 420px !important;
+		min-height: 420px !important;
+		max-height: 420px !important;
 	}
 }
 
@@ -70,8 +79,8 @@ ul.gcb-bento-grid__container > li.wp-block-post {
 	</div>
 	<!-- /wp:group -->
 
-	<!-- Search Results Query (inherits ?s=query automatically) -->
-	<!-- wp:query {"queryId":2,"query":{"perPage":9,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":true},"align":"wide"} -->
+	<!-- Search Results Query - Explicitly order by date descending -->
+	<!-- wp:query {"queryId":2,"query":{"perPage":9,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":true,"search":""},"align":"wide"} -->
 	<div class="wp-block-query alignwide search-results-grid">
 
 		<!-- wp:post-template {"className":"gcb-bento-grid__container","style":{"spacing":{"blockGap":"2rem"}}} -->
