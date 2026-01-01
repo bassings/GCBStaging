@@ -494,3 +494,69 @@ function gcb_enqueue_jquery(): void {
 	wp_enqueue_script( 'jquery' );
 }
 add_action( 'wp_enqueue_scripts', 'gcb_enqueue_jquery' );
+
+/**
+ * Fallback: Process video shortcodes if Fusion Builder is not active
+ *
+ * Ensures YouTube embeds work even when Fusion Builder plugin is inactive.
+ * Uses WordPress's built-in oEmbed functionality as a fallback.
+ */
+function gcb_process_fusion_video_fallback( $content ): string {
+	// Only apply fallback if Fusion Builder is NOT active
+	if ( class_exists( 'FusionBuilder' ) ) {
+		return $content;
+	}
+
+	// Look for fusion_youtube shortcode pattern
+	$pattern = '/\[fusion_youtube[^\]]*id=["\']([^"\']+)["\'][^\]]*\]/i';
+	$content = preg_replace_callback( $pattern, function( $matches ) {
+		$youtube_id = $matches[1];
+
+		// Generate responsive YouTube embed HTML
+		$embed_html = sprintf(
+			'<div class="fusion-youtube video-shortcode wp-block-embed__wrapper" style="position:relative;padding-bottom:56.25%%;height:0;overflow:hidden;max-width:100%%;">
+				<iframe
+					src="https://www.youtube.com/embed/%s"
+					style="position:absolute;top:0;left:0;width:100%%;height:100%%;"
+					frameborder="0"
+					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+					allowfullscreen>
+				</iframe>
+			</div>',
+			esc_attr( $youtube_id )
+		);
+
+		return $embed_html;
+	}, $content );
+
+	// Also handle generic [fusion_code] wrapped YouTube URLs
+	$pattern = '/\[fusion_code\](https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)[^\]]*)\[\/fusion_code\]/i';
+	$content = preg_replace_callback( $pattern, function( $matches ) {
+		$youtube_id = $matches[2];
+
+		// Generate responsive YouTube embed HTML
+		$embed_html = sprintf(
+			'<div class="fusion-youtube video-shortcode wp-block-embed__wrapper" style="position:relative;padding-bottom:56.25%%;height:0;overflow:hidden;max-width:100%%;">
+				<iframe
+					src="https://www.youtube.com/embed/%s"
+					style="position:absolute;top:0;left:0;width:100%%;height:100%%;"
+					frameborder="0"
+					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+					allowfullscreen>
+				</iframe>
+			</div>',
+			esc_attr( $youtube_id )
+		);
+
+		return $embed_html;
+	}, $content );
+
+	// Handle plain YouTube URLs in content using WordPress oEmbed
+	global $wp_embed;
+	if ( $wp_embed ) {
+		$content = $wp_embed->autoembed( $content );
+	}
+
+	return $content;
+}
+add_filter( 'the_content', 'gcb_process_fusion_video_fallback', 8 ); // Run before do_shortcode (priority 11)
