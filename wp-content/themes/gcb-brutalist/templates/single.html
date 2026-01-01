@@ -78,4 +78,126 @@
 	width: 100% !important;
 	height: 100% !important;
 }
+
+/* Fix Fusion Builder Lite YouTube Embed custom element */
+#main-content .wp-block-post-content lite-youtube {
+	display: block !important;
+	position: relative !important;
+	width: 100% !important;
+	height: 100% !important;
+	background-color: #000 !important;
+	background-position: center center !important;
+	background-size: cover !important;
+	cursor: pointer !important;
+}
+
+/* Ensure lite-youtube fills the video-shortcode container */
+#main-content .wp-block-post-content .video-shortcode lite-youtube {
+	position: absolute !important;
+	top: 0 !important;
+	left: 0 !important;
+	width: 100% !important;
+	height: 100% !important;
+}
+
+/* Add play button to lite-youtube (if JS fails to add it) */
+#main-content .wp-block-post-content lite-youtube::before {
+	content: '' !important;
+	display: block !important;
+	position: absolute !important;
+	top: 50% !important;
+	left: 50% !important;
+	width: 68px !important;
+	height: 48px !important;
+	transform: translate(-50%, -50%) !important;
+	background-color: rgba(204, 255, 0, 0.9) !important;
+	border-radius: 14% !important;
+	transition: background-color 0.1s cubic-bezier(0, 0, 0.2, 1) !important;
+	z-index: 1 !important;
+}
+
+/* Play button triangle */
+#main-content .wp-block-post-content lite-youtube::after {
+	content: '' !important;
+	display: block !important;
+	position: absolute !important;
+	top: 50% !important;
+	left: 50% !important;
+	width: 0 !important;
+	height: 0 !important;
+	border-left: 20px solid #000 !important;
+	border-top: 12px solid transparent !important;
+	border-bottom: 12px solid transparent !important;
+	transform: translate(-40%, -50%) !important;
+	z-index: 2 !important;
+}
+
+/* Hover effect for play button */
+#main-content .wp-block-post-content lite-youtube:hover::before {
+	background-color: rgba(204, 255, 0, 1) !important;
+}
+
+/* Force background image to load for lite-youtube */
+#main-content .wp-block-post-content lite-youtube[style*="background-image"] {
+	background-size: cover !important;
+	background-position: center !important;
+	background-repeat: no-repeat !important;
+}
+
+/* Fallback: If lite-youtube has no background, show dark background */
+#main-content .wp-block-post-content lite-youtube:not([style*="background-image"]) {
+	background-color: #0a0a0a !important;
+}
 </style>
+
+<script>
+/**
+ * Ensure lite-youtube custom elements load thumbnails
+ * Fusion Builder's JS should handle this, but this is a fallback
+ */
+(function() {
+	'use strict';
+
+	function initLiteYouTube() {
+		const liteVideos = document.querySelectorAll('lite-youtube');
+
+		liteVideos.forEach(function(video) {
+			const videoId = video.getAttribute('videoid');
+
+			if (!videoId) {
+				return;
+			}
+
+			// Check if background image is already set
+			const hasBackground = video.style.backgroundImage && video.style.backgroundImage !== '';
+
+			if (!hasBackground) {
+				// Set high-res thumbnail as background
+				const thumbnailUrl = 'https://i.ytimg.com/vi/' + videoId + '/maxresdefault.jpg';
+				video.style.backgroundImage = 'url(' + thumbnailUrl + ')';
+			}
+
+			// Ensure the element is visible and clickable
+			video.style.display = 'block';
+			video.style.position = 'absolute';
+			video.style.top = '0';
+			video.style.left = '0';
+			video.style.width = '100%';
+			video.style.height = '100%';
+			video.style.backgroundSize = 'cover';
+			video.style.backgroundPosition = 'center';
+			video.style.cursor = 'pointer';
+		});
+	}
+
+	// Run when DOM is ready
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', initLiteYouTube);
+	} else {
+		initLiteYouTube();
+	}
+
+	// Also run on window load to catch any late-loading elements
+	window.addEventListener('load', initLiteYouTube);
+})();
+</script>
