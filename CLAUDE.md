@@ -79,13 +79,21 @@ Test Results: 81+ E2E tests passing
 - Bento-grid tests passing (6/8 new tests pass)
 
 Recent Updates (January 2, 2026):
+✅ Brutalist Table Styling: Override legacy inline styles for dark theme readability
+   - Legacy tables had light backgrounds (blue/white) with white text (unreadable)
+   - Force void-black backgrounds, off-white text on ALL table cells (!important)
+   - Headers: Acid-lime 2px borders, uppercase monospace typography
+   - Body cells: Brutal-border 1px borders, alternating row striping (#050505 / #0a0a0a)
+   - Mobile responsive with horizontal scroll
+   - 19.8:1 contrast ratio (exceeds WCAG AAA)
+   - single.html template (lines 50-130)
 ✅ Fusion Gallery Grid Fix: Added comprehensive CSS/JS for image gallery layouts
    - Galleries were rendering single-column on staging (Fusion CSS not loading)
    - CSS grid system: 2-6 column layouts with responsive breakpoints
    - JavaScript detects column count from 5 different sources (data-columns, classes, child count)
    - Responsive: Desktop (2-6 cols) → Tablet (2 cols) → Mobile (1 col)
    - Gap calculations: calc(percentage - gap) for precise alignment
-   - single.html template (lines 50-362)
+   - single.html template (lines 132-444)
 ✅ Lite YouTube Embed Fix: Added CSS/JS for Fusion Builder <lite-youtube> custom elements
    - Diagnostic revealed Fusion uses lite-youtube instead of iframe
    - CSS-only acid-lime play button (68px x 48px, brutalist style)
@@ -253,6 +261,10 @@ Site contains historical content created with Fusion Builder plugin (2019-2024):
   Renders as: <lite-youtube videoid="ID"></lite-youtube> (not <iframe>)
   Fallback CSS/JS in single.html ensures thumbnails load if Fusion JS fails
 - [fusion_code] shortcodes for base64-encoded tables/HTML
+  ⚠️ NOTE: Often contains <table> elements with inline styles (light backgrounds)
+  Tables designed for light themes with white text become unreadable on dark theme
+  Fallback CSS in single.html forces brutalist styling (void-black bg, off-white text, acid-lime borders)
+  All inline styles overridden with !important declarations
 - [fusion_gallery] shortcodes for image galleries
   ⚠️ NOTE: Requires CSS grid layout and column detection
   Renders as: <div class="fusion-gallery"><div class="fusion-gallery-image">...</div></div>
