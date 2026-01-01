@@ -79,11 +79,19 @@ Test Results: 81+ E2E tests passing
 - Bento-grid tests passing (6/8 new tests pass)
 
 Recent Updates (January 2, 2026):
+✅ Lite YouTube Embed Fix: Added CSS/JS for Fusion Builder <lite-youtube> custom elements
+   - Diagnostic revealed Fusion uses lite-youtube instead of iframe
+   - CSS-only acid-lime play button (68px x 48px, brutalist style)
+   - JavaScript sets YouTube thumbnails if Fusion JS fails to load
+   - single.html template now handles lite-youtube rendering (lines 82-203)
 ✅ Fusion Builder Compatibility: Added three-layer fallback system for legacy content
    - Content filter (priority 8) handles regex replacement
    - Shortcode registration provides fallbacks when plugin inactive
    - Base64 decoding for fusion_code tables
-✅ Cross-Environment Debugging: Created staging-diagnostic.php tool
+✅ Cross-Environment Debugging: Created mu-plugin diagnostic tool (wp-admin/?page=gcb-diagnostic)
+   - Checks Fusion Builder status, fallback functions, shortcode processing
+   - Tests actual post content live
+   - Shows WordPress environment and cache status
 ✅ YouTube Embed Fallbacks: Ensures [fusion_youtube] works on all environments
 ✅ Documentation: Added CRITICAL PROTOCOL section for multi-environment testing
 
@@ -234,6 +242,9 @@ The site operates across three environments with different configurations:
 Legacy Content Dependencies:
 Site contains historical content created with Fusion Builder plugin (2019-2024):
 - [fusion_youtube] shortcodes for YouTube embeds
+  ⚠️ NOTE: Fusion Builder uses <lite-youtube> custom elements (requires CSS/JS)
+  Renders as: <lite-youtube videoid="ID"></lite-youtube> (not <iframe>)
+  Fallback CSS/JS in single.html ensures thumbnails load if Fusion JS fails
 - [fusion_code] shortcodes for base64-encoded tables/HTML
 - [fusion_gallery] shortcodes for image galleries
 - [fusion_builder_container] layout structures
