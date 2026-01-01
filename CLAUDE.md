@@ -67,7 +67,7 @@ Git Workflow:
 3. Commit all changes with descriptive message
 4. Continue to next task
 
-⚠️ CURRENT SITE STATUS (Updated: January 1, 2026)
+⚠️ CURRENT SITE STATUS (Updated: January 2, 2026)
 =================================================
 
 PHASE 4 COMPLETE: Design Consistency Fixes Deployed ✅
@@ -78,7 +78,16 @@ Test Results: 81+ E2E tests passing
 - All footer tests passing (8/8)
 - Bento-grid tests passing (6/8 new tests pass)
 
-Recent Updates (January 1, 2026):
+Recent Updates (January 2, 2026):
+✅ Fusion Builder Compatibility: Added three-layer fallback system for legacy content
+   - Content filter (priority 8) handles regex replacement
+   - Shortcode registration provides fallbacks when plugin inactive
+   - Base64 decoding for fusion_code tables
+✅ Cross-Environment Debugging: Created staging-diagnostic.php tool
+✅ YouTube Embed Fallbacks: Ensures [fusion_youtube] works on all environments
+✅ Documentation: Added CRITICAL PROTOCOL section for multi-environment testing
+
+Previous Updates (January 1, 2026):
 ✅ Bento Grid Heading: Changed to "FEATURED STORIES" (uppercase, off-white)
 ✅ Bento Grid Hover: Fixed acid-lime border on hover (!important added)
 ✅ Bento Grid Metadata: Ensured consistent #999999 brutal-grey color
@@ -214,6 +223,81 @@ Q&A Injection: Automatically detect questions in H2s and generate FAQ Schema for
 theme.json
 /plugins
 /gcb-test-utils (REQUIRED: Handles DB reset)
+
+⚠️ CRITICAL PROTOCOL: MULTI-ENVIRONMENT TESTING & LEGACY CONTENT
+Environment Differences:
+The site operates across three environments with different configurations:
+1. LOCAL (WordPress Studio): Full plugin access, WASM/SQLite, Fusion Builder active
+2. STAGING (WP.com): Managed WordPress, limited plugins, may differ from local
+3. PRODUCTION: Final deployment environment
+
+Legacy Content Dependencies:
+Site contains historical content created with Fusion Builder plugin (2019-2024):
+- [fusion_youtube] shortcodes for YouTube embeds
+- [fusion_code] shortcodes for base64-encoded tables/HTML
+- [fusion_gallery] shortcodes for image galleries
+- [fusion_builder_container] layout structures
+
+Fallback Strategy (functions.php:498-656):
+ALWAYS implement three-layer fallbacks for third-party plugin dependencies:
+1. Content Filter (priority 8): Regex replacement before WordPress shortcode processing
+2. Shortcode Registration: Register fallback handlers if plugin shortcodes don't exist
+3. Graceful Degradation: Decode base64 content, use WordPress oEmbed for URLs
+
+Example Pattern:
+```php
+// Layer 1: Content filter fallback
+function gcb_process_fusion_video_fallback( $content ) {
+    if ( class_exists('FusionBuilder') && shortcode_exists('fusion_youtube') ) {
+        return $content; // Plugin active, use it
+    }
+    // Regex replacement logic here
+}
+add_filter( 'the_content', 'gcb_process_fusion_video_fallback', 8 );
+
+// Layer 2: Shortcode registration fallback
+function gcb_register_fusion_fallback_shortcodes() {
+    if ( ! shortcode_exists( 'fusion_youtube' ) ) {
+        add_shortcode( 'fusion_youtube', 'gcb_fusion_youtube_shortcode_fallback' );
+    }
+}
+add_action( 'init', 'gcb_register_fusion_fallback_shortcodes', 999 );
+```
+
+Cross-Environment Testing Protocol:
+NEVER assume features work the same across environments. Test on BOTH local AND staging:
+1. Develop and test locally using WordPress Studio
+2. Commit changes to Git
+3. Deploy to staging
+4. Clear ALL caches (browser, WordPress, object cache, CDN)
+5. Test identical functionality on staging
+6. Document any environment-specific differences
+
+Debugging Environment Differences:
+When features work locally but fail on staging:
+1. Check plugin activation status (class_exists(), shortcode_exists())
+2. Verify theme files deployed correctly (check functions.php timestamps)
+3. Clear multiple cache layers (browser, WP transients, object cache, page cache)
+4. Use diagnostic tools to compare environments (see staging-diagnostic.php template)
+5. Check for CDN/proxy interference (WP.com Photon, Jetpack modules)
+6. Verify database content matches (post_content field for legacy shortcodes)
+
+Cache Clearing Checklist:
+When deploying fixes to staging/production:
+- ✓ Browser cache (Cmd+Shift+R / Ctrl+Shift+F5)
+- ✓ WordPress transients (wp_cache_flush())
+- ✓ Object cache (Redis/Memcached flush)
+- ✓ Page cache (WP Super Cache, W3 Total Cache, WP Rocket)
+- ✓ CDN cache (Cloudflare, WP.com CDN)
+- ✓ OPcache (PHP opcache_reset() if available)
+
+Common Environment-Specific Issues:
+- Plugins active locally but not on staging
+- File permissions differ (wp-content/uploads writability)
+- PHP version differences (8.3 local vs 8.1 staging)
+- Database differences (SQLite local vs MySQL staging)
+- URL rewriting rules (.htaccess vs nginx)
+- SSL/HTTPS enforcement differences
 
 6. Pattern Specifications
 
