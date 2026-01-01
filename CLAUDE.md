@@ -79,11 +79,18 @@ Test Results: 81+ E2E tests passing
 - Bento-grid tests passing (6/8 new tests pass)
 
 Recent Updates (January 2, 2026):
+✅ Fusion Gallery Grid Fix: Added comprehensive CSS/JS for image gallery layouts
+   - Galleries were rendering single-column on staging (Fusion CSS not loading)
+   - CSS grid system: 2-6 column layouts with responsive breakpoints
+   - JavaScript detects column count from 5 different sources (data-columns, classes, child count)
+   - Responsive: Desktop (2-6 cols) → Tablet (2 cols) → Mobile (1 col)
+   - Gap calculations: calc(percentage - gap) for precise alignment
+   - single.html template (lines 50-362)
 ✅ Lite YouTube Embed Fix: Added CSS/JS for Fusion Builder <lite-youtube> custom elements
    - Diagnostic revealed Fusion uses lite-youtube instead of iframe
    - CSS-only acid-lime play button (68px x 48px, brutalist style)
    - JavaScript sets YouTube thumbnails if Fusion JS fails to load
-   - single.html template now handles lite-youtube rendering (lines 82-203)
+   - single.html template now handles lite-youtube rendering
 ✅ Fusion Builder Compatibility: Added three-layer fallback system for legacy content
    - Content filter (priority 8) handles regex replacement
    - Shortcode registration provides fallbacks when plugin inactive
@@ -247,6 +254,10 @@ Site contains historical content created with Fusion Builder plugin (2019-2024):
   Fallback CSS/JS in single.html ensures thumbnails load if Fusion JS fails
 - [fusion_code] shortcodes for base64-encoded tables/HTML
 - [fusion_gallery] shortcodes for image galleries
+  ⚠️ NOTE: Requires CSS grid layout and column detection
+  Renders as: <div class="fusion-gallery"><div class="fusion-gallery-image">...</div></div>
+  Fallback CSS/JS in single.html detects columns and applies grid layout (2-6 columns)
+  Responsive: 4-6 cols desktop → 2 cols tablet → 1 col mobile
 - [fusion_builder_container] layout structures
 
 Fallback Strategy (functions.php:498-656):
