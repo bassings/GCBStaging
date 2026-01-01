@@ -99,7 +99,7 @@ if ( ! $grid_posts->have_posts() ) {
 					<?php endif; ?>
 
 					<!-- Metadata -->
-					<div class="gcb-bento-card__meta" style="margin-top: auto; display: flex; gap: 0.75rem; align-items: center; font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; color: #999999;">
+					<div class="gcb-bento-card__meta" style="margin-top: auto; display: flex; gap: 0.75rem; align-items: center; font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; color: var(--wp--preset--color--brutal-grey);">
 						<!-- Post Date -->
 						<time class="post-date" datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>">
 							<?php echo esc_html( get_the_date( 'M j, Y' ) ); ?>
