@@ -95,34 +95,48 @@ Tags: full-site-editing, block-theme, brutalism, editorial, magazine
  * Ensures all cards are exactly the same size for neat alignment
  */
 
-/* Grid Container - Fixed Row Heights */
+/* Grid Container - Fixed Row Heights - Override Flow Layout */
 .search-results-grid .wp-block-post-template.gcb-bento-grid__container {
 	display: grid !important;
 	grid-template-columns: repeat(3, 1fr) !important;
 	gap: 2rem !important;
 	grid-auto-rows: 400px !important; /* Fixed row height for uniform grid */
+	align-items: stretch !important; /* Force items to fill vertical space */
 	list-style: none !important;
 	padding: 0 !important;
 	margin: 0 !important;
 }
 
-/* List Item (grid child) - Fill Grid Cell */
-ul.gcb-bento-grid__container.wp-block-post-template > li.wp-block-post {
-	list-style: none !important;
-	height: 100% !important; /* Fill grid cell */
-	display: flex !important; /* Make inner card stretch */
-	margin: 0 !important; /* Remove default list item margin */
+/* Override WordPress Flow Layout margins on li items */
+ul.gcb-bento-grid__container.wp-block-post-template.is-layout-flow > li.wp-block-post,
+.search-results-grid .wp-block-post-template.gcb-bento-grid__container.is-layout-flow > * {
+	margin-block-start: 0 !important;
+	margin-block-end: 0 !important;
+	margin-top: 0 !important;
+	margin-bottom: 0 !important;
 }
 
-/* Card Styling - Fill Grid Cell */
-.search-results-page .bento-item.gcb-bento-card {
+/* List Item (grid child) - Must fill grid cell */
+ul.gcb-bento-grid__container.wp-block-post-template > li.wp-block-post {
+	list-style: none !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	display: block !important; /* Override list-item display */
+	height: 100% !important; /* Fill the 400px grid row */
+	min-height: 400px !important;
+}
+
+/* Card Styling - Force 400px height to fill grid cell */
+.search-results-grid div.wp-block-group.bento-item.gcb-bento-card,
+.search-results-grid .bento-item.gcb-bento-card {
+	min-height: 400px !important;
+	height: 400px !important;
+	max-height: 400px !important;
 	overflow: hidden !important;
 	display: flex !important;
 	flex-direction: column !important;
 	transition: none !important;
-	height: 100% !important; /* Fill parent li */
-	width: 100% !important;
-	box-sizing: border-box !important; /* Include border in height */
+	box-sizing: border-box !important;
 }
 
 /* Featured Image - Fixed Height */
@@ -308,4 +322,10 @@ ul.gcb-bento-grid__container.wp-block-post-template > li.wp-block-post {
 		padding: 8px !important;
 		font-size: 0.75rem !important;
 	}
+}
+/* CRITICAL FIX: Force all search result cards to exact 400px height */
+.search-results-grid .wp-block-post-template[class*="gcb-bento-grid"] > li[class*="wp-block-post"] > div[class*="bento-item"][class*="gcb-bento-card"] {
+	height: 400px !important;
+	min-height: 400px !important;
+	max-height: 400px !important;
 }

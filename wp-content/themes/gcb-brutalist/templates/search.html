@@ -1,5 +1,53 @@
 <!-- wp:template-part {"slug":"header","tagName":"header"} /-->
 
+<!-- wp:html -->
+<style>
+/* CRITICAL: Force uniform 3x3 grid - Override WordPress inline styles */
+.search-results-grid .wp-block-post-template.gcb-bento-grid__container {
+	display: grid !important;
+	grid-template-columns: repeat(3, 1fr) !important;
+	gap: 2rem !important;
+	grid-auto-rows: 400px !important;
+	align-items: stretch !important;
+}
+
+/* Override flow layout margins */
+ul.gcb-bento-grid__container > li.wp-block-post {
+	margin: 0 !important;
+	margin-block-start: 0 !important;
+	margin-block-end: 0 !important;
+}
+
+/* Force all cards to 400px height */
+.search-results-grid .bento-item.gcb-bento-card,
+.search-results-page .bento-item.gcb-bento-card {
+	height: 400px !important;
+	min-height: 400px !important;
+	max-height: 400px !important;
+	box-sizing: border-box !important;
+}
+
+/* Responsive grid heights */
+@media (max-width: 768px) {
+	.search-results-grid .wp-block-post-template.gcb-bento-grid__container {
+		grid-template-columns: 1fr !important;
+		grid-auto-rows: 380px !important;
+	}
+	.search-results-grid .bento-item.gcb-bento-card {
+		height: 380px !important;
+		min-height: 380px !important;
+		max-height: 380px !important;
+	}
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+	.search-results-grid .wp-block-post-template.gcb-bento-grid__container {
+		grid-template-columns: repeat(2, 1fr) !important;
+	}
+}
+</style>
+<!-- /wp:html -->
+
 <!-- wp:group {"tagName":"main","style":{"spacing":{"margin":{"top":"var:preset|spacing|50"},"padding":{"right":"var:preset|spacing|30","left":"var:preset|spacing|30"}}},"layout":{"type":"constrained"}} -->
 <main id="main-content" class="wp-block-group search-results-page" style="margin-top:var(--wp--preset--spacing--50);padding-right:var(--wp--preset--spacing--30);padding-left:var(--wp--preset--spacing--30)">
 
@@ -28,7 +76,7 @@
 
 		<!-- wp:post-template {"className":"gcb-bento-grid__container","style":{"spacing":{"blockGap":"2rem"}}} -->
 
-			<!-- wp:group {"className":"bento-item gcb-bento-card","style":{"border":{"width":"2px","style":"solid","color":"var(--wp--preset--color--brutal-border)"},"spacing":{"padding":"0"},"background":{"color":"var(--wp--preset--color--void-black)"}},"layout":{"type":"default"}} -->
+			<!-- wp:group {"className":"bento-item gcb-bento-card","style":{"border":{"width":"2px","style":"solid","color":"var(--wp--preset--color--brutal-border)"},"spacing":{"padding":"0"},"background":{"color":"var(--wp--preset--color--void-black)"},"dimensions":{"minHeight":"400px"}},"layout":{"type":"flex","orientation":"vertical"}} -->
 			<div class="wp-block-group bento-item gcb-bento-card" style="border-width:2px;border-style:solid;border-color:var(--wp--preset--color--brutal-border);padding:0;background-color:var(--wp--preset--color--void-black)">
 
 				<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"16/9","style":{"border":{"bottom":{"width":"2px","style":"solid","color":"var(--wp--preset--color--brutal-border)"}}},"className":"search-result-thumbnail"} /-->
@@ -80,7 +128,7 @@
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
 	gap: 2rem;
-	grid-auto-rows: minmax(200px, auto);
+	grid-auto-rows: 400px; /* Fixed row height for uniform grid */
 	list-style: none;
 	padding: 0;
 	margin: 0;
@@ -92,6 +140,13 @@
 	display: flex;
 	flex-direction: column;
 	transition: none; /* No transitions per Editorial Brutalism */
+	height: 100%; /* Fill grid cell */
+	box-sizing: border-box; /* Include border in height calculation */
+}
+
+/* Featured Image - Fixed Height */
+.search-results-grid .wp-block-post-featured-image {
+	flex-shrink: 0; /* Prevent image from shrinking */
 }
 
 /* Grayscale Image Filters (match bento grid aesthetic) */
@@ -104,6 +159,28 @@
 	display: block;
 }
 
+/* Content Area - Fill Remaining Space */
+.search-results-page .bento-item.gcb-bento-card > .wp-block-group {
+	flex: 1; /* Fill remaining space after image */
+	display: flex;
+	flex-direction: column;
+	overflow: hidden; /* Prevent content overflow */
+}
+
+/* Text Content Overflow Handling */
+.search-results-page .wp-block-post-excerpt {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.search-results-page .wp-block-post-excerpt p {
+	display: -webkit-box;
+	-webkit-line-clamp: 3; /* Limit to 3 lines */
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
 /* Hover Effect: Acid Lime Border */
 .search-results-page .bento-item.gcb-bento-card:hover {
 	border-color: var(--wp--preset--color--acid-lime, #CCFF00) !important;
@@ -113,18 +190,21 @@
 @media (max-width: 768px) {
 	.search-results-grid .wp-block-post-template.gcb-bento-grid__container {
 		grid-template-columns: 1fr !important;
+		grid-auto-rows: 380px !important; /* Slightly smaller on mobile */
 	}
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
 	.search-results-grid .wp-block-post-template.gcb-bento-grid__container {
 		grid-template-columns: repeat(2, 1fr) !important;
+		grid-auto-rows: 400px !important; /* Same height as desktop */
 	}
 }
 
 @media (min-width: 1025px) {
 	.search-results-grid .wp-block-post-template.gcb-bento-grid__container {
 		grid-template-columns: repeat(3, 1fr) !important;
+		grid-auto-rows: 400px !important; /* Consistent height */
 	}
 }
 </style>
