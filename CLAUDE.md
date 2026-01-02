@@ -87,13 +87,16 @@ Recent Updates (January 2, 2026):
    - Mobile responsive with horizontal scroll
    - 19.8:1 contrast ratio (exceeds WCAG AAA)
    - single.html template (lines 50-130)
-✅ Fusion Gallery Grid Fix: Added comprehensive CSS/JS for image gallery layouts
-   - Galleries were rendering single-column on staging (Fusion CSS not loading)
-   - CSS grid system: 2-6 column layouts with responsive breakpoints
-   - JavaScript detects column count from 5 different sources (data-columns, classes, child count)
-   - Responsive: Desktop (2-6 cols) → Tablet (2 cols) → Mobile (1 col)
-   - Gap calculations: calc(percentage - gap) for precise alignment
-   - single.html template (lines 132-444)
+✅ Fusion Gallery Grid Fix: Aggressive CSS/JS overrides for cross-environment compatibility
+   - Galleries rendering single-column on staging (Fusion Builder CSS not loading)
+   - DEFAULT 4-column layout applied immediately (no JS dependency)
+   - Multiple selector patterns: .fusion-gallery, .awb-image-gallery, div[class*="fusion-gallery"]
+   - Forced minimum sizes: 150px width, 200px height, 16:9 aspect ratio
+   - Triple JavaScript execution: DOMContentLoaded, load+100ms, 1000ms delay
+   - Console logging for debugging (shows columns detected, image count)
+   - Responsive: Desktop 4 cols → Tablet 3 cols (1024px) → Mobile 2 cols → Small 1 col
+   - All styles use !important to override Fusion Builder inline styles
+   - single.html template (lines 132-527)
 ✅ Lite YouTube Embed Fix: Added CSS/JS for Fusion Builder <lite-youtube> custom elements
    - Diagnostic revealed Fusion uses lite-youtube instead of iframe
    - CSS-only acid-lime play button (68px x 48px, brutalist style)
