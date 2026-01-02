@@ -654,3 +654,27 @@ function gcb_fusion_code_shortcode_fallback( array $atts, string $content = '' )
 
 	return $content;
 }
+
+/**
+ * Disable Jetpack lazy load for Fusion Builder galleries
+ *
+ * Jetpack's lazy load interferes with Fusion Builder's JavaScript grid calculations
+ * by setting incorrect sizes attributes on images before Fusion runs.
+ * This causes galleries to render as single column instead of grid layout.
+ *
+ * @param array $classes CSS classes to exclude from lazy loading.
+ * @return array Modified classes array.
+ */
+function gcb_disable_jetpack_lazy_load_for_fusion_galleries( array $classes ): array {
+	// Exclude Fusion Builder gallery images from Jetpack lazy load
+	$fusion_gallery_classes = array(
+		'fusion-gallery-image',
+		'awb-gallery-image',
+		'fusion-gallery',
+		'awb-image-gallery',
+		'fusion-grid-column',
+	);
+
+	return array_merge( $classes, $fusion_gallery_classes );
+}
+add_filter( 'jetpack_lazy_images_blacklisted_classes', 'gcb_disable_jetpack_lazy_load_for_fusion_galleries' );
