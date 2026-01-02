@@ -79,6 +79,13 @@ Test Results: 81+ E2E tests passing
 - Bento-grid tests passing (6/8 new tests pass)
 
 Recent Updates (January 2, 2026):
+✅ CRITICAL FIX: Removed aspect-ratio CSS causing site-wide JavaScript failure
+   - aspect-ratio: 16/9 property caused CSS syntax error in WordPress rendering
+   - `/` character mangled during HTML generation, breaking JavaScript parser
+   - Single CSS error prevented: YouTube thumbnails, lazy load, gallery layout
+   - Added CSS to hide play button when video activates (.lyt-activated)
+   - Fix resolves 4 separate reported issues with one root cause
+   - Lesson: Test CSS properties in WordPress context, not just browser
 ✅ Brutalist Table Styling: Override legacy inline styles for dark theme readability
    - Legacy tables had light backgrounds (blue/white) with white text (unreadable)
    - Force void-black backgrounds, off-white text on ALL table cells (!important)
@@ -335,6 +342,14 @@ Common Environment-Specific Issues:
 - Database differences (SQLite local vs MySQL staging)
 - URL rewriting rules (.htaccess vs nginx)
 - SSL/HTTPS enforcement differences
+
+⚠️ CRITICAL: CSS Property Compatibility with WordPress
+Some modern CSS properties can cause syntax errors when WordPress renders templates:
+- aspect-ratio: 16/9 - `/` character gets mangled, breaks JavaScript parser
+- Use padding-bottom trick instead: padding-bottom: 56.25% for 16:9 ratio
+- Always test new CSS properties on staging, not just in browser
+- A single CSS syntax error can break ALL JavaScript site-wide
+- Check browser console for "Uncaught SyntaxError" after CSS changes
 
 6. Pattern Specifications
 
