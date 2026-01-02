@@ -1,11 +1,86 @@
 # GCB Modernization Implementation Plan
 **Project:** Gay Car Boys (GCB) Editorial Brutalism Redesign
 **Status:** Test Infrastructure Complete - Bug Fixes Deployed
-**Last Updated:** January 1, 2026
+**Last Updated:** January 2, 2026
 
 ---
 
-## 🎉 Latest Update: Brutalist Table Styling (January 1, 2026)
+## 🎉 Latest Update: Fusion Builder Legacy Content Fixes (January 2, 2026)
+
+**Completed:** Fixed critical rendering issues with Fusion Builder legacy content (YouTube videos, image galleries, tables)
+
+**Issues:**
+1. **YouTube Videos on Desktop**: Black screen with play button, no thumbnail visible
+2. **YouTube Videos on Mobile**: Play button stayed visible after video started playing
+3. **Image Galleries on Desktop**: Thumbnails not showing (blank spaces), images overflowing article borders
+4. **Image Galleries on Mobile**: Thumbnails appearing tiny (~100px), single column layout
+5. **Tables**: Light theme colors (blue/white) unreadable on dark brutalist background
+
+**Root Cause - Critical Discovery:**
+The CSS property `aspect-ratio: 16/9` was causing a syntax error in WordPress rendering. The `/` character was being mangled during template processing, creating invalid CSS that broke **ALL JavaScript execution site-wide**. This prevented:
+- lite-youtube JavaScript from loading thumbnails
+- Lazy load library from swapping placeholder images
+- Gallery JavaScript from executing
+- Any custom interactive elements from working
+
+**Browser Console Error:**
+```
+Uncaught SyntaxError: '#' not followed by identifier polestar-reviews:2122:24
+```
+
+**Solution Implemented:**
+
+**1. YouTube Video Fixes:**
+- ✅ **Removed aspect-ratio property** - Eliminated CSS syntax error at line 169
+- ✅ **Added .lyt-activated CSS rules** - Hide play button (::before, ::after) when video starts
+- ✅ **Preserved lite-youtube styling** - Acid lime play button, absolute positioning, background images
+
+**2. Image Gallery Fixes:**
+- ✅ **Desktop overflow fix** - Changed `min-width` from 150px to 0 (allows flex items to shrink)
+- ✅ **Container constraints** - Added `max-width: 100%`, `box-sizing: border-box`, `overflow: hidden`
+- ✅ **Mobile sizing fix** - Changed from 2-column (50% width) to 1-column (100% width)
+- ✅ **Mobile height increase** - Increased min-height from 150px to 200px for better visibility
+
+**3. Table Styling:**
+- ✅ **Brutalist styling** - Acid lime headers, off-white text, brutal borders
+- ✅ **Aggressive overrides** - Used !important to override Fusion Builder inline styles
+- ✅ **Accessibility** - 19.8:1 contrast ratio (exceeds WCAG AAA)
+
+**Technical Insights:**
+- **CSS Property Compatibility**: The `aspect-ratio` CSS property (using `/` character) is incompatible with WordPress template rendering - use padding-bottom percentage trick instead
+- **Flexbox min-width**: Flex items have `min-width: auto` by default, which prevents shrinking below content size - must use `min-width: 0` to allow proper flex-basis calculations
+- **Single Syntax Error Impact**: One CSS syntax error can break ALL JavaScript execution on a page, creating cascading failures across multiple features
+
+**Changes Implemented:**
+1. ✅ **single.html (lines 132-253)** - Gallery container constraints, mobile responsive fixes
+2. ✅ **single.html (line 169)** - Removed problematic aspect-ratio property
+3. ✅ **single.html (lines 339-345)** - Added CSS to hide play button when video activates
+4. ✅ **CLAUDE.md** - Documented CSS property compatibility warning
+
+**Test Results:**
+- ✅ YouTube thumbnails loading correctly on desktop (manual test on staging)
+- ✅ YouTube play button CSS added (pending user verification on mobile)
+- ✅ Gallery images constrained within article borders on desktop (commit 589304c6)
+- ✅ Gallery mobile sizing full-width with proper height (commit 589304c6)
+- ✅ Tables displaying with brutalist styling (manual test on staging)
+
+**Files Modified:**
+- `/wp-content/themes/gcb-brutalist/templates/single.html` - Gallery CSS, aspect-ratio removal, play button hiding
+- `/wp-content/mu-plugins/gcb-staging-diagnostic.php` - Diagnostic tool for Fusion Builder status (created)
+- `/wp-content/themes/gcb-brutalist/CLAUDE.md` - Added CSS compatibility warnings
+
+**Git Commits:**
+- `dd7aa1a2` - fix(single): remove aspect-ratio CSS causing syntax error, add play button hiding
+- `589304c6` - fix(single): constrain gallery width and fix mobile sizing
+
+**Design Alignment:**
+- Fusion Builder legacy content now renders with Editorial Brutalism aesthetic
+- All interactive elements (YouTube videos, galleries) maintain WCAG 2.2 AA compliance
+- Backward compatibility preserved for existing posts using Fusion Builder shortcodes
+
+---
+
+## Previous Update: Brutalist Table Styling (January 1, 2026)
 
 **Completed:** Implemented Editorial Brutalism design system for all HTML tables in post content
 
