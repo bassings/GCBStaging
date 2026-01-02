@@ -129,21 +129,12 @@
 	}
 }
 
-/* ⚠️ CRITICAL: Fusion Builder Gallery - JavaScript Positioning System ⚠️
- * DO NOT override display, position, flex, or width properties on containers/items
- * Fusion Builder uses JavaScript to calculate absolute positioning (left/top values)
- * Any CSS that changes layout properties will break the positioning system
- * Use minimal CSS - let Fusion Builder handle everything
+/* ⚠️ FUSION BUILDER GALLERY - NO CSS OVERRIDES ⚠️
+ * Fusion Builder galleries use JavaScript for absolute positioning
+ * ANY CSS targeting galleries breaks the JavaScript calculations
+ * Solution: Let Fusion Builder handle galleries completely
+ * Our theme CSS should NOT touch .fusion-gallery* or .awb-gallery* selectors
  */
-
-/* Only ensure images don't exceed their container - no !important flags */
-#main-content .wp-block-post-content .fusion-gallery-image img,
-#main-content .wp-block-post-content .awb-gallery-image img,
-#main-content .wp-block-post-content div[class*="fusion-gallery"] img {
-	max-width: 100%;
-	height: auto;
-	display: block;
-}
 
 /* Fix Fusion Builder responsive video embeds */
 #main-content .wp-block-post-content .fusion-youtube,
