@@ -130,32 +130,55 @@
 }
 
 /* Preserve Fusion Builder grid and flex layouts */
-#main-content .wp-block-post-content .fusion-gallery {
+#main-content .wp-block-post-content .fusion-gallery,
+#main-content .wp-block-post-content .awb-image-gallery,
+#main-content .wp-block-post-content div[class*="fusion-gallery"] {
 	display: flex !important;
 	flex-wrap: wrap !important;
 	gap: 10px !important;
 	width: 100% !important;
 	margin: 1rem 0 !important;
+	list-style: none !important;
+	padding: 0 !important;
 }
 
-/* Fusion Gallery Images - default to auto width, will be overridden by column-specific rules */
-#main-content .wp-block-post-content .fusion-gallery-image {
-	flex: 0 0 auto !important;
-	display: inline-block !important;
+/* Fusion Gallery Images - force minimum size and default 4-column layout */
+#main-content .wp-block-post-content .fusion-gallery-image,
+#main-content .wp-block-post-content .awb-gallery-image,
+#main-content .wp-block-post-content div[class*="fusion-gallery"] > div,
+#main-content .wp-block-post-content div[class*="fusion-gallery"] > a {
+	flex: 0 0 calc(25% - 7.5px) !important;
+	width: calc(25% - 7.5px) !important;
+	max-width: calc(25% - 7.5px) !important;
+	min-width: 150px !important;
+	display: block !important;
 	box-sizing: border-box !important;
+	position: relative !important;
+	overflow: hidden !important;
 }
 
-/* Fusion Gallery Images - ensure img tags are responsive */
-#main-content .wp-block-post-content .fusion-gallery-image img {
+/* Fusion Gallery Images - ensure img tags are responsive and properly sized */
+#main-content .wp-block-post-content .fusion-gallery-image img,
+#main-content .wp-block-post-content .awb-gallery-image img,
+#main-content .wp-block-post-content div[class*="fusion-gallery"] img {
 	width: 100% !important;
 	height: auto !important;
+	min-height: 200px !important;
 	display: block !important;
 	object-fit: cover !important;
+	aspect-ratio: 16/9 !important;
 }
 
-/* Fusion Gallery - 4 column layout (most common in posts) */
+/* Override any max-width constraints on images */
+#main-content .wp-block-post-content .fusion-gallery img,
+#main-content .wp-block-post-content .awb-image-gallery img {
+	max-width: none !important;
+}
+
+/* Fusion Gallery - 4 column layout (most common, also default fallback) */
 #main-content .wp-block-post-content .fusion-gallery[data-columns="4"] .fusion-gallery-image,
-#main-content .wp-block-post-content .fusion-gallery.fusion-gallery-columns-4 .fusion-gallery-image {
+#main-content .wp-block-post-content .fusion-gallery.fusion-gallery-columns-4 .fusion-gallery-image,
+#main-content .wp-block-post-content .fusion-gallery .fusion-gallery-image {
 	flex: 0 0 calc(25% - 7.5px) !important;
 	width: calc(25% - 7.5px) !important;
 	max-width: calc(25% - 7.5px) !important;
@@ -193,18 +216,43 @@
 	max-width: calc(16.666% - 8.33px) !important;
 }
 
+/* Fusion Gallery - Responsive: Tablet (< 1024px) - force 3 columns */
+@media (max-width: 1023px) {
+	#main-content .wp-block-post-content .fusion-gallery-image,
+	#main-content .wp-block-post-content .awb-gallery-image,
+	#main-content .wp-block-post-content div[class*="fusion-gallery"] > div,
+	#main-content .wp-block-post-content div[class*="fusion-gallery"] > a {
+		flex: 0 0 calc(33.333% - 6.67px) !important;
+		width: calc(33.333% - 6.67px) !important;
+		max-width: calc(33.333% - 6.67px) !important;
+	}
+}
+
 /* Fusion Gallery - Responsive: Mobile (< 768px) - force 2 columns */
 @media (max-width: 767px) {
-	#main-content .wp-block-post-content .fusion-gallery-image {
+	#main-content .wp-block-post-content .fusion-gallery-image,
+	#main-content .wp-block-post-content .awb-gallery-image,
+	#main-content .wp-block-post-content div[class*="fusion-gallery"] > div,
+	#main-content .wp-block-post-content div[class*="fusion-gallery"] > a {
 		flex: 0 0 calc(50% - 5px) !important;
 		width: calc(50% - 5px) !important;
 		max-width: calc(50% - 5px) !important;
+		min-width: unset !important;
+	}
+
+	#main-content .wp-block-post-content .fusion-gallery-image img,
+	#main-content .wp-block-post-content .awb-gallery-image img,
+	#main-content .wp-block-post-content div[class*="fusion-gallery"] img {
+		min-height: 150px !important;
 	}
 }
 
 /* Fusion Gallery - Responsive: Very small mobile (< 480px) - force 1 column */
 @media (max-width: 479px) {
-	#main-content .wp-block-post-content .fusion-gallery-image {
+	#main-content .wp-block-post-content .fusion-gallery-image,
+	#main-content .wp-block-post-content .awb-gallery-image,
+	#main-content .wp-block-post-content div[class*="fusion-gallery"] > div,
+	#main-content .wp-block-post-content div[class*="fusion-gallery"] > a {
 		flex: 0 0 100% !important;
 		width: 100% !important;
 		max-width: 100% !important;
@@ -360,76 +408,103 @@
 	'use strict';
 
 	function initFusionGalleries() {
-		const galleries = document.querySelectorAll('.fusion-gallery');
+		// Try multiple selectors to find all gallery containers
+		const selectors = [
+			'.fusion-gallery',
+			'.awb-image-gallery',
+			'div[class*="fusion-gallery"]',
+			'div[class*="awb-gallery"]'
+		];
 
-		galleries.forEach(function(gallery) {
-			// Try to detect column count from various sources
-			let columns = null;
+		let totalGalleries = 0;
 
-			// Method 1: Check for data-columns attribute
-			if (gallery.hasAttribute('data-columns')) {
-				columns = gallery.getAttribute('data-columns');
-			}
+		selectors.forEach(function(selector) {
+			const galleries = document.querySelectorAll(selector);
+			totalGalleries += galleries.length;
 
-			// Method 2: Check for fusion-gallery-columns-X class
-			if (!columns) {
-				const classList = Array.from(gallery.classList);
-				const columnClass = classList.find(function(cls) {
-					return cls.match(/^fusion-gallery-columns-\d+$/);
-				});
-				if (columnClass) {
-					columns = columnClass.replace('fusion-gallery-columns-', '');
+			galleries.forEach(function(gallery) {
+				// Try to detect column count from various sources
+				let columns = 4; // Default to 4 columns
+
+				// Method 1: Check for data-columns attribute
+				if (gallery.hasAttribute('data-columns')) {
+					columns = parseInt(gallery.getAttribute('data-columns'), 10);
 				}
-			}
 
-			// Method 3: Check for columns-X class (alternative pattern)
-			if (!columns) {
-				const classList = Array.from(gallery.classList);
-				const columnClass = classList.find(function(cls) {
-					return cls.match(/^columns-\d+$/);
-				});
-				if (columnClass) {
-					columns = columnClass.replace('columns-', '');
+				// Method 2: Check for fusion-gallery-columns-X class
+				else {
+					const classList = Array.from(gallery.classList);
+					const columnClass = classList.find(function(cls) {
+						return cls.match(/^fusion-gallery-columns-\d+$/) || cls.match(/^columns-\d+$/);
+					});
+					if (columnClass) {
+						const match = columnClass.match(/\d+/);
+						if (match) {
+							columns = parseInt(match[0], 10);
+						}
+					}
 				}
-			}
 
-			// Method 4: Check inline style for grid-template-columns
-			if (!columns && gallery.style.gridTemplateColumns) {
-				const gridCols = gallery.style.gridTemplateColumns.split(' ').length;
-				if (gridCols > 0) {
-					columns = gridCols;
+				// Method 3: Check inline style for grid-template-columns
+				if (gallery.style.gridTemplateColumns) {
+					const gridCols = gallery.style.gridTemplateColumns.split(' ').length;
+					if (gridCols > 0) {
+						columns = gridCols;
+					}
 				}
-			}
 
-			// Method 5: Count child elements and guess (max 6 columns)
-			if (!columns) {
-				const images = gallery.querySelectorAll('.fusion-gallery-image');
-				if (images.length >= 6) {
-					columns = 4; // Default to 4 columns for large galleries
-				} else if (images.length >= 4) {
-					columns = 4;
-				} else if (images.length === 3) {
-					columns = 3;
-				} else if (images.length === 2) {
-					columns = 2;
-				} else {
-					columns = 1;
+				// Method 4: Count child elements and guess
+				const images = gallery.querySelectorAll('.fusion-gallery-image, .awb-gallery-image, img');
+				if (images.length > 0 && columns === 4) {
+					// Only override if we haven't detected columns yet
+					if (images.length >= 12) {
+						columns = 4;
+					} else if (images.length >= 6) {
+						columns = 3;
+					} else if (images.length >= 4) {
+						columns = 2;
+					}
 				}
-			}
 
-			// Apply data-columns attribute for CSS targeting
-			if (columns) {
+				// Ensure columns is between 1 and 6
+				columns = Math.max(1, Math.min(6, columns));
+
+				// Apply data-columns attribute for CSS targeting
 				gallery.setAttribute('data-columns', columns);
 
-				// Also add class for better CSS specificity
+				// Add class for better CSS specificity
 				gallery.classList.add('fusion-gallery-columns-' + columns);
-			}
 
-			// Ensure gallery is using flex layout
-			gallery.style.display = 'flex';
-			gallery.style.flexWrap = 'wrap';
-			gallery.style.width = '100%';
+				// Remove any conflicting classes
+				for (let i = 1; i <= 6; i++) {
+					if (i !== columns) {
+						gallery.classList.remove('fusion-gallery-columns-' + i);
+					}
+				}
+
+				// Force flex layout with inline styles (most aggressive)
+				gallery.style.display = 'flex';
+				gallery.style.flexWrap = 'wrap';
+				gallery.style.width = '100%';
+				gallery.style.gap = '10px';
+				gallery.style.margin = '1rem 0';
+
+				// Debug: Log to console (remove in production)
+				if (window.console) {
+					console.log('GCB Gallery initialized:', {
+						selector: selector,
+						columns: columns,
+						images: images.length,
+						classes: Array.from(gallery.classList).join(' ')
+					});
+				}
+			});
 		});
+
+		// Debug: Log total galleries found
+		if (window.console && totalGalleries > 0) {
+			console.log('GCB Galleries: Found and initialized ' + totalGalleries + ' galleries');
+		}
 	}
 
 	// Run when DOM is ready
@@ -440,6 +515,14 @@
 	}
 
 	// Also run on window load to catch any late-loading elements
-	window.addEventListener('load', initFusionGalleries);
+	window.addEventListener('load', function() {
+		// Delay slightly to ensure all Fusion Builder JS has run
+		setTimeout(initFusionGalleries, 100);
+	});
+
+	// Run again after a longer delay to catch dynamically loaded content
+	setTimeout(function() {
+		initFusionGalleries();
+	}, 1000);
 })();
 </script>
