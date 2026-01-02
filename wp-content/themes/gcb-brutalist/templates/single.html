@@ -166,7 +166,7 @@
 	min-height: 200px !important;
 	display: block !important;
 	object-fit: cover !important;
-	aspect-ratio: 16/9 !important;
+	/* aspect-ratio removed - causes CSS syntax error in WordPress rendering */
 }
 
 /* Override any max-width constraints on images */
@@ -334,6 +334,14 @@
 /* Hover effect for play button */
 #main-content .wp-block-post-content lite-youtube:hover::before {
 	background-color: rgba(204, 255, 0, 1) !important;
+}
+
+/* Hide play button when video is activated */
+#main-content .wp-block-post-content lite-youtube.lyt-activated::before,
+#main-content .wp-block-post-content lite-youtube.lyt-activated::after,
+#main-content .wp-block-post-content lite-youtube[data-activated]::before,
+#main-content .wp-block-post-content lite-youtube[data-activated]::after {
+	display: none !important;
 }
 
 /* Force background image to load for lite-youtube */
