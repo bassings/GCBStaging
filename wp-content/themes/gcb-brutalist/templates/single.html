@@ -133,18 +133,16 @@
  * DO NOT override display, position, flex, or width properties on containers/items
  * Fusion Builder uses JavaScript to calculate absolute positioning (left/top values)
  * Any CSS that changes layout properties will break the positioning system
- * ONLY style the images themselves, not the gallery structure
+ * Use minimal CSS - let Fusion Builder handle everything
  */
 
-/* Ensure gallery images display properly within Fusion's absolute positioned containers */
+/* Only ensure images don't exceed their container - no !important flags */
 #main-content .wp-block-post-content .fusion-gallery-image img,
 #main-content .wp-block-post-content .awb-gallery-image img,
 #main-content .wp-block-post-content div[class*="fusion-gallery"] img {
-	width: 100% !important;
-	height: auto !important;
-	display: block !important;
-	object-fit: cover !important;
-	max-width: 100% !important;
+	max-width: 100%;
+	height: auto;
+	display: block;
 }
 
 /* Fix Fusion Builder responsive video embeds */
