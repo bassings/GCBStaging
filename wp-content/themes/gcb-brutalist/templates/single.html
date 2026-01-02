@@ -54,7 +54,7 @@
 	margin: 2rem 0 !important;
 	background: transparent !important;
 	background-color: transparent !important;
-	font-family: var(--wp--preset--font-family--mono) !important;
+	font-family: var(--wp--preset--font-family--system-sans) !important;
 	font-size: 0.875rem !important;
 	line-height: 1.6 !important;
 }
@@ -103,7 +103,7 @@
 /* Table captions */
 #main-content .wp-block-post-content table caption {
 	color: var(--wp--preset--color--brutal-grey) !important;
-	font-family: var(--wp--preset--font-family--mono) !important;
+	font-family: var(--wp--preset--font-family--system-sans) !important;
 	font-size: 0.75rem !important;
 	text-transform: uppercase !important;
 	letter-spacing: 0.1em !important;
@@ -129,146 +129,22 @@
 	}
 }
 
-/* Preserve Fusion Builder grid and flex layouts */
-#main-content .wp-block-post-content .fusion-gallery,
-#main-content .wp-block-post-content .awb-image-gallery,
-#main-content .wp-block-post-content div[class*="fusion-gallery"] {
-	display: flex !important;
-	flex-wrap: wrap !important;
-	gap: 10px !important;
-	width: 100% !important;
-	max-width: 100% !important;
-	margin: 1rem 0 !important;
-	list-style: none !important;
-	padding: 0 !important;
-	box-sizing: border-box !important;
-	overflow: hidden !important;
-}
+/* ⚠️ CRITICAL: Fusion Builder Gallery - JavaScript Positioning System ⚠️
+ * DO NOT override display, position, flex, or width properties on containers/items
+ * Fusion Builder uses JavaScript to calculate absolute positioning (left/top values)
+ * Any CSS that changes layout properties will break the positioning system
+ * ONLY style the images themselves, not the gallery structure
+ */
 
-/* Fusion Gallery Images - force minimum size and default 4-column layout */
-#main-content .wp-block-post-content .fusion-gallery-image,
-#main-content .wp-block-post-content .awb-gallery-image,
-#main-content .wp-block-post-content div[class*="fusion-gallery"] > div,
-#main-content .wp-block-post-content div[class*="fusion-gallery"] > a {
-	flex: 0 0 calc(25% - 7.5px) !important;
-	width: calc(25% - 7.5px) !important;
-	max-width: calc(25% - 7.5px) !important;
-	min-width: 0 !important;
-	display: block !important;
-	box-sizing: border-box !important;
-	position: relative !important;
-	overflow: hidden !important;
-}
-
-/* Fusion Gallery Images - ensure img tags are responsive and properly sized */
+/* Ensure gallery images display properly within Fusion's absolute positioned containers */
 #main-content .wp-block-post-content .fusion-gallery-image img,
 #main-content .wp-block-post-content .awb-gallery-image img,
 #main-content .wp-block-post-content div[class*="fusion-gallery"] img {
 	width: 100% !important;
 	height: auto !important;
-	min-height: 200px !important;
 	display: block !important;
 	object-fit: cover !important;
-	/* aspect-ratio removed - causes CSS syntax error in WordPress rendering */
-}
-
-/* Override any max-width constraints on images */
-#main-content .wp-block-post-content .fusion-gallery img,
-#main-content .wp-block-post-content .awb-image-gallery img {
-	max-width: none !important;
-}
-
-/* Fusion Gallery - 4 column layout (most common, also default fallback) */
-#main-content .wp-block-post-content .fusion-gallery[data-columns="4"] .fusion-gallery-image,
-#main-content .wp-block-post-content .fusion-gallery.fusion-gallery-columns-4 .fusion-gallery-image,
-#main-content .wp-block-post-content .fusion-gallery .fusion-gallery-image {
-	flex: 0 0 calc(25% - 7.5px) !important;
-	width: calc(25% - 7.5px) !important;
-	max-width: calc(25% - 7.5px) !important;
-}
-
-/* Fusion Gallery - 3 column layout */
-#main-content .wp-block-post-content .fusion-gallery[data-columns="3"] .fusion-gallery-image,
-#main-content .wp-block-post-content .fusion-gallery.fusion-gallery-columns-3 .fusion-gallery-image {
-	flex: 0 0 calc(33.333% - 6.67px) !important;
-	width: calc(33.333% - 6.67px) !important;
-	max-width: calc(33.333% - 6.67px) !important;
-}
-
-/* Fusion Gallery - 2 column layout */
-#main-content .wp-block-post-content .fusion-gallery[data-columns="2"] .fusion-gallery-image,
-#main-content .wp-block-post-content .fusion-gallery.fusion-gallery-columns-2 .fusion-gallery-image {
-	flex: 0 0 calc(50% - 5px) !important;
-	width: calc(50% - 5px) !important;
-	max-width: calc(50% - 5px) !important;
-}
-
-/* Fusion Gallery - 5 column layout */
-#main-content .wp-block-post-content .fusion-gallery[data-columns="5"] .fusion-gallery-image,
-#main-content .wp-block-post-content .fusion-gallery.fusion-gallery-columns-5 .fusion-gallery-image {
-	flex: 0 0 calc(20% - 8px) !important;
-	width: calc(20% - 8px) !important;
-	max-width: calc(20% - 8px) !important;
-}
-
-/* Fusion Gallery - 6 column layout */
-#main-content .wp-block-post-content .fusion-gallery[data-columns="6"] .fusion-gallery-image,
-#main-content .wp-block-post-content .fusion-gallery.fusion-gallery-columns-6 .fusion-gallery-image {
-	flex: 0 0 calc(16.666% - 8.33px) !important;
-	width: calc(16.666% - 8.33px) !important;
-	max-width: calc(16.666% - 8.33px) !important;
-}
-
-/* Fusion Gallery - Responsive: Tablet (< 1024px) - force 3 columns */
-@media (max-width: 1023px) {
-	#main-content .wp-block-post-content .fusion-gallery-image,
-	#main-content .wp-block-post-content .awb-gallery-image,
-	#main-content .wp-block-post-content div[class*="fusion-gallery"] > div,
-	#main-content .wp-block-post-content div[class*="fusion-gallery"] > a {
-		flex: 0 0 calc(33.333% - 6.67px) !important;
-		width: calc(33.333% - 6.67px) !important;
-		max-width: calc(33.333% - 6.67px) !important;
-	}
-}
-
-/* Fusion Gallery - Responsive: Mobile (< 768px) - force 2 columns */
-@media (max-width: 767px) {
-	#main-content .wp-block-post-content .fusion-gallery-image,
-	#main-content .wp-block-post-content .awb-gallery-image,
-	#main-content .wp-block-post-content div[class*="fusion-gallery"] > div,
-	#main-content .wp-block-post-content div[class*="fusion-gallery"] > a {
-		flex: 0 0 100% !important;
-		width: 100% !important;
-		max-width: 100% !important;
-		min-width: 0 !important;
-	}
-
-	#main-content .wp-block-post-content .fusion-gallery-image img,
-	#main-content .wp-block-post-content .awb-gallery-image img,
-	#main-content .wp-block-post-content div[class*="fusion-gallery"] img {
-		min-height: 200px !important;
-		width: 100% !important;
-		max-width: 100% !important;
-	}
-}
-
-/* Fusion Gallery - Responsive: Very small mobile (< 480px) - force 1 column */
-@media (max-width: 479px) {
-	#main-content .wp-block-post-content .fusion-gallery-image,
-	#main-content .wp-block-post-content .awb-gallery-image,
-	#main-content .wp-block-post-content div[class*="fusion-gallery"] > div,
-	#main-content .wp-block-post-content div[class*="fusion-gallery"] > a {
-		flex: 0 0 100% !important;
-		width: 100% !important;
-		max-width: 100% !important;
-	}
-
-	#main-content .wp-block-post-content .fusion-gallery-image img,
-	#main-content .wp-block-post-content .awb-gallery-image img,
-	#main-content .wp-block-post-content div[class*="fusion-gallery"] img {
-		width: 100% !important;
-		max-width: 100% !important;
-	}
+	max-width: 100% !important;
 }
 
 /* Fix Fusion Builder responsive video embeds */
