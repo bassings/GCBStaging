@@ -137,9 +137,12 @@
 	flex-wrap: wrap !important;
 	gap: 10px !important;
 	width: 100% !important;
+	max-width: 100% !important;
 	margin: 1rem 0 !important;
 	list-style: none !important;
 	padding: 0 !important;
+	box-sizing: border-box !important;
+	overflow: hidden !important;
 }
 
 /* Fusion Gallery Images - force minimum size and default 4-column layout */
@@ -150,7 +153,7 @@
 	flex: 0 0 calc(25% - 7.5px) !important;
 	width: calc(25% - 7.5px) !important;
 	max-width: calc(25% - 7.5px) !important;
-	min-width: 150px !important;
+	min-width: 0 !important;
 	display: block !important;
 	box-sizing: border-box !important;
 	position: relative !important;
@@ -234,16 +237,18 @@
 	#main-content .wp-block-post-content .awb-gallery-image,
 	#main-content .wp-block-post-content div[class*="fusion-gallery"] > div,
 	#main-content .wp-block-post-content div[class*="fusion-gallery"] > a {
-		flex: 0 0 calc(50% - 5px) !important;
-		width: calc(50% - 5px) !important;
-		max-width: calc(50% - 5px) !important;
-		min-width: unset !important;
+		flex: 0 0 100% !important;
+		width: 100% !important;
+		max-width: 100% !important;
+		min-width: 0 !important;
 	}
 
 	#main-content .wp-block-post-content .fusion-gallery-image img,
 	#main-content .wp-block-post-content .awb-gallery-image img,
 	#main-content .wp-block-post-content div[class*="fusion-gallery"] img {
-		min-height: 150px !important;
+		min-height: 200px !important;
+		width: 100% !important;
+		max-width: 100% !important;
 	}
 }
 
@@ -254,6 +259,13 @@
 	#main-content .wp-block-post-content div[class*="fusion-gallery"] > div,
 	#main-content .wp-block-post-content div[class*="fusion-gallery"] > a {
 		flex: 0 0 100% !important;
+		width: 100% !important;
+		max-width: 100% !important;
+	}
+
+	#main-content .wp-block-post-content .fusion-gallery-image img,
+	#main-content .wp-block-post-content .awb-gallery-image img,
+	#main-content .wp-block-post-content div[class*="fusion-gallery"] img {
 		width: 100% !important;
 		max-width: 100% !important;
 	}
