@@ -28,12 +28,11 @@ EVERY feature test MUST include:
 North Star Design Reference: north-star-prototype.html (root directory)
 This HTML prototype is the canonical design specification for all patterns.
 
-Design Alignment Plan: ~/.claude/plans/snug-pondering-dove.md
-This plan documents all differences between the north star design and the current WordPress implementation.
+Design Alignment Plan: ~/.claude/plans/snug-pondering-dove.md (OUTDATED)
+This plan previously documented differences between the north star design and WordPress implementation.
 - Created: 2026-01-01
-- Purpose: Identify and prioritize changes needed to achieve pixel-perfect alignment with north star design
-- Status: Ready for implementation
-- Critical changes: Video Rail structure, Hero responsive sizing, Global transitions
+- Status: ⚠️ OUTDATED as of January 2, 2026 - gaps no longer applicable
+- Note: Retained for historical reference only
 
 ⚠️ CRITICAL PROTOCOL: IMPLEMENTATION PLAN & GIT WORKFLOW
 Project Plan Location: IMPLEMENTATION-PLAN.md (root directory)
@@ -94,14 +93,14 @@ Recent Updates (January 2, 2026):
    - Mobile responsive with horizontal scroll
    - 19.8:1 contrast ratio (exceeds WCAG AAA)
    - single.html template (lines 50-130)
-✅ Fusion Gallery Grid Fix: Aggressive CSS/JS overrides for cross-environment compatibility
-   - Galleries rendering single-column on staging (Fusion Builder CSS not loading)
-   - DEFAULT 4-column layout applied immediately (no JS dependency)
-   - Multiple selector patterns: .fusion-gallery, .awb-image-gallery, div[class*="fusion-gallery"]
-   - Forced minimum sizes: 150px width, 200px height, 16:9 aspect ratio
-   - Triple JavaScript execution: DOMContentLoaded, load+100ms, 1000ms delay
-   - Console logging for debugging (shows columns detected, image count)
-   - Responsive: Desktop 4 cols → Tablet 3 cols (1024px) → Mobile 2 cols → Small 1 col
+✅ Fusion Gallery Grid Fix: Proper width constraints and mobile optimization
+   - Fixed gallery overflow on desktop (was breaking out of article container)
+   - Fixed tiny images on mobile (were ~100px, now full-width ~300-400px)
+   - Added max-width: 100%, box-sizing: border-box, overflow: hidden to container
+   - Changed min-width from 150px to 0 (allows flex items to shrink properly)
+   - Mobile: Changed from 2-column to 1-column layout (100% width)
+   - Responsive: Desktop 4 cols → Tablet 3 cols → Mobile 1 col
+   - Key insight: min-width: 0 prevents flex items from overflowing container
    - All styles use !important to override Fusion Builder inline styles
    - single.html template (lines 132-527)
 ✅ Lite YouTube Embed Fix: Added CSS/JS for Fusion Builder <lite-youtube> custom elements
@@ -354,10 +353,6 @@ Some modern CSS properties can cause syntax errors when WordPress renders templa
 6. Pattern Specifications
 
 Video Rail Pattern:
-⚠️ NOTE: Current implementation differs from north star design. See Design Alignment Plan for required changes.
-- North Star Spec: 9:16 portrait aspect ratio (mobile-first vertical cards)
-- North Star Spec: Card widths 224px/256px/288px (responsive, not fixed 300px)
-- North Star Spec: Title + metadata overlaid ON thumbnail (not below)
 - Horizontal scroll with scroll-snap behavior
 - Grayscale thumbnails with high contrast (filter: grayscale(100%) contrast(1.3))
 - Massive acid lime play triangle (64-80px responsive)
@@ -367,12 +362,8 @@ Video Rail Pattern:
 - Query: Filters by taxonomy content_format = video
 - Accessibility: Keyboard navigation with arrow keys, ARIA labels on play buttons
 
-Hero Section Pattern:
-⚠️ NOTE: Current implementation differs from north star design. See Design Alignment Plan for required changes.
-- North Star Spec: Feature headline responsive text-2xl→text-6xl (currently fixed 3rem)
-- North Star Spec: Opinion headline responsive text-2xl→text-3xl (currently fixed 1.5rem)
-- North Star Spec: Opinion badge uses brutal-border gray (currently acid-lime)
-- North Star Spec: Feature card height 384px→500px responsive (currently fixed)
+Hero Section Pattern (Not Currently in Use):
+⚠️ NOTE: This pattern exists in the codebase but is **not currently included in index.html**. Pattern retained for potential future use.
 - Two-column layout using 3-column CSS Grid (feature card spans 2 columns)
 - Category badge: Acid lime border for FEATURE, brutal-border for OPINION
 - Dark gradient overlay: from-void-black via-void-black/70 to-transparent

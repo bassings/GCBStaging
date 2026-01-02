@@ -286,7 +286,7 @@ The GCB modernization project has successfully completed **Phase 1: Test Infrast
 
 **Theme Configuration:**
 - `theme.json` - Design system tokens
-- `templates/index.html` - Homepage (**Hero Section** → Video Rail → Bento Grid → Query Loop)
+- `templates/index.html` - Homepage (Video Rail → Bento Grid → Culture Grid → Query Loop)
 - `templates/single.html` - Single post template
 
 ### 1.5 Design System (CLAUDE.md Updates) ✅
@@ -314,10 +314,12 @@ The GCB modernization project has successfully completed **Phase 1: Test Infrast
 
 ## Phase 2: Pattern Implementation 🚧 IN PROGRESS
 
-### 2.1 Hero Section Pattern ✅ COMPLETE
-**Status:** Implemented using TDD workflow (December 31, 2025)
+### 2.1 Hero Section Pattern ✅ COMPLETE (Not Currently in Use)
+**Status:** Implemented using TDD workflow (December 31, 2025) - Pattern exists but removed from homepage
 **Priority:** HIGH
 **Approach:** TDD (RED → GREEN → REFACTOR) ✅
+
+**Note:** This pattern was fully implemented and tested but is **not currently included in `index.html`**. The pattern file and tests remain in the codebase for potential future use.
 
 **Specification (from north-star-prototype.html):**
 - Two-column layout (3-column grid, feature spans 2)
@@ -353,14 +355,14 @@ The GCB modernization project has successfully completed **Phase 1: Test Infrast
    - Extracted read time calculation to reusable function
    - Added 3-tier responsive breakpoints (Desktop/Tablet/Mobile)
    - Improved hover effects with smooth transitions
-4. ✅ **INTEGRATION:** Added to homepage (`templates/index.html`)
-   - Positioned above Video Rail
-   - Registered in `functions.php`
+4. ⚠️ **INTEGRATION:** Pattern registered in `functions.php` but **not currently active in `index.html`**
+   - Pattern file exists at `patterns/hero-section.php`
+   - Can be re-added to homepage if needed in future
 
 **Files Created/Modified:**
 - ✅ Created: `tests/e2e/hero-section.public.spec.ts` (7 tests, all passing)
 - ✅ Created: `patterns/hero-section.php` (200 lines with helper function)
-- ✅ Modified: `templates/index.html` (added hero pattern)
+- ⚠️ Modified: `templates/index.html` (pattern was added, later removed - not currently in use)
 - ✅ Modified: `functions.php` (registered pattern)
 
 **Test Results:** 7/7 passing (6 solid + 1 flaky but passed on retry)
@@ -874,7 +876,7 @@ GCB Ecosystem
 │   ├── theme.json (Design tokens)
 │   ├── functions.php
 │   ├── templates/
-│   │   ├── index.html (Homepage: Hero → Video Rail → Bento Grid → Culture Grid)
+│   │   ├── index.html (Homepage: Video Rail → Bento Grid → Culture Grid → Query Loop)
 │   │   └── single.html (Single post)
 │   ├── patterns/
 │   │   ├── video-rail.php ✅
