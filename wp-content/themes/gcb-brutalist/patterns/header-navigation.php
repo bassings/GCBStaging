@@ -30,10 +30,19 @@
 
 		<!-- Desktop Navigation -->
 		<nav class="main-nav" role="navigation" aria-label="Main Navigation">
-			<a href="/car-reviews/" class="nav-link">Car Reviews</a>
-			<a href="/car-news/" class="nav-link">Car News</a>
-			<a href="/electric-cars/" class="nav-link">Electric Cars</a>
-			<a href="/brands/" class="nav-link">Brands</a>
+			<?php
+			wp_nav_menu(
+				array(
+					'theme_location'  => 'primary',
+					'container'       => false,
+					'items_wrap'      => '%3$s',
+					'walker'          => new GCB_Nav_Walker(),
+					'link_class'      => 'nav-link',
+					'fallback_cb'     => 'gcb_primary_menu_fallback',
+					'depth'           => 1,
+				)
+			);
+			?>
 		</nav>
 
 		<!-- Terminal Search Button (Desktop) -->
@@ -68,16 +77,25 @@
 		</div>
 
 		<div class="mobile-menu-links">
-			<a href="/car-reviews/" class="mobile-nav-link">Car Reviews</a>
-			<a href="/car-news/" class="mobile-nav-link">Car News</a>
-			<a href="/electric-cars/" class="mobile-nav-link">Electric Cars</a>
-			<a href="/brands/" class="mobile-nav-link">Brands</a>
+			<?php
+			wp_nav_menu(
+				array(
+					'theme_location'  => 'primary',
+					'container'       => false,
+					'items_wrap'      => '%3$s',
+					'walker'          => new GCB_Nav_Walker(),
+					'link_class'      => 'mobile-nav-link',
+					'fallback_cb'     => 'gcb_primary_menu_fallback',
+					'depth'           => 1,
+				)
+			);
+			?>
 
-		<!-- Mobile Search Button (North Star) -->
-		<button class="mobile-search-toggle" aria-label="Search">
-			<span class="search-prompt">&gt;_</span>
-			<span>Search</span>
-		</button>
+			<!-- Mobile Search Button (North Star) -->
+			<button class="mobile-search-toggle" aria-label="Search">
+				<span class="search-prompt">&gt;_</span>
+				<span>Search</span>
+			</button>
 		</div>
 	</div>
 </nav>
@@ -478,7 +496,6 @@
 		const menuClose = document.querySelector('.menu-close');
 		const mobileMenu = document.querySelector('.mobile-menu');
 		const menuOverlay = document.querySelector('.menu-overlay');
-		const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
 		const body = document.body;
 
 		// Sticky header scroll shadow
@@ -542,10 +559,15 @@
 			menuOverlay.addEventListener('click', closeMenu);
 		}
 
-		// Close menu when clicking nav links
-		mobileNavLinks.forEach(link => {
-			link.addEventListener('click', closeMenu);
-		});
+		// Close menu when clicking nav links (event delegation for dynamic content)
+		if (mobileMenu) {
+			mobileMenu.addEventListener('click', (e) => {
+				// Check if clicked element is a mobile nav link
+				if (e.target.classList.contains('mobile-nav-link')) {
+					closeMenu();
+				}
+			});
+		}
 
 		// Close menu on ESC key
 		document.addEventListener('keydown', (e) => {

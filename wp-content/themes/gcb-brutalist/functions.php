@@ -678,3 +678,146 @@ function gcb_disable_jetpack_lazy_load_for_fusion_galleries( array $classes ): a
 	return array_merge( $classes, $fusion_gallery_classes );
 }
 add_filter( 'jetpack_lazy_images_blacklisted_classes', 'gcb_disable_jetpack_lazy_load_for_fusion_galleries' );
+
+/**
+ * Register navigation menus
+ *
+ * Registers theme menu locations for use with WordPress nav menu system.
+ * Primary menu displays in header (both desktop and mobile).
+ */
+function gcb_register_nav_menus(): void {
+	register_nav_menus(
+		array(
+			'primary' => __( 'Primary Navigation', 'gcb-brutalist' ),
+		)
+	);
+}
+add_action( 'after_setup_theme', 'gcb_register_nav_menus' );
+
+/**
+ * Custom Navigation Walker for GCB Brutalist Theme
+ *
+ * Outputs flat <a> tags without <ul>/<li> wrappers to maintain
+ * existing Editorial Brutalism styling and E2E test compatibility.
+ *
+ * Based on WordPress Walker_Nav_Menu with minimal output.
+ */
+class GCB_Nav_Walker extends Walker_Nav_Menu {
+
+	/**
+	 * Starts the list before the elements are added.
+	 *
+	 * @param string   $output Used to append additional content (passed by reference).
+	 * @param int      $depth  Depth of menu item. Used for padding.
+	 * @param stdClass $args   An object of wp_nav_menu() arguments.
+	 */
+	public function start_lvl( &$output, $depth = 0, $args = null ) {
+		// No submenu support - flat navigation only
+	}
+
+	/**
+	 * Ends the list of after the elements are added.
+	 *
+	 * @param string   $output Used to append additional content (passed by reference).
+	 * @param int      $depth  Depth of menu item. Used for padding.
+	 * @param stdClass $args   An object of wp_nav_menu() arguments.
+	 */
+	public function end_lvl( &$output, $depth = 0, $args = null ) {
+		// No submenu support - flat navigation only
+	}
+
+	/**
+	 * Starts the element output.
+	 *
+	 * Outputs just the <a> tag without <li> wrapper.
+	 *
+	 * @param string   $output Used to append additional content (passed by reference).
+	 * @param WP_Post  $item   Menu item data object.
+	 * @param int      $depth  Depth of menu item. Used for padding.
+	 * @param stdClass $args   An object of wp_nav_menu() arguments.
+	 * @param int      $id     Current item ID.
+	 */
+	public function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ) {
+		// Build link classes
+		$classes = array();
+
+		// Add link class based on context (desktop vs mobile)
+		if ( isset( $args->link_class ) && ! empty( $args->link_class ) ) {
+			$classes[] = $args->link_class;
+		}
+
+		// Add current page class if this is the active page
+		if ( in_array( 'current-menu-item', $item->classes, true ) ) {
+			$classes[] = 'current';
+		}
+
+		$class_attr = ! empty( $classes ) ? ' class="' . esc_attr( implode( ' ', $classes ) ) . '"' : '';
+
+		// Build link attributes
+		$attributes  = '';
+		$attributes .= ! empty( $item->attr_title ) ? ' title="' . esc_attr( $item->attr_title ) . '"' : '';
+		$attributes .= ! empty( $item->target ) ? ' target="' . esc_attr( $item->target ) . '"' : '';
+		$attributes .= ! empty( $item->xfn ) ? ' rel="' . esc_attr( $item->xfn ) . '"' : '';
+		$attributes .= ! empty( $item->url ) ? ' href="' . esc_url( $item->url ) . '"' : '';
+
+		// Output link
+		$output .= '<a' . $class_attr . $attributes . '>';
+		$output .= esc_html( $item->title );
+		$output .= '</a>';
+	}
+
+	/**
+	 * Ends the element output.
+	 *
+	 * @param string   $output Used to append additional content (passed by reference).
+	 * @param WP_Post  $item   Menu item data object.
+	 * @param int      $depth  Depth of menu item. Used for padding.
+	 * @param stdClass $args   An object of wp_nav_menu() arguments.
+	 */
+	public function end_el( &$output, $item, $depth = 0, $args = null ) {
+		// No closing tag needed (no <li> wrapper)
+	}
+}
+
+/**
+ * Fallback function for primary menu
+ *
+ * Displays default menu items if no menu is assigned.
+ * Maintains backward compatibility with static menu.
+ *
+ * @param array $args Menu arguments.
+ */
+function gcb_primary_menu_fallback( $args ) {
+	// Extract link class from args
+	$link_class = isset( $args['link_class'] ) ? $args['link_class'] : 'nav-link';
+
+	// Default menu items
+	$menu_items = array(
+		array(
+			'url'   => home_url( '/car-reviews/' ),
+			'title' => 'Car Reviews',
+		),
+		array(
+			'url'   => home_url( '/car-news/' ),
+			'title' => 'Car News',
+		),
+		array(
+			'url'   => home_url( '/electric-cars/' ),
+			'title' => 'Electric Cars',
+		),
+		array(
+			'url'   => home_url( '/brands/' ),
+			'title' => 'Brands',
+		),
+	);
+
+	// Output links
+	foreach ( $menu_items as $item ) {
+		printf(
+			'<a href="%s" class="%s">%s</a>',
+			esc_url( $item['url'] ),
+			esc_attr( $link_class ),
+			esc_html( $item['title'] )
+		);
+	}
+}
