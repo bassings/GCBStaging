@@ -76,6 +76,23 @@ $table_prefix  = 'wp_';
  */
 define('WP_DEBUG', false);
 
+/**
+ * WordPress Studio Memory Optimization
+ *
+ * Increase PHP memory limits for better performance in WASM environment.
+ * Note: Browser tab memory (2-4GB) is the primary constraint, not PHP.
+ */
+define('WP_MEMORY_LIMIT', '256M');      // Regular memory limit
+define('WP_MAX_MEMORY_LIMIT', '512M');  // Admin/backend memory limit
+
+/**
+ * Post Revisions Limit
+ *
+ * Limit revisions to prevent database bloat in WordPress Studio.
+ * Helps keep SQLite database size manageable (target: < 150MB).
+ */
+define('WP_POST_REVISIONS', 3);  // Keep only 3 revisions per post
+
 /* That's all, stop editing! Happy blogging. */
 
 /** Absolute path to the WordPress directory. */
