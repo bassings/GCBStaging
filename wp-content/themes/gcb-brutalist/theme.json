@@ -1,6 +1,28 @@
 {
   "$schema": "https://schemas.wp.org/trunk/theme.json",
   "version": 2,
+  "customTemplates": [
+    {
+      "name": "index",
+      "title": "Blog Index",
+      "postTypes": ["page"]
+    },
+    {
+      "name": "page",
+      "title": "Page",
+      "postTypes": ["page"]
+    },
+    {
+      "name": "single",
+      "title": "Single Post",
+      "postTypes": ["post", "page"]
+    },
+    {
+      "name": "search",
+      "title": "Search Results",
+      "postTypes": []
+    }
+  ],
   "settings": {
     "appearanceTools": true,
     "layout": {
