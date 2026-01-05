@@ -69,6 +69,7 @@ function gcb_test_utils_init(): void {
 	require_once GCB_TEST_UTILS_DIR . 'includes/class-gcb-database-reset.php';
 	require_once GCB_TEST_UTILS_DIR . 'includes/class-gcb-theme-manager.php';
 	require_once GCB_TEST_UTILS_DIR . 'includes/class-gcb-post-creator.php';
+	require_once GCB_TEST_UTILS_DIR . 'includes/class-gcb-youtube-mock-data.php';
 
 	add_action( 'rest_api_init', array( 'GCB_Database_Reset', 'register_routes' ) );
 	add_action( 'rest_api_init', array( 'GCB_Theme_Manager', 'register_routes' ) );

@@ -9,24 +9,13 @@
  * Keywords: video, rail, horizontal, scroll, brutalism
  */
 
-// Query video posts from content_format taxonomy
-$video_posts = new WP_Query(
-	array(
-		'post_type'      => 'post',
-		'posts_per_page' => 10,
-		'tax_query'      => array(
-			array(
-				'taxonomy' => 'content_format',
-				'field'    => 'slug',
-				'terms'    => array( 'video-quick', 'video-feature' ),
-			),
-		),
-		'orderby'        => 'date',
-		'order'          => 'DESC',
-	)
-);
+// Fetch videos from YouTube channel (replaces WordPress post query)
+require_once get_template_directory() . '/../../plugins/gcb-content-intelligence/includes/class-gcb-youtube-channel-fetcher.php';
 
-if ( ! $video_posts->have_posts() ) {
+$videos = GCB_YouTube_Channel_Fetcher::get_videos();
+
+// If API fails or returns empty, hide carousel completely
+if ( empty( $videos ) ) {
 	return;
 }
 ?>
@@ -104,20 +93,18 @@ if ( ! $video_posts->have_posts() ) {
 	<div class="gcb-video-rail__container video-rail-scroll" style="display: flex; gap: 1rem; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding-bottom: 1rem;">
 
 		<?php
-		while ( $video_posts->have_posts() ) :
-			$video_posts->the_post();
-			$post_id        = get_the_ID();
-			$video_id       = get_post_meta( $post_id, '_gcb_video_id', true );
-			$metadata_json  = get_post_meta( $post_id, '_gcb_video_metadata', true );
-			$metadata       = ! empty( $metadata_json ) ? json_decode( $metadata_json, true ) : array();
-			$duration       = $metadata['duration'] ?? '';
-			$view_count     = $metadata['viewCount'] ?? '';
-			$thumbnail      = $video_id ? "https://img.youtube.com/vi/{$video_id}/maxresdefault.jpg" : get_the_post_thumbnail_url( $post_id, 'medium' );
+		foreach ( $videos as $video ) :
+			$video_id    = $video['video_id'];
+			$title       = $video['title'];
+			$duration    = $video['duration'];
+			$view_count  = $video['view_count'];
+			$thumbnail   = $video['thumbnail'];
+			$youtube_url = "https://www.youtube.com/watch?v={$video_id}";
 			?>
 
 			<!-- Video Card (North Star Structure: 9:16 Portrait with Overlay Content) -->
 			<div class="gcb-video-card video-rail-item" style="scroll-snap-align: start;">
-				<a href="<?php echo esc_url( get_permalink() ); ?>" style="display: block; text-decoration: none;">
+				<a href="<?php echo esc_url( $youtube_url ); ?>" target="_blank" rel="noopener noreferrer" aria-label="Watch <?php echo esc_attr( $title ); ?> on YouTube" style="display: block; text-decoration: none;">
 					<!-- 9:16 Aspect Ratio Container -->
 					<div class="gcb-video-card__aspect gcb-video-card__border" style="border: 1px solid var(--wp--preset--color--brutal-border); overflow: hidden; position: relative;">
 
@@ -125,7 +112,7 @@ if ( ! $video_posts->have_posts() ) {
 						<?php if ( $thumbnail ) : ?>
 							<img
 								src="<?php echo esc_url( $thumbnail ); ?>"
-								alt="<?php echo esc_attr( get_the_title() ); ?>"
+								alt="<?php echo esc_attr( $title ); ?>"
 								style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.3);"
 								loading="lazy"
 							/>
@@ -145,7 +132,7 @@ if ( ! $video_posts->have_posts() ) {
 						<div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 1rem; background: linear-gradient(to top, var(--wp--preset--color--void-black) 0%, transparent 100%);">
 							<!-- Title -->
 							<h3 class="gcb-video-card__title video-title" style="font-family: var(--wp--preset--font-family--playfair); font-size: 1rem; line-height: 1.3; margin: 0 0 0.25rem 0; color: var(--wp--preset--color--off-white); font-weight: bold;">
-								<?php echo esc_html( wp_trim_words( get_the_title(), 8 ) ); ?>
+								<?php echo esc_html( wp_trim_words( $title, 8 ) ); ?>
 							</h3>
 
 							<!-- Metadata: Duration • Views (North Star Format) -->
@@ -166,9 +153,7 @@ if ( ! $video_posts->have_posts() ) {
 				</a>
 			</div>
 
-		<?php endwhile; ?>
-
-		<?php wp_reset_postdata(); ?>
+		<?php endforeach; ?>
 
 	</div>
 

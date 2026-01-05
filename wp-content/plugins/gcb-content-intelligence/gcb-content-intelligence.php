@@ -62,11 +62,16 @@ add_action( 'plugins_loaded', 'gcb_ci_init' );
 /**
  * Activation Hook
  *
- * Register taxonomy and flush rewrite rules.
+ * Register taxonomy, flush rewrite rules, and schedule YouTube channel refresh.
  */
 function gcb_ci_activate(): void {
 	require_once GCB_CI_DIR . 'includes/class-gcb-taxonomy-registration.php';
 	GCB_Taxonomy_Registration::register_content_format_taxonomy();
+
+	// Schedule hourly YouTube channel refresh.
+	require_once GCB_CI_DIR . 'includes/class-gcb-youtube-channel-fetcher.php';
+	GCB_YouTube_Channel_Fetcher::schedule_refresh();
+
 	flush_rewrite_rules();
 }
 register_activation_hook( __FILE__, 'gcb_ci_activate' );
@@ -74,9 +79,13 @@ register_activation_hook( __FILE__, 'gcb_ci_activate' );
 /**
  * Deactivation Hook
  *
- * Flush rewrite rules.
+ * Flush rewrite rules and clear YouTube channel refresh schedule.
  */
 function gcb_ci_deactivate(): void {
+	// Clear scheduled YouTube channel refresh and cached data.
+	require_once GCB_CI_DIR . 'includes/class-gcb-youtube-channel-fetcher.php';
+	GCB_YouTube_Channel_Fetcher::clear_scheduled_refresh();
+
 	flush_rewrite_rules();
 }
 register_deactivation_hook( __FILE__, 'gcb_ci_deactivate' );
