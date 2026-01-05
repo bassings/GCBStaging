@@ -18,7 +18,7 @@ test.describe('Smoke Tests - Infrastructure Validation', () => {
 
   test('WordPress is accessible', async ({ page }) => {
     await page.goto('/');
-    expect(page.url()).toContain('localhost:8881');
+    expect(page.url()).toContain('localhost');
     console.log('✅ WordPress is accessible at', page.url());
   });
 
@@ -53,16 +53,16 @@ test.describe('Smoke Tests - Infrastructure Validation', () => {
     console.log('✅ gcb-testing/v1 namespace is registered');
   });
 
-  test('Database reset endpoint is accessible', async ({ request }) => {
-    const dbHelper = createDatabaseHelper(request);
+  test('Database reset endpoint is accessible', async ({ request, baseURL }) => {
+    const dbHelper = createDatabaseHelper(request, baseURL);
     const endpointExists = await dbHelper.verifyEndpointExists();
 
     expect(endpointExists).toBe(true);
     console.log('✅ Database reset endpoint is accessible');
   });
 
-  test('Database reset endpoint works', async ({ request }) => {
-    const dbHelper = createDatabaseHelper(request);
+  test('Database reset endpoint works', async ({ request, baseURL }) => {
+    const dbHelper = createDatabaseHelper(request, baseURL);
 
     try {
       const result = await dbHelper.reset();
@@ -83,13 +83,13 @@ test.describe('Smoke Tests - Infrastructure Validation', () => {
     }
   });
 
-  test('Database reset rejects unauthorized requests', async ({ request }) => {
+  test('Database reset rejects unauthorized requests', async ({ request, baseURL }) => {
     // Test without X-Test-Key header
-    const response1 = await request.delete('/wp-json/gcb-testing/v1/reset');
+    const response1 = await request.delete(`${baseURL}/wp-json/gcb-testing/v1/reset`);
     expect(response1.status()).toBe(401);
 
     // Test with wrong X-Test-Key
-    const response2 = await request.delete('/wp-json/gcb-testing/v1/reset', {
+    const response2 = await request.delete(`${baseURL}/wp-json/gcb-testing/v1/reset`, {
       headers: { 'X-Test-Key': 'wrong-key' },
     });
     expect(response2.status()).toBe(401);

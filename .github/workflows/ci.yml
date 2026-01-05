@@ -47,9 +47,18 @@ jobs:
       - name: Build Docker stack
         run: docker compose up -d
 
+      - name: Setup WordPress
+        run: |
+          chmod +x .github/scripts/setup-wordpress.sh
+          .github/scripts/setup-wordpress.sh
+
       - name: Run validation
         env:
           WP_HOME: http://localhost:8080
         run: npm run validate
+
+      - name: Show logs on failure
+        if: failure()
+        run: docker compose logs
 
 

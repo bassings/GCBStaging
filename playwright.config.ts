@@ -24,7 +24,7 @@ export default defineConfig({
   ],
 
   use: {
-    baseURL: 'http://localhost:8881',
+    baseURL: process.env.WP_HOME || 'http://localhost:8881',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',

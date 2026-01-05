@@ -11,7 +11,8 @@
     "test:headed": "playwright test --headed",
     "test:report": "playwright show-report",
     "test:codegen": "playwright codegen http://localhost:8881",
-    "playwright:install": "playwright install chromium --with-deps"
+    "playwright:install": "playwright install chromium --with-deps",
+    "validate": "playwright install chromium --with-deps && playwright test --config=playwright.config.ci.ts"
   },
   "keywords": [
     "wordpress",
