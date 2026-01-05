@@ -712,7 +712,9 @@ class GCB_Nav_Walker extends Walker_Nav_Menu {
 	 * @param stdClass $args   An object of wp_nav_menu() arguments.
 	 */
 	public function start_lvl( &$output, $depth = 0, $args = null ) {
-		// No submenu support - flat navigation only
+		// Add submenu wrapper with proper classes
+		$indent = str_repeat( "\t", $depth );
+		$output .= "\n{$indent}<ul class=\"sub-menu\" aria-label=\"Submenu\">\n";
 	}
 
 	/**
@@ -723,13 +725,15 @@ class GCB_Nav_Walker extends Walker_Nav_Menu {
 	 * @param stdClass $args   An object of wp_nav_menu() arguments.
 	 */
 	public function end_lvl( &$output, $depth = 0, $args = null ) {
-		// No submenu support - flat navigation only
+		// Close submenu wrapper
+		$indent = str_repeat( "\t", $depth );
+		$output .= "{$indent}</ul>\n";
 	}
 
 	/**
 	 * Starts the element output.
 	 *
-	 * Outputs just the <a> tag without <li> wrapper.
+	 * Outputs <li> wrapper with <a> tag inside. Adds dropdown classes for items with children.
 	 *
 	 * @param string   $output Used to append additional content (passed by reference).
 	 * @param WP_Post  $item   Menu item data object.
@@ -738,20 +742,45 @@ class GCB_Nav_Walker extends Walker_Nav_Menu {
 	 * @param int      $id     Current item ID.
 	 */
 	public function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ) {
-		// Build link classes
-		$classes = array();
+		$indent = ( $depth ) ? str_repeat( "\t", $depth ) : '';
 
-		// Add link class based on context (desktop vs mobile)
-		if ( isset( $args->link_class ) && ! empty( $args->link_class ) ) {
-			$classes[] = $args->link_class;
+		// Build <li> classes
+		$li_classes = array( 'menu-item' );
+
+		// Add class for items with children
+		if ( in_array( 'menu-item-has-children', $item->classes, true ) ) {
+			$li_classes[] = 'has-dropdown';
 		}
 
 		// Add current page class if this is the active page
 		if ( in_array( 'current-menu-item', $item->classes, true ) ) {
-			$classes[] = 'current';
+			$li_classes[] = 'current-menu-item';
 		}
 
-		$class_attr = ! empty( $classes ) ? ' class="' . esc_attr( implode( ' ', $classes ) ) . '"' : '';
+		// Add current parent class if this is a parent of the active page
+		if ( in_array( 'current-menu-parent', $item->classes, true ) || in_array( 'current-menu-ancestor', $item->classes, true ) ) {
+			$li_classes[] = 'current-menu-parent';
+		}
+
+		$li_class_attr = ' class="' . esc_attr( implode( ' ', $li_classes ) ) . '"';
+
+		// Start <li>
+		$output .= $indent . '<li' . $li_class_attr . '>';
+
+		// Build link classes
+		$link_classes = array();
+
+		// Add link class based on context (desktop vs mobile)
+		if ( isset( $args->link_class ) && ! empty( $args->link_class ) ) {
+			$link_classes[] = $args->link_class;
+		}
+
+		// Add submenu class for depth
+		if ( $depth > 0 ) {
+			$link_classes[] = 'submenu-link';
+		}
+
+		$link_class_attr = ! empty( $link_classes ) ? ' class="' . esc_attr( implode( ' ', $link_classes ) ) . '"' : '';
 
 		// Build link attributes
 		$attributes  = '';
@@ -760,9 +789,20 @@ class GCB_Nav_Walker extends Walker_Nav_Menu {
 		$attributes .= ! empty( $item->xfn ) ? ' rel="' . esc_attr( $item->xfn ) . '"' : '';
 		$attributes .= ! empty( $item->url ) ? ' href="' . esc_url( $item->url ) . '"' : '';
 
+		// Add ARIA for dropdown toggle
+		if ( in_array( 'menu-item-has-children', $item->classes, true ) ) {
+			$attributes .= ' aria-haspopup="true" aria-expanded="false"';
+		}
+
 		// Output link
-		$output .= '<a' . $class_attr . $attributes . '>';
+		$output .= '<a' . $link_class_attr . $attributes . '>';
 		$output .= esc_html( $item->title );
+
+		// Add dropdown indicator for items with children
+		if ( in_array( 'menu-item-has-children', $item->classes, true ) ) {
+			$output .= '<span class="dropdown-indicator" aria-hidden="true">▼</span>';
+		}
+
 		$output .= '</a>';
 	}
 
@@ -775,7 +815,8 @@ class GCB_Nav_Walker extends Walker_Nav_Menu {
 	 * @param stdClass $args   An object of wp_nav_menu() arguments.
 	 */
 	public function end_el( &$output, $item, $depth = 0, $args = null ) {
-		// No closing tag needed (no <li> wrapper)
+		// Close <li>
+		$output .= "</li>\n";
 	}
 }
 
