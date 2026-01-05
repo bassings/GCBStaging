@@ -1,3 +1,6 @@
+# WordPress configuration (contains secrets)
+wp-config.php
+
 # WordPress cache and temporary files
 wp-content/uploads/*
 wp-content/cache/*
