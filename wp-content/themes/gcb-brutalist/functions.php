@@ -476,71 +476,44 @@ function gcb_category_children_shortcode() {
 		return '';
 	}
 
-	ob_start();
-	?>
-	<!-- Child Categories Grid -->
-	<div class="category-children-grid" style="margin-bottom: 4rem;">
+	// Build HTML string without line breaks to prevent wpautop
+	$html = '<div class="category-children-grid" style="margin-bottom: 4rem;">';
 
-		<!-- Section Header -->
-		<div style="border-bottom: 2px solid var(--wp--preset--color--acid-lime); padding-bottom: 1.5rem; margin-bottom: 2rem;">
-			<h2 style="font-family: var(--wp--preset--font-family--playfair); font-size: 2rem; text-transform: uppercase; color: var(--wp--preset--color--off-white); margin: 0;">
-				Browse by Brand
-			</h2>
-		</div>
+	// Section Header
+	$html .= '<div style="border-bottom: 2px solid var(--wp--preset--color--acid-lime); padding-bottom: 1.5rem; margin-bottom: 2rem;">';
+	$html .= '<h2 style="font-family: var(--wp--preset--font-family--playfair); font-size: 2rem; text-transform: uppercase; color: var(--wp--preset--color--off-white); margin: 0;">Browse by Brand</h2>';
+	$html .= '</div>';
 
-		<!-- Brands Grid -->
-		<div class="brands-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">
-			<?php foreach ( $valid_categories as $category ) : ?>
-				<?php
-				$category_link = get_term_link( $category );
-				if ( is_wp_error( $category_link ) ) {
-					continue;
-				}
-				?>
-				<a href="<?php echo esc_url( $category_link ); ?>"
-				   class="brand-card"
-				   style="display: block; padding: 1.5rem 1rem; border: 2px solid var(--wp--preset--color--brutal-border); text-decoration: none; transition: none; background: transparent;">
+	// Brands Grid
+	$html .= '<div class="brands-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">';
 
-					<div style="font-family: var(--wp--preset--font-family--mono); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--wp--preset--color--off-white); margin-bottom: 0.5rem;">
-						<?php echo esc_html( $category->name ); ?>
-					</div>
+	foreach ( $valid_categories as $category ) {
+		$category_link = get_term_link( $category );
+		if ( is_wp_error( $category_link ) ) {
+			continue;
+		}
 
-					<div style="font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; color: var(--wp--preset--color--brutal-grey);">
-						<?php echo esc_html( $category->count ); ?> <?php echo $category->count === 1 ? 'review' : 'reviews'; ?>
-					</div>
-				</a>
-			<?php endforeach; ?>
-		</div>
+		$review_text = $category->count === 1 ? 'review' : 'reviews';
 
-		<style>
-			.brand-card:hover,
-			.brand-card:focus {
-				border-color: var(--wp--preset--color--acid-lime) !important;
-				background-color: rgba(204, 255, 0, 0.05) !important;
-				outline: none;
-			}
+		$html .= '<a href="' . esc_url( $category_link ) . '" class="brand-card" style="display: block; padding: 1.5rem 1rem; border: 2px solid var(--wp--preset--color--brutal-border); text-decoration: none; transition: none; background: transparent;">';
+		$html .= '<span style="display: block; font-family: var(--wp--preset--font-family--mono); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--wp--preset--color--off-white); margin-bottom: 0.5rem;">' . esc_html( $category->name ) . '</span>';
+		$html .= '<span style="display: block; font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; color: var(--wp--preset--color--brutal-grey);">' . esc_html( $category->count ) . ' ' . $review_text . '</span>';
+		$html .= '</a>';
+	}
 
-			.brand-card:focus-visible {
-				outline: 2px solid var(--wp--preset--color--acid-lime);
-				outline-offset: 2px;
-			}
+	$html .= '</div>'; // .brands-grid
 
-			/* Responsive adjustments */
-			@media (max-width: 768px) {
-				.brands-grid {
-					grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
-				}
-			}
+	// Inline styles
+	$html .= '<style>';
+	$html .= '.brand-card:hover, .brand-card:focus { border-color: var(--wp--preset--color--acid-lime) !important; background-color: rgba(204, 255, 0, 0.05) !important; outline: none; }';
+	$html .= '.brand-card:focus-visible { outline: 2px solid var(--wp--preset--color--acid-lime); outline-offset: 2px; }';
+	$html .= '@media (max-width: 768px) { .brands-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important; } }';
+	$html .= '@media (max-width: 480px) { .brands-grid { grid-template-columns: 1fr 1fr !important; } }';
+	$html .= '</style>';
 
-			@media (max-width: 480px) {
-				.brands-grid {
-					grid-template-columns: 1fr 1fr !important;
-				}
-			}
-		</style>
-	</div>
-	<?php
-	return ob_get_clean();
+	$html .= '</div>'; // .category-children-grid
+
+	return $html;
 }
 add_shortcode( 'gcb_category_children', 'gcb_category_children_shortcode' );
 
