@@ -93,8 +93,9 @@ class GCB_YouTube_Channel_Fetcher {
 			return self::get_mock_videos();
 		}
 
-		// Check API key.
-		if ( ! defined( 'GCB_YOUTUBE_API_KEY' ) || empty( GCB_YOUTUBE_API_KEY ) ) {
+		// Check API key (wp-config.php or WordPress option).
+		$api_key = self::get_api_key();
+		if ( empty( $api_key ) ) {
 			error_log( 'GCB: YouTube API key not configured' );
 			return array();
 		}
@@ -120,6 +121,25 @@ class GCB_YouTube_Channel_Fetcher {
 	}
 
 	/**
+	 * Get YouTube API key from wp-config.php or WordPress option
+	 *
+	 * Checks wp-config.php first (preferred), then falls back to
+	 * WordPress option (gcb_youtube_api_key) for WordPress.com compatibility.
+	 *
+	 * @return string API key or empty string if not found.
+	 */
+	private static function get_api_key(): string {
+		// Priority 1: Check wp-config.php constant.
+		if ( defined( 'GCB_YOUTUBE_API_KEY' ) && ! empty( GCB_YOUTUBE_API_KEY ) ) {
+			return GCB_YOUTUBE_API_KEY;
+		}
+
+		// Priority 2: Check WordPress option (for WordPress.com hosting).
+		$api_key = get_option( 'gcb_youtube_api_key', '' );
+		return $api_key;
+	}
+
+	/**
 	 * Get channel's uploads playlist ID
 	 *
 	 * @return string Playlist ID or empty string on failure.
@@ -129,7 +149,7 @@ class GCB_YouTube_Channel_Fetcher {
 			array(
 				'part' => 'contentDetails',
 				'id'   => self::CHANNEL_ID,
-				'key'  => GCB_YOUTUBE_API_KEY,
+				'key'  => self::get_api_key(),
 			),
 			self::CHANNEL_ENDPOINT
 		);
@@ -180,7 +200,7 @@ class GCB_YouTube_Channel_Fetcher {
 				'part'       => 'snippet,contentDetails',
 				'playlistId' => $playlist_id,
 				'maxResults' => self::MAX_RESULTS,
-				'key'        => GCB_YOUTUBE_API_KEY,
+				'key'        => self::get_api_key(),
 			),
 			self::PLAYLIST_ENDPOINT
 		);
@@ -230,7 +250,7 @@ class GCB_YouTube_Channel_Fetcher {
 			array(
 				'part' => 'snippet,contentDetails,statistics',
 				'id'   => $ids_string,
-				'key'  => GCB_YOUTUBE_API_KEY,
+				'key'  => self::get_api_key(),
 			),
 			self::VIDEOS_ENDPOINT
 		);
