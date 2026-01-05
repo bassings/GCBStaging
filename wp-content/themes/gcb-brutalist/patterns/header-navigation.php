@@ -39,7 +39,7 @@
 					'walker'          => new GCB_Nav_Walker(),
 					'link_class'      => 'nav-link',
 					'fallback_cb'     => 'gcb_primary_menu_fallback',
-					'depth'           => 2,
+					'depth'           => 1,
 				)
 			);
 			?>
@@ -86,7 +86,7 @@
 					'walker'          => new GCB_Nav_Walker(),
 					'link_class'      => 'mobile-nav-link',
 					'fallback_cb'     => 'gcb_primary_menu_fallback',
-					'depth'           => 2,
+					'depth'           => 1,
 				)
 			);
 			?>
@@ -197,9 +197,6 @@
 		text-decoration: none;
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
-		display: flex;
-		align-items: center;
-		gap: 0.25rem;
 		padding: 0.5rem 0;
 	}
 
@@ -212,127 +209,6 @@
 	.nav-link:focus-visible {
 		outline: 2px solid #CCFF00; /* Acid Lime */
 		outline-offset: 4px;
-	}
-
-	/* Dropdown indicator (down arrow) */
-	.dropdown-indicator {
-		font-size: 0.625rem;
-		margin-left: 0.25rem;
-		transition: transform 0.2s ease;
-	}
-
-	/* Rotate indicator when dropdown is open */
-	.has-dropdown.open > a .dropdown-indicator {
-		transform: rotate(180deg);
-	}
-
-	/* ===== DESKTOP DROPDOWN SUBMENU ===== */
-	.main-nav .sub-menu {
-		position: absolute;
-		top: 100%;
-		left: 0;
-		min-width: 220px;
-		background-color: #050505; /* Void Black */
-		border: 2px solid #333333; /* Brutal Border */
-		list-style: none;
-		margin: 0;
-		padding: 0;
-		opacity: 0;
-		visibility: hidden;
-		transform: translateY(-10px);
-		transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
-		z-index: 1000;
-	}
-
-	/* Show submenu on hover or when open class is added */
-	.main-nav .has-dropdown:hover > .sub-menu,
-	.main-nav .has-dropdown.open > .sub-menu {
-		opacity: 1;
-		visibility: visible;
-		transform: translateY(0);
-	}
-
-	.main-nav .sub-menu .menu-item {
-		border-bottom: 1px solid #333333; /* Brutal Border */
-	}
-
-	.main-nav .sub-menu .menu-item:last-child {
-		border-bottom: none;
-	}
-
-	.main-nav .submenu-link {
-		display: block;
-		padding: 0.75rem 1rem;
-		font-family: 'Space Mono', monospace;
-		font-size: 0.75rem;
-		font-weight: 400;
-		color: #FAFAFA; /* Off-White */
-		text-decoration: none;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-	}
-
-	.main-nav .submenu-link:hover,
-	.main-nav .submenu-link:focus {
-		background-color: rgba(204, 255, 0, 0.1);
-		color: #CCFF00; /* Acid Lime */
-		outline: none;
-	}
-
-	.main-nav .submenu-link:focus-visible {
-		outline: 2px solid #CCFF00; /* Acid Lime */
-		outline-offset: -2px;
-	}
-
-	/* ===== DESKTOP MEGA MENU ===== */
-	.main-nav .mega-menu {
-		display: flex;
-		gap: 2rem;
-		list-style: none;
-		margin: 0;
-		padding: 1.5rem;
-		min-width: 800px;
-		max-width: 1000px;
-	}
-
-	.main-nav .mega-menu-column {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-		min-width: 0; /* Prevent flex overflow */
-	}
-
-	.main-nav .mega-menu-link {
-		display: block;
-		padding: 0.5rem 0.75rem;
-		font-family: 'Space Mono', monospace;
-		font-size: 0.75rem;
-		font-weight: 400;
-		color: #FAFAFA; /* Off-White */
-		text-decoration: none;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		border-left: 2px solid transparent;
-		transition: none;
-	}
-
-	.main-nav .mega-menu-link:hover,
-	.main-nav .mega-menu-link:focus {
-		background-color: rgba(204, 255, 0, 0.1);
-		color: #CCFF00; /* Acid Lime */
-		border-left-color: #CCFF00; /* Acid Lime */
-		outline: none;
-	}
-
-	.main-nav .mega-menu-link:focus-visible {
-		outline: 2px solid #CCFF00; /* Acid Lime */
-		outline-offset: -2px;
-	}
-
-	/* Hide regular sub-menu for items with mega menu */
-	.main-nav .has-mega-menu > .sub-menu {
-		display: none;
 	}
 
 	/* ===== TERMINAL SEARCH BUTTON ===== */
@@ -531,11 +407,10 @@
 		letter-spacing: 0.05em;
 		padding: 1rem;
 		border: 1px solid transparent;
+		border-bottom: 1px solid #333333; /* North Star: Brutal Border bottom on each link */
 		min-height: 44px;
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
-		width: 100%;
 	}
 
 	.mobile-nav-link:hover,
@@ -549,83 +424,6 @@
 	.mobile-nav-link:focus-visible {
 		outline: 2px solid #CCFF00; /* Acid Lime */
 		outline-offset: 2px;
-	}
-
-	/* ===== MOBILE SUBMENU ===== */
-	.mobile-menu-list .sub-menu {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-		background-color: rgba(51, 51, 51, 0.3); /* Darker background for submenu */
-		max-height: 0;
-		overflow: hidden;
-		transition: max-height 0.3s ease;
-	}
-
-	.mobile-menu-list .has-dropdown.open > .sub-menu {
-		max-height: 1000px; /* Large enough for all brand items */
-	}
-
-	.mobile-menu-list .sub-menu .menu-item {
-		border-bottom: 1px solid rgba(51, 51, 51, 0.5);
-	}
-
-	.mobile-menu-list .sub-menu .menu-item:last-child {
-		border-bottom: none;
-	}
-
-	.mobile-menu-list .submenu-link {
-		font-size: 0.875rem;
-		padding: 0.75rem 1rem 0.75rem 2rem; /* Indent submenu items */
-		color: #999999; /* Brutal Grey for hierarchy */
-	}
-
-	.mobile-menu-list .submenu-link:hover,
-	.mobile-menu-list .submenu-link:focus {
-		color: #CCFF00; /* Acid Lime */
-		background-color: rgba(204, 255, 0, 0.1);
-	}
-
-	/* ===== MOBILE MEGA MENU ===== */
-	.mobile-menu-list .mega-menu {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-		background-color: rgba(51, 51, 51, 0.3); /* Darker background for submenu */
-		max-height: 0;
-		overflow: hidden;
-		overflow-y: auto;
-		transition: max-height 0.3s ease;
-	}
-
-	.mobile-menu-list .has-mega-menu.open > .mega-menu {
-		max-height: 600px; /* Allow scrolling for 79 brands */
-	}
-
-	.mobile-menu-list .mega-menu-column {
-		list-style: none;
-		display: flex;
-		flex-direction: column;
-	}
-
-	.mobile-menu-list .mega-menu-link {
-		display: block;
-		font-size: 0.875rem;
-		padding: 0.75rem 1rem 0.75rem 2rem; /* Indent submenu items */
-		color: #999999; /* Brutal Grey for hierarchy */
-		text-decoration: none;
-		border-bottom: 1px solid rgba(51, 51, 51, 0.5);
-	}
-
-	.mobile-menu-list .mega-menu-link:hover,
-	.mobile-menu-list .mega-menu-link:focus {
-		color: #CCFF00; /* Acid Lime */
-		background-color: rgba(204, 255, 0, 0.1);
-	}
-
-	/* Hide regular sub-menu for items with mega menu on mobile */
-	.mobile-menu-list .has-mega-menu > .sub-menu {
-		display: none;
 	}
 
 	/* ===== MOBILE SEARCH TOGGLE (North Star) ===== */
@@ -804,114 +602,6 @@
 
 		// Initialize
 		handleScroll();
-
-		// ===== DROPDOWN MENU INTERACTIONS =====
-
-		// Get all menu items with dropdowns
-		const dropdownItems = document.querySelectorAll('.has-dropdown');
-
-		// Desktop: Click to toggle dropdowns
-		dropdownItems.forEach((item) => {
-			const link = item.querySelector('a[aria-haspopup="true"]');
-
-			if (!link) return;
-
-			// Click handler
-			link.addEventListener('click', (e) => {
-				// Only prevent default if we're on desktop and this is a parent menu item
-				if (window.innerWidth >= 768 && item.classList.contains('menu-item')) {
-					e.preventDefault();
-
-					// Close other open dropdowns
-					dropdownItems.forEach((otherItem) => {
-						if (otherItem !== item && otherItem.classList.contains('open')) {
-							otherItem.classList.remove('open');
-							const otherLink = otherItem.querySelector('a[aria-haspopup="true"]');
-							if (otherLink) {
-								otherLink.setAttribute('aria-expanded', 'false');
-							}
-						}
-					});
-
-					// Toggle this dropdown
-					const isOpen = item.classList.contains('open');
-					item.classList.toggle('open');
-					link.setAttribute('aria-expanded', !isOpen);
-				}
-			});
-
-			// Keyboard navigation: Enter/Space to toggle
-			link.addEventListener('keydown', (e) => {
-				if (e.key === 'Enter' || e.key === ' ') {
-					e.preventDefault();
-
-					const isOpen = item.classList.contains('open');
-					item.classList.toggle('open');
-					link.setAttribute('aria-expanded', !isOpen);
-
-					// Focus first submenu/mega menu link if opening
-					if (!isOpen) {
-						const firstSubmenuLink = item.querySelector('.sub-menu .submenu-link, .mega-menu .mega-menu-link');
-						if (firstSubmenuLink) {
-							setTimeout(() => firstSubmenuLink.focus(), 100);
-						}
-					}
-				}
-
-				// Escape key closes dropdown
-				if (e.key === 'Escape') {
-					item.classList.remove('open');
-					link.setAttribute('aria-expanded', 'false');
-					link.focus();
-				}
-			});
-		});
-
-		// Close dropdowns when clicking outside
-		document.addEventListener('click', (e) => {
-			if (!e.target.closest('.has-dropdown')) {
-				dropdownItems.forEach((item) => {
-					if (item.classList.contains('open')) {
-						item.classList.remove('open');
-						const link = item.querySelector('a[aria-haspopup="true"]');
-						if (link) {
-							link.setAttribute('aria-expanded', 'false');
-						}
-					}
-				});
-			}
-		});
-
-		// Close dropdowns on ESC key (global)
-		document.addEventListener('keydown', (e) => {
-			if (e.key === 'Escape') {
-				dropdownItems.forEach((item) => {
-					if (item.classList.contains('open')) {
-						item.classList.remove('open');
-						const link = item.querySelector('a[aria-haspopup="true"]');
-						if (link) {
-							link.setAttribute('aria-expanded', 'false');
-							link.focus();
-						}
-					}
-				});
-			}
-		});
-
-		// Close dropdowns when window is resized (prevent layout issues)
-		let resizeTimer;
-		window.addEventListener('resize', () => {
-			clearTimeout(resizeTimer);
-			resizeTimer = setTimeout(() => {
-				dropdownItems.forEach((item) => {
-					item.classList.remove('open');
-					const link = item.querySelector('a[aria-haspopup="true"]');
-					if (link) {
-						link.setAttribute('aria-expanded', 'false');
-					}
-				});
-			}, 250);
-		});
 
 	})();
 </script>
