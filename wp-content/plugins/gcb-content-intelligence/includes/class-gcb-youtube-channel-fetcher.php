@@ -29,7 +29,7 @@ class GCB_YouTube_Channel_Fetcher {
 	/**
 	 * Channel configuration
 	 */
-	private const CHANNEL_USERNAME = 'GayCarBoys'; // @GayCarBoys.
+	private const CHANNEL_ID = 'UCYAQE20p01w8TZXkvcjna8Q'; // @GayCarBoys channel ID.
 
 	/**
 	 * Caching configuration
@@ -127,9 +127,9 @@ class GCB_YouTube_Channel_Fetcher {
 	private static function get_uploads_playlist_id(): string {
 		$api_url = add_query_arg(
 			array(
-				'part'        => 'contentDetails',
-				'forUsername' => self::CHANNEL_USERNAME,
-				'key'         => GCB_YOUTUBE_API_KEY,
+				'part' => 'contentDetails',
+				'id'   => self::CHANNEL_ID,
+				'key'  => GCB_YOUTUBE_API_KEY,
 			),
 			self::CHANNEL_ENDPOINT
 		);
@@ -161,7 +161,7 @@ class GCB_YouTube_Channel_Fetcher {
 		}
 
 		if ( empty( $data['items'] ) ) {
-			error_log( 'GCB: Channel not found - ' . self::CHANNEL_USERNAME );
+			error_log( 'GCB: Channel not found - ' . self::CHANNEL_ID );
 			return '';
 		}
 
