@@ -18,17 +18,21 @@ if (!defined('ABSPATH')) {
 echo "🚀 Enabling YouTube API on Staging\n";
 echo "====================================\n\n";
 
-// Step 1: Set YouTube API key via WordPress option
+// Step 1: Override test mode (in case GCB_TEST_KEY is defined in wp-config.php)
+update_option('gcb_force_real_api', true);
+echo "✅ Disabled test mode (forcing real API)\n";
+
+// Step 2: Set YouTube API key via WordPress option
 // (WordPress.com doesn't allow editing wp-config.php)
 $api_key = 'AIzaSyDN1Bcu2C-YEPiJMP-kCATezfaE7cNKYK4';
 update_option('gcb_youtube_api_key', $api_key);
 echo "✅ Set YouTube API key via WordPress option\n";
 
-// Step 2: Clear cached mock videos
+// Step 3: Clear cached mock videos
 delete_transient('gcb_youtube_channel_videos');
 echo "✅ Cleared cached mock videos\n\n";
 
-// Step 3: Test API and fetch real videos
+// Step 4: Test API and fetch real videos
 echo "📺 Fetching real videos from YouTube channel...\n";
 require_once __DIR__ . '/wp-content/plugins/gcb-content-intelligence/includes/class-gcb-youtube-channel-fetcher.php';
 

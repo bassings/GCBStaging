@@ -51,8 +51,9 @@ define('NONCE_SALT',       '<g.~BTU$7Yvrbr)H!9}zDCsrjqBS8x[d]pFGt#~eROZD*uAa~C[s
 
 /**
  * GCB Test Key for REST API authentication
+ * Disabled for production - enables real YouTube API calls
  */
-define('GCB_TEST_KEY', 'test-secret-key-local');
+// define('GCB_TEST_KEY', 'test-secret-key-local');
 
 /**
  * WordPress Database Table prefix.
@@ -92,6 +93,12 @@ define('WP_MAX_MEMORY_LIMIT', '512M');  // Admin/backend memory limit
  * Helps keep SQLite database size manageable (target: < 150MB).
  */
 define('WP_POST_REVISIONS', 3);  // Keep only 3 revisions per post
+
+/**
+ * YouTube Data API v3 Key
+ * Used for fetching channel videos and video metadata
+ */
+define( 'GCB_YOUTUBE_API_KEY', 'AIzaSyDN1Bcu2C-YEPiJMP-kCATezfaE7cNKYK4' );
 
 /* That's all, stop editing! Happy blogging. */
 

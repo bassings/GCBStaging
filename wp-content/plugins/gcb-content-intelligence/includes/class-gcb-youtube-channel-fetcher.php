@@ -88,8 +88,12 @@ class GCB_YouTube_Channel_Fetcher {
 	 * @return array Array of video objects.
 	 */
 	private static function fetch_channel_videos(): array {
-		// Test mode: Return mock data.
-		if ( defined( 'GCB_TEST_KEY' ) && ! empty( GCB_TEST_KEY ) ) {
+		// Allow WordPress option to override test mode (for staging/production).
+		// This lets you disable test mode even if GCB_TEST_KEY is defined in wp-config.php.
+		$force_real_api = get_option( 'gcb_force_real_api', false );
+
+		// Test mode: Return mock data (unless overridden).
+		if ( ! $force_real_api && defined( 'GCB_TEST_KEY' ) && ! empty( GCB_TEST_KEY ) ) {
 			return self::get_mock_videos();
 		}
 
