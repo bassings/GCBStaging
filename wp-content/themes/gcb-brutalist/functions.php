@@ -518,6 +518,41 @@ function gcb_category_children_shortcode() {
 add_shortcode( 'gcb_category_children', 'gcb_category_children_shortcode' );
 
 /**
+ * Shortcode: Category Posts Display Control
+ * Hides posts query on parent category pages that have children
+ * Shows posts only on leaf category pages (brands with no subcategories)
+ *
+ * @return string CSS to hide posts or empty string
+ */
+function gcb_category_posts_shortcode() {
+	// Get current category
+	$current_category = get_queried_object();
+
+	if ( ! $current_category || ! isset( $current_category->term_id ) ) {
+		return '';
+	}
+
+	// Check if category has children
+	$child_categories = get_terms(
+		array(
+			'taxonomy'   => 'category',
+			'parent'     => $current_category->term_id,
+			'hide_empty' => true,
+			'fields'     => 'ids', // Only need count, not full objects
+		)
+	);
+
+	// If category has children, hide the posts section
+	if ( ! empty( $child_categories ) && ! is_wp_error( $child_categories ) ) {
+		return '<style>.wp-block-query.alignwide { display: none !important; }</style>';
+	}
+
+	// No children, show posts (return empty string)
+	return '';
+}
+add_shortcode( 'gcb_category_posts', 'gcb_category_posts_shortcode' );
+
+/**
  * Force search results to order by date descending instead of relevance
  * Ensures most recent articles appear first on search results page
  * Applies to both main query and query blocks on search pages
