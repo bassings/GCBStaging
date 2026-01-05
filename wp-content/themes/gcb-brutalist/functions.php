@@ -447,12 +447,12 @@ function gcb_category_children_shortcode() {
 		return '';
 	}
 
-	// Get child categories
+	// Get child categories (only those with posts)
 	$child_categories = get_terms(
 		array(
 			'taxonomy'   => 'category',
 			'parent'     => $current_category->term_id,
-			'hide_empty' => false,
+			'hide_empty' => true,
 			'orderby'    => 'name',
 			'order'      => 'ASC',
 		)
@@ -479,6 +479,11 @@ function gcb_category_children_shortcode() {
 		<div class="brands-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">
 			<?php foreach ( $child_categories as $category ) : ?>
 				<?php
+				// Skip categories with empty names or no posts
+				if ( empty( $category->name ) || $category->count < 1 ) {
+					continue;
+				}
+
 				$category_link = get_term_link( $category );
 				if ( is_wp_error( $category_link ) ) {
 					continue;
