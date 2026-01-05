@@ -284,6 +284,57 @@
 		outline-offset: -2px;
 	}
 
+	/* ===== DESKTOP MEGA MENU ===== */
+	.main-nav .mega-menu {
+		display: flex;
+		gap: 2rem;
+		list-style: none;
+		margin: 0;
+		padding: 1.5rem;
+		min-width: 800px;
+		max-width: 1000px;
+	}
+
+	.main-nav .mega-menu-column {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		min-width: 0; /* Prevent flex overflow */
+	}
+
+	.main-nav .mega-menu-link {
+		display: block;
+		padding: 0.5rem 0.75rem;
+		font-family: 'Space Mono', monospace;
+		font-size: 0.75rem;
+		font-weight: 400;
+		color: #FAFAFA; /* Off-White */
+		text-decoration: none;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		border-left: 2px solid transparent;
+		transition: none;
+	}
+
+	.main-nav .mega-menu-link:hover,
+	.main-nav .mega-menu-link:focus {
+		background-color: rgba(204, 255, 0, 0.1);
+		color: #CCFF00; /* Acid Lime */
+		border-left-color: #CCFF00; /* Acid Lime */
+		outline: none;
+	}
+
+	.main-nav .mega-menu-link:focus-visible {
+		outline: 2px solid #CCFF00; /* Acid Lime */
+		outline-offset: -2px;
+	}
+
+	/* Hide regular sub-menu for items with mega menu */
+	.main-nav .has-mega-menu > .sub-menu {
+		display: none;
+	}
+
 	/* ===== TERMINAL SEARCH BUTTON ===== */
 	.search-toggle {
 		display: none; /* Hidden on mobile, shown on desktop */
@@ -535,6 +586,48 @@
 		background-color: rgba(204, 255, 0, 0.1);
 	}
 
+	/* ===== MOBILE MEGA MENU ===== */
+	.mobile-menu-list .mega-menu {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		background-color: rgba(51, 51, 51, 0.3); /* Darker background for submenu */
+		max-height: 0;
+		overflow: hidden;
+		overflow-y: auto;
+		transition: max-height 0.3s ease;
+	}
+
+	.mobile-menu-list .has-mega-menu.open > .mega-menu {
+		max-height: 600px; /* Allow scrolling for 79 brands */
+	}
+
+	.mobile-menu-list .mega-menu-column {
+		list-style: none;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.mobile-menu-list .mega-menu-link {
+		display: block;
+		font-size: 0.875rem;
+		padding: 0.75rem 1rem 0.75rem 2rem; /* Indent submenu items */
+		color: #999999; /* Brutal Grey for hierarchy */
+		text-decoration: none;
+		border-bottom: 1px solid rgba(51, 51, 51, 0.5);
+	}
+
+	.mobile-menu-list .mega-menu-link:hover,
+	.mobile-menu-list .mega-menu-link:focus {
+		color: #CCFF00; /* Acid Lime */
+		background-color: rgba(204, 255, 0, 0.1);
+	}
+
+	/* Hide regular sub-menu for items with mega menu on mobile */
+	.mobile-menu-list .has-mega-menu > .sub-menu {
+		display: none;
+	}
+
 	/* ===== MOBILE SEARCH TOGGLE (North Star) ===== */
 	.mobile-search-toggle {
 		font-family: 'Space Mono', monospace;
@@ -756,9 +849,9 @@
 					item.classList.toggle('open');
 					link.setAttribute('aria-expanded', !isOpen);
 
-					// Focus first submenu link if opening
+					// Focus first submenu/mega menu link if opening
 					if (!isOpen) {
-						const firstSubmenuLink = item.querySelector('.sub-menu .submenu-link');
+						const firstSubmenuLink = item.querySelector('.sub-menu .submenu-link, .mega-menu .mega-menu-link');
 						if (firstSubmenuLink) {
 							setTimeout(() => firstSubmenuLink.focus(), 100);
 						}

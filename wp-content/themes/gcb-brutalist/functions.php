@@ -734,6 +734,7 @@ class GCB_Nav_Walker extends Walker_Nav_Menu {
 	 * Starts the element output.
 	 *
 	 * Outputs <li> wrapper with <a> tag inside. Adds dropdown classes for items with children.
+	 * Dynamically loads brand subcategories for mega menu.
 	 *
 	 * @param string   $output Used to append additional content (passed by reference).
 	 * @param WP_Post  $item   Menu item data object.
@@ -744,12 +745,36 @@ class GCB_Nav_Walker extends Walker_Nav_Menu {
 	public function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ) {
 		$indent = ( $depth ) ? str_repeat( "\t", $depth ) : '';
 
+		// Check if this is a category menu item with children (for dynamic mega menu)
+		$has_dynamic_children = false;
+		$child_categories = array();
+
+		if ( 'taxonomy' === $item->type && 'category' === $item->object && $depth === 0 ) {
+			// Query child categories
+			$child_categories = get_terms( array(
+				'taxonomy'   => 'category',
+				'parent'     => (int) $item->object_id,
+				'hide_empty' => false,
+				'orderby'    => 'name',
+				'order'      => 'ASC',
+			) );
+
+			if ( ! is_wp_error( $child_categories ) && ! empty( $child_categories ) ) {
+				$has_dynamic_children = true;
+			}
+		}
+
 		// Build <li> classes
 		$li_classes = array( 'menu-item' );
 
-		// Add class for items with children
-		if ( in_array( 'menu-item-has-children', $item->classes, true ) ) {
+		// Add class for items with children (static or dynamic)
+		if ( in_array( 'menu-item-has-children', $item->classes, true ) || $has_dynamic_children ) {
 			$li_classes[] = 'has-dropdown';
+		}
+
+		// Add mega menu class for items with many children
+		if ( $has_dynamic_children && count( $child_categories ) > 20 ) {
+			$li_classes[] = 'has-mega-menu';
 		}
 
 		// Add current page class if this is the active page
@@ -790,7 +815,7 @@ class GCB_Nav_Walker extends Walker_Nav_Menu {
 		$attributes .= ! empty( $item->url ) ? ' href="' . esc_url( $item->url ) . '"' : '';
 
 		// Add ARIA for dropdown toggle
-		if ( in_array( 'menu-item-has-children', $item->classes, true ) ) {
+		if ( in_array( 'menu-item-has-children', $item->classes, true ) || $has_dynamic_children ) {
 			$attributes .= ' aria-haspopup="true" aria-expanded="false"';
 		}
 
@@ -799,11 +824,63 @@ class GCB_Nav_Walker extends Walker_Nav_Menu {
 		$output .= esc_html( $item->title );
 
 		// Add dropdown indicator for items with children
-		if ( in_array( 'menu-item-has-children', $item->classes, true ) ) {
+		if ( in_array( 'menu-item-has-children', $item->classes, true ) || $has_dynamic_children ) {
 			$output .= '<span class="dropdown-indicator" aria-hidden="true">▼</span>';
 		}
 
 		$output .= '</a>';
+
+		// Output dynamic mega menu for categories with children
+		if ( $has_dynamic_children && $depth === 0 ) {
+			$output .= $this->render_mega_menu( $child_categories, $args );
+		}
+	}
+
+	/**
+	 * Render mega menu for category children
+	 *
+	 * @param array    $categories Array of category term objects.
+	 * @param stdClass $args       Menu arguments.
+	 * @return string Mega menu HTML.
+	 */
+	private function render_mega_menu( $categories, $args ) {
+		if ( empty( $categories ) ) {
+			return '';
+		}
+
+		$output = '<ul class="mega-menu" aria-label="Brand Categories">';
+
+		// Organize categories into columns (4 columns on desktop)
+		$columns = 4;
+		$items_per_column = ceil( count( $categories ) / $columns );
+
+		$column_index = 0;
+		$item_count = 0;
+
+		$output .= '<li class="mega-menu-column">';
+
+		foreach ( $categories as $category ) {
+			// Start new column if needed
+			if ( $item_count > 0 && $item_count % $items_per_column === 0 ) {
+				$output .= '</li><li class="mega-menu-column">';
+				$column_index++;
+			}
+
+			// Get link class from args
+			$link_class = isset( $args->link_class ) ? $args->link_class : 'nav-link';
+
+			// Output category link
+			$output .= '<a href="' . esc_url( get_term_link( $category ) ) . '" class="' . esc_attr( $link_class ) . ' mega-menu-link">';
+			$output .= esc_html( $category->name );
+			$output .= '</a>';
+
+			$item_count++;
+		}
+
+		$output .= '</li>'; // Close last column
+		$output .= '</ul>';
+
+		return $output;
 	}
 
 	/**
