@@ -463,6 +463,19 @@ function gcb_category_children_shortcode() {
 		return '';
 	}
 
+	// Filter out invalid categories (empty names or zero count)
+	$valid_categories = array_filter(
+		$child_categories,
+		function( $cat ) {
+			return ! empty( $cat->name ) && $cat->count > 0;
+		}
+	);
+
+	// Exit if no valid children after filtering
+	if ( empty( $valid_categories ) ) {
+		return '';
+	}
+
 	ob_start();
 	?>
 	<!-- Child Categories Grid -->
@@ -477,13 +490,8 @@ function gcb_category_children_shortcode() {
 
 		<!-- Brands Grid -->
 		<div class="brands-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">
-			<?php foreach ( $child_categories as $category ) : ?>
+			<?php foreach ( $valid_categories as $category ) : ?>
 				<?php
-				// Skip categories with empty names or no posts
-				if ( empty( $category->name ) || $category->count < 1 ) {
-					continue;
-				}
-
 				$category_link = get_term_link( $category );
 				if ( is_wp_error( $category_link ) ) {
 					continue;
