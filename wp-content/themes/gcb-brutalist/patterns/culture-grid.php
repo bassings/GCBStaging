@@ -15,20 +15,13 @@
  * - Responsive: 1 col mobile, 2 col tablet, 4 col desktop
  */
 
-// Query for standard posts (exclude videos by using content_format taxonomy)
+// Query for all posts
 $culture_grid_args = array(
     'post_type'      => 'post',
     'posts_per_page' => 8,
     'post_status'    => 'publish',
     'orderby'        => 'date',
     'order'          => 'DESC',
-    'tax_query'      => array(
-        array(
-            'taxonomy' => 'content_format',
-            'field'    => 'slug',
-            'terms'    => 'standard', // Only get standard (non-video) posts
-        ),
-    ),
 );
 
 $culture_grid_query = new WP_Query($culture_grid_args);

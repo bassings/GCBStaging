@@ -40,10 +40,7 @@ if ( ! $grid_posts->have_posts() ) {
 		$index = 0;
 		while ( $grid_posts->have_posts() ) :
 			$grid_posts->the_post();
-			$post_id        = get_the_ID();
-			$content_format = get_post_meta( $post_id, '_gcb_content_format', true );
-			$video_id       = get_post_meta( $post_id, '_gcb_video_id', true );
-			$is_video       = ( 'video' === $content_format );
+			$post_id = get_the_ID();
 
 			// Determine card size (featured vs standard)
 			// First item is featured (spans 2 columns on desktop)
@@ -52,16 +49,11 @@ if ( ! $grid_posts->have_posts() ) {
 			$grid_span   = $is_featured ? 'grid-column: span 2;' : '';
 
 			// Get thumbnail
-			$thumbnail = $is_video && $video_id
-				? "https://img.youtube.com/vi/{$video_id}/maxresdefault.jpg"
-				: get_the_post_thumbnail_url( $post_id, 'large' );
-
-			// Card type class
-			$type_class = $is_video ? 'bento-item--video' : 'bento-item--standard';
+			$thumbnail = get_the_post_thumbnail_url( $post_id, 'large' );
 			?>
 
 			<!-- Bento Grid Item -->
-			<div class="bento-item gcb-bento-card <?php echo esc_attr( $size_class . ' ' . $type_class ); ?>" data-size="<?php echo $is_featured ? 'large' : 'standard'; ?>" style="<?php echo esc_attr( $grid_span ); ?> border: 2px solid var(--wp--preset--color--brutal-border); background: var(--wp--preset--color--void-black); overflow: hidden; display: flex; flex-direction: column;">
+			<div class="bento-item gcb-bento-card bento-item--standard <?php echo esc_attr( $size_class ); ?>" data-size="<?php echo $is_featured ? 'large' : 'standard'; ?>" style="<?php echo esc_attr( $grid_span ); ?> border: 2px solid var(--wp--preset--color--brutal-border); background: var(--wp--preset--color--void-black); overflow: hidden; display: flex; flex-direction: column;">
 
 				<!-- Thumbnail -->
 				<?php if ( $thumbnail ) : ?>
@@ -73,13 +65,6 @@ if ( ! $grid_posts->have_posts() ) {
 						style="width: 100%; object-fit: cover; display: block; border-bottom: 2px solid var(--wp--preset--color--brutal-border); filter: grayscale(100%) contrast(1.3);"
 							loading="lazy"
 						/>
-
-						<!-- Video Badge -->
-						<?php if ( $is_video ) : ?>
-							<span style="position: absolute; top: 12px; right: 12px; background: var(--wp--preset--color--acid-lime); color: var(--wp--preset--color--void-black); padding: 6px 12px; font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; font-weight: bold; text-transform: uppercase; border: 2px solid var(--wp--preset--color--void-black);">
-								VIDEO
-							</span>
-						<?php endif; ?>
 					</a>
 				<?php endif; ?>
 
@@ -108,7 +93,7 @@ if ( ! $grid_posts->have_posts() ) {
 
 						<!-- Content Format Badge -->
 						<span style="padding: 2px 8px; border: 1px solid var(--wp--preset--color--brutal-border); text-transform: uppercase;">
-							<?php echo esc_html( $is_video ? 'Video' : 'Article' ); ?>
+							Article
 						</span>
 					</div>
 				</div>
