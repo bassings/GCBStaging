@@ -68,7 +68,8 @@ function gcb_image_mode_css(): void {
 .search-results-grid .wp-block-post-featured-image img,
 .search-result-thumbnail img,
 .wp-block-post-content img,
-.wp-block-post-content .wp-block-image img {
+.wp-block-post-content .wp-block-image img,
+.search-results-page .bento-item.gcb-bento-card .wp-block-post-featured-image img {
 	filter: none !important;
 }
 </style>';
