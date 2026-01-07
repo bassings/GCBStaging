@@ -681,7 +681,17 @@ function gcb_enqueue_jquery(): void {
 		return;
 	}
 
-	// Only load jQuery on single posts and pages
+	// WordPress.com (staging/production) requires jQuery for Jetpack plugins
+	// Jetpack Search, Photon, and other WP.com services depend on jQuery
+	$is_wpcom = ( defined( 'IS_WPCOM' ) && IS_WPCOM ) || class_exists( 'Jetpack' );
+
+	if ( $is_wpcom ) {
+		// Always load jQuery on WordPress.com environments
+		wp_enqueue_script( 'jquery' );
+		return;
+	}
+
+	// Local environment (WordPress Studio): Only load jQuery on single posts and pages
 	// These may contain legacy Fusion Builder shortcodes that require jQuery
 	if ( is_singular( 'post' ) || is_singular( 'page' ) ) {
 		wp_enqueue_script( 'jquery' );
@@ -707,12 +717,17 @@ function gcb_dequeue_fusion_scripts(): void {
 		return;
 	}
 
-	// Dequeue jQuery (will be dequeued by both functions for safety)
-	wp_dequeue_script( 'jquery' );
-	wp_dequeue_script( 'jquery-core' );
-	wp_dequeue_script( 'jquery-migrate' );
+	// WordPress.com requires jQuery for Jetpack - don't dequeue it there
+	$is_wpcom = ( defined( 'IS_WPCOM' ) && IS_WPCOM ) || class_exists( 'Jetpack' );
 
-	// Dequeue Fusion Builder's jQuery plugins
+	if ( ! $is_wpcom ) {
+		// Local environment only: Dequeue jQuery for performance
+		wp_dequeue_script( 'jquery' );
+		wp_dequeue_script( 'jquery-core' );
+		wp_dequeue_script( 'jquery-migrate' );
+	}
+
+	// Dequeue Fusion Builder's jQuery plugins (safe on all environments)
 	wp_dequeue_script( 'jquery-easing' );
 	wp_dequeue_script( 'jquery-fitvids' );
 	wp_dequeue_script( 'jquery-lightbox' );
