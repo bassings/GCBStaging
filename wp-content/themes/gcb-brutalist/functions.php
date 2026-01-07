@@ -683,7 +683,10 @@ function gcb_enqueue_jquery(): void {
 
 	// WordPress.com (staging/production) requires jQuery for Jetpack plugins
 	// Jetpack Search, Photon, and other WP.com services depend on jQuery
-	$is_wpcom = ( defined( 'IS_WPCOM' ) && IS_WPCOM ) || class_exists( 'Jetpack' );
+	// Only detect true WordPress.com hosting, not self-hosted Jetpack
+	$is_wpcom = ( defined( 'IS_WPCOM' ) && IS_WPCOM ) ||
+	            ( function_exists( 'wpcom_is_vip' ) && wpcom_is_vip() ) ||
+	            ( defined( 'WPCOMSH_VERSION' ) );
 
 	if ( $is_wpcom ) {
 		// Always load jQuery on WordPress.com environments
@@ -718,7 +721,10 @@ function gcb_dequeue_fusion_scripts(): void {
 	}
 
 	// WordPress.com requires jQuery for Jetpack - don't dequeue it there
-	$is_wpcom = ( defined( 'IS_WPCOM' ) && IS_WPCOM ) || class_exists( 'Jetpack' );
+	// Only detect true WordPress.com hosting, not self-hosted Jetpack
+	$is_wpcom = ( defined( 'IS_WPCOM' ) && IS_WPCOM ) ||
+	            ( function_exists( 'wpcom_is_vip' ) && wpcom_is_vip() ) ||
+	            ( defined( 'WPCOMSH_VERSION' ) );
 
 	if ( ! $is_wpcom ) {
 		// Local environment only: Dequeue jQuery for performance
@@ -742,7 +748,7 @@ function gcb_dequeue_fusion_scripts(): void {
 	wp_dequeue_script( 'fusion-video-bg' );
 	wp_dequeue_script( 'fusion-animations' );
 }
-add_action( 'wp_enqueue_scripts', 'gcb_dequeue_fusion_scripts', 20 );
+add_action( 'wp_enqueue_scripts', 'gcb_dequeue_fusion_scripts', 999 );
 
 /**
  * Fallback: Process video shortcodes if Fusion Builder is not active
