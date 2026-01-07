@@ -67,14 +67,21 @@
 
 **Changes:**
 - Removed WordPress Query Block from `index.html` (deleted lines 12-42)
+- **ALSO removed from `front-page.html`** (deleted lines 12-42) - WordPress uses this template for homepage instead of index.html
 - Homepage now shows unique content via three patterns only:
   - Video Rail: 10 YouTube videos
   - Bento Grid: 8 latest posts
-  - Culture Grid: 8 standard posts
+  - Culture Grid: 8 posts
 - Total homepage content: ~26 unique items (was ~38 with duplicates)
 
 **Files Modified:**
 - `wp-content/themes/gcb-brutalist/templates/index.html` (removed query loop)
+- `wp-content/themes/gcb-brutalist/templates/front-page.html` (removed query loop) - **This was the actual fix**
+
+**Note on WordPress Template Hierarchy:**
+WordPress uses `front-page.html` > `home.html` > `index.html` for the homepage.
+We initially removed the query block from index.html, but WordPress was actually using front-page.html,
+so duplicate posts still appeared until we removed it from front-page.html as well.
 
 **Test Coverage:**
 - 3 new tests in `index-template.public.spec.ts` (new file):
