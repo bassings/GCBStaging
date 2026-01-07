@@ -64,7 +64,7 @@ if ( ! $hero_posts->have_posts() ) {
 						<img
 							src="<?php echo esc_url( $thumbnail ); ?>"
 							alt="<?php echo esc_attr( get_the_title() ); ?>"
-							style="width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.3);"
+							style="width: 100%; height: 100%; object-fit: cover;<?php echo ( defined( 'GCB_IMAGE_MODE' ) && 'grayscale' === GCB_IMAGE_MODE ) ? ' filter: grayscale(100%) contrast(1.3);' : ''; ?>"
 							loading="lazy"
 						/>
 						<!-- Dark gradient overlay -->

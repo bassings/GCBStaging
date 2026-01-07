@@ -129,7 +129,7 @@ if ( empty( $videos ) ) {
 							<img
 								src="<?php echo esc_url( $thumbnail ); ?>"
 								alt="<?php echo esc_attr( $title ); ?>"
-								style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.3);"
+								style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;<?php echo ( defined( 'GCB_IMAGE_MODE' ) && 'grayscale' === GCB_IMAGE_MODE ) ? ' filter: grayscale(100%) contrast(1.3);' : ''; ?>"
 								loading="lazy"
 							/>
 						<?php endif; ?>

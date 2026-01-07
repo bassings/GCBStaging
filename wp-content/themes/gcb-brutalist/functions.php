@@ -29,6 +29,53 @@ if ( ! defined( 'GCB_VIDEO_RAIL_ORIENTATION' ) ) {
 }
 
 /**
+ * Image Mode Configuration
+ *
+ * Controls whether images use color or brutalist grayscale aesthetic.
+ *
+ * Options:
+ *   - 'color' (default): Full color images
+ *   - 'grayscale': Brutalist grayscale with high contrast
+ *
+ * To enable brutalist grayscale mode:
+ *   define( 'GCB_IMAGE_MODE', 'grayscale' );
+ *
+ * @since 1.0.0
+ */
+if ( ! defined( 'GCB_IMAGE_MODE' ) ) {
+	define( 'GCB_IMAGE_MODE', 'color' );
+}
+
+/**
+ * Output conditional CSS for image mode
+ *
+ * When color mode is enabled, this overrides the grayscale filters in style.css
+ */
+function gcb_image_mode_css(): void {
+	if ( is_admin() ) {
+		return;
+	}
+
+	// Only output CSS if color mode is enabled (overrides grayscale in style.css)
+	if ( defined( 'GCB_IMAGE_MODE' ) && 'color' === GCB_IMAGE_MODE ) {
+		echo '<style id="gcb-image-mode-override">
+/* Color mode: Remove brutalist grayscale filters */
+.wp-block-post-featured-image img,
+.wp-block-image img,
+.entry-content img,
+.fusion-gallery-image img,
+.search-results-grid .wp-block-post-featured-image img,
+.search-result-thumbnail img,
+.wp-block-post-content img,
+.wp-block-post-content .wp-block-image img {
+	filter: none !important;
+}
+</style>';
+	}
+}
+add_action( 'wp_head', 'gcb_image_mode_css' );
+
+/**
  * Add responsive video CSS for Fusion Builder embeds
  *
  * Makes Fusion Builder video embeds responsive on all screen sizes.

@@ -62,7 +62,7 @@ if ( ! $grid_posts->have_posts() ) {
 							src="<?php echo esc_url( $thumbnail ); ?>"
 							alt="<?php echo esc_attr( get_the_title() ); ?>"
 							class="gcb-bento-card__image"
-						style="width: 100%; object-fit: cover; display: block; border-bottom: 2px solid var(--wp--preset--color--brutal-border); filter: grayscale(100%) contrast(1.3);"
+						style="width: 100%; object-fit: cover; display: block; border-bottom: 2px solid var(--wp--preset--color--brutal-border);<?php echo ( defined( 'GCB_IMAGE_MODE' ) && 'grayscale' === GCB_IMAGE_MODE ) ? ' filter: grayscale(100%) contrast(1.3);' : ''; ?>"
 							loading="lazy"
 						/>
 					</a>

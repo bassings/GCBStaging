@@ -9,6 +9,8 @@ wp-content/database/.ht.sqlite
 wp-content/database/.ht.sqlite-wal
 wp-content/database/.ht.sqlite-shm
 wp-content/database/.ht.sqlite.before-restore-*
+wp-content/database/.ht.sqlite.baseline
+wp-content/database/.ht.sqlite.session-*
 
 # Backup files
 *.backup-*
