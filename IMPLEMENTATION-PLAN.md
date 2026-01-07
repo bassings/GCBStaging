@@ -99,6 +99,49 @@
 - 8 new E2E tests added
 - 0 breaking changes
 
+### 4. Remove Video Detection Logic from Patterns (January 7, 2026)
+
+**Issue:**
+- Bento Grid, Hero Section, and Culture Grid patterns were detecting video posts via custom meta
+- VIDEO badges were showing on pattern cards
+- YouTube thumbnails were being loaded for video posts in patterns
+- With Video Rail now loading directly from YouTube channel, video detection is redundant
+
+**Changes:**
+
+**Bento Grid** (`bento-grid.php`):
+- Removed `$content_format`, `$video_id`, `$is_video` variable assignments (lines 44-46)
+- Removed YouTube thumbnail conditional logic (lines 55-57)
+- Removed `$type_class` variable and `bento-item--video` class (line 60)
+- Removed VIDEO badge overlay HTML (lines 78-82)
+- All cards now use standard `get_the_post_thumbnail_url()` thumbnails
+- All cards show "Article" badge instead of dynamic "Video/Article" detection
+
+**Culture Grid** (`culture-grid.php`):
+- Removed `tax_query` filtering by `content_format` taxonomy (lines 25-31)
+- Pattern now shows all posts instead of filtering for only standard posts
+- Simplifies query logic (no taxonomy checks needed)
+
+**Hero Section** (`hero-section.php`):
+- No changes needed - already had no video detection logic
+
+**Files Modified:**
+- `wp-content/themes/gcb-brutalist/patterns/bento-grid.php` (removed 22 lines of video detection)
+- `wp-content/themes/gcb-brutalist/patterns/culture-grid.php` (removed tax_query filter)
+
+**Reason:**
+Video Rail pattern now pulls videos directly from @GayCarBoys YouTube channel via API. Video posts in WordPress are no longer the authoritative source for video content. Removing video detection from other patterns:
+- Simplifies code (less conditional logic)
+- Removes dependency on custom post meta (`_gcb_content_format`, `_gcb_video_id`)
+- Eliminates VIDEO badges that confused users (videos now only appear in Video Rail)
+- Reduces database queries (no meta lookups needed)
+
+**Result:**
+- Cleaner pattern code with single responsibility (Bento/Culture show articles, Video Rail shows videos)
+- No visual change to patterns (already showing article content)
+- Video content exclusively shown in dedicated Video Rail pattern
+- All patterns now use standard WordPress thumbnail functions
+
 ---
 
 ## Previous Update: YouTube Channel API Integration (January 5, 2026)
