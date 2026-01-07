@@ -50,6 +50,7 @@ if ( ! defined( 'GCB_IMAGE_MODE' ) ) {
  * Output conditional CSS for image mode
  *
  * When color mode is enabled, this overrides the grayscale filters in style.css
+ * Uses wp_footer to ensure it loads AFTER style.css
  */
 function gcb_image_mode_css(): void {
 	if ( is_admin() ) {
@@ -73,7 +74,7 @@ function gcb_image_mode_css(): void {
 </style>';
 	}
 }
-add_action( 'wp_head', 'gcb_image_mode_css' );
+add_action( 'wp_footer', 'gcb_image_mode_css' );
 
 /**
  * Add responsive video CSS for Fusion Builder embeds
