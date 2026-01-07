@@ -105,6 +105,80 @@ test.describe('GCB Content Intelligence - Video Rail Pattern', () => {
     expect(cardWidth).toBeLessThanOrEqual(375);
   });
 
+  test('Video rail cards use 16:9 landscape aspect ratio', async ({ page, request }) => {
+    // Reset database
+    await request.delete('/wp-json/gcb-testing/v1/reset', {
+      headers: { 'GCB-Test-Key': 'test-secret-key-local' }
+    });
+
+    // Create 1 video post
+    await request.post('/wp-json/gcb-testing/v1/create-post', {
+      data: {
+        title: 'Landscape Aspect Ratio Test',
+        content: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        status: 'publish'
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'GCB-Test-Key': 'test-secret-key-local'
+      }
+    });
+
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+
+    // Assert: Video card aspect ratio is 16:9
+    const videoCard = page.locator('.gcb-video-card, .video-rail-item').first();
+    const aspectContainer = videoCard.locator('.gcb-video-card__aspect');
+
+    const dimensions = await aspectContainer.boundingBox();
+    expect(dimensions).not.toBeNull();
+
+    // Calculate aspect ratio (width / height)
+    const aspectRatio = dimensions!.width / dimensions!.height;
+
+    // 16:9 = 1.777... (allow 0.1 tolerance for rounding)
+    expect(aspectRatio).toBeGreaterThan(1.677);
+    expect(aspectRatio).toBeLessThan(1.877);
+  });
+
+  test('Video rail cards are shorter on landscape (not portrait)', async ({ page, request }) => {
+    await request.delete('/wp-json/gcb-testing/v1/reset', {
+      headers: { 'GCB-Test-Key': 'test-secret-key-local' }
+    });
+
+    await request.post('/wp-json/gcb-testing/v1/create-post', {
+      data: {
+        title: 'Height Verification Test',
+        content: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        status: 'publish'
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'GCB-Test-Key': 'test-secret-key-local'
+      }
+    });
+
+    // Desktop viewport
+    await page.setViewportSize({ width: 1920, height: 1080 });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+
+    const videoCard = page.locator('.gcb-video-card, .video-rail-item').first();
+    const aspectContainer = videoCard.locator('.gcb-video-card__aspect');
+    const cardDimensions = await aspectContainer.boundingBox();
+
+    expect(cardDimensions).not.toBeNull();
+
+    // Desktop card width is 288px
+    // Landscape 16:9 height should be ~162px (288 * 0.5625)
+    // Portrait 9:16 height would be ~512px (288 * 1.7778)
+
+    expect(cardDimensions!.height).toBeLessThan(300); // Much less than portrait
+    expect(cardDimensions!.height).toBeGreaterThan(140); // But not too short
+    // 16:9 landscape: 288px * 0.5625 = 162px (allow ±5px for browser rounding)
+    expect(cardDimensions!.height).toBeGreaterThanOrEqual(157);
+    expect(cardDimensions!.height).toBeLessThanOrEqual(167);
+  });
+
   test('Video rail uses Editorial Brutalism design tokens', async ({ page, request }) => {
     // Reset database
     await request.delete('/wp-json/gcb-testing/v1/reset', {

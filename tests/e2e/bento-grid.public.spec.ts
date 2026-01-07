@@ -97,6 +97,76 @@ test.describe('GCB Content Intelligence - Bento Grid Pattern', () => {
     expect(hasVariation || await gridItems.count() > 2).toBeTruthy();
   });
 
+  test('Bento grid featured images have optimized heights', async ({ page, request }) => {
+    await request.delete('/wp-json/gcb-testing/v1/reset', {
+      headers: { 'GCB-Test-Key': 'test-secret-key-local' }
+    });
+
+    // Create 2 posts (first is featured)
+    for (let i = 0; i < 2; i++) {
+      await request.post('/wp-json/gcb-testing/v1/create-post', {
+        data: {
+          title: `Image Height Test ${i + 1}`,
+          content: '<p>Test content</p>',
+          status: 'publish'
+        },
+        headers: {
+          'Content-Type': 'application/json',
+          'GCB-Test-Key': 'test-secret-key-local'
+        }
+      });
+    }
+
+    // Desktop viewport
+    await page.setViewportSize({ width: 1920, height: 1080 });
+    await page.goto('/', { waitUntil: 'networkidle' });
+
+    // Featured card image
+    const featuredCard = page.locator('.bento-item--featured, .bento-item--large').first();
+    const featuredImage = featuredCard.locator('img, .gcb-bento-card__image');
+    const featuredImageHeight = await featuredImage.evaluate(el => el.getBoundingClientRect().height);
+
+    expect(featuredImageHeight).toBeGreaterThanOrEqual(340); // 350px ± 10px
+    expect(featuredImageHeight).toBeLessThanOrEqual(360);
+
+    // Standard card image
+    const standardCard = page.locator('.bento-item:not(.bento-item--featured)').first();
+    const standardImage = standardCard.locator('img, .gcb-bento-card__image');
+    const standardImageHeight = await standardImage.evaluate(el => el.getBoundingClientRect().height);
+
+    expect(standardImageHeight).toBeGreaterThanOrEqual(210); // 220px ± 10px
+    expect(standardImageHeight).toBeLessThanOrEqual(230);
+  });
+
+  test('Bento grid images responsive heights on mobile', async ({ page, request }) => {
+    await request.delete('/wp-json/gcb-testing/v1/reset', {
+      headers: { 'GCB-Test-Key': 'test-secret-key-local' }
+    });
+
+    await request.post('/wp-json/gcb-testing/v1/create-post', {
+      data: {
+        title: 'Mobile Image Test',
+        content: '<p>Test</p>',
+        status: 'publish'
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'GCB-Test-Key': 'test-secret-key-local'
+      }
+    });
+
+    // Mobile viewport
+    await page.setViewportSize({ width: 375, height: 667 });
+    await page.goto('/', { waitUntil: 'networkidle' });
+
+    const featuredCard = page.locator('.bento-item--featured, .bento-item--large').first();
+    const image = featuredCard.locator('img, .gcb-bento-card__image');
+    const imageHeight = await image.evaluate(el => el.getBoundingClientRect().height);
+
+    expect(imageHeight).toBeGreaterThanOrEqual(270); // 280px ± 10px
+    expect(imageHeight).toBeLessThanOrEqual(290);
+  });
+
   test('Bento Grid is responsive on mobile viewports', async ({ page, request }) => {
     // Reset database
     await request.delete('/wp-json/gcb-testing/v1/reset', {

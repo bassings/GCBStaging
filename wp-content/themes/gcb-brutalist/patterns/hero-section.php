@@ -176,18 +176,29 @@ if ( ! $hero_posts->have_posts() ) {
 		color: var(--wp--preset--color--acid-lime) !important;
 	}
 
-	/* North Star: Responsive Card Heights */
+	/* Responsive Card Heights - Optimized to reduce image cropping */
 	.gcb-hero__feature {
-		height: 384px; /* Mobile/tablet: h-96 */
+		height: 300px; /* Mobile: reduced from 384px */
+	}
+	@media (min-width: 768px) {
+		.gcb-hero__feature {
+			height: 360px; /* Tablet: new intermediate size */
+		}
 	}
 	@media (min-width: 1024px) {
 		.gcb-hero__feature {
-			height: 500px; /* Desktop: lg:h-[500px] */
+			height: 450px; /* Desktop: reduced from 500px */
 		}
 	}
 
+	/* Opinion Card Heights - Optimized for 3:2 aspect ratio */
 	.gcb-hero__opinion {
-		height: 256px; /* All screens: h-64 */
+		height: 240px; /* Mobile: reduced from 256px */
+	}
+	@media (min-width: 768px) {
+		.gcb-hero__opinion {
+			height: 280px; /* Tablet/Desktop: increased from 256px */
+		}
 	}
 
 	/* Desktop: 3-column grid with feature card spanning 2 columns */

@@ -64,12 +64,28 @@ if ( empty( $videos ) ) {
 			}
 		}
 
-		/* 9:16 aspect ratio container */
+		/* Aspect ratio container - controlled by GCB_VIDEO_RAIL_ORIENTATION constant */
 		.gcb-video-card__aspect {
 			width: 100%;
-			padding-bottom: 177.78%; /* 9:16 = 16/9 = 1.7778 = 177.78% */
+			<?php if ( defined( 'GCB_VIDEO_RAIL_ORIENTATION' ) && GCB_VIDEO_RAIL_ORIENTATION === 'landscape' ) : ?>
+				padding-bottom: 56.25%; /* 16:9 landscape (YouTube standard) */
+			<?php else : ?>
+				padding-bottom: 177.78%; /* 9:16 portrait (legacy) */
+			<?php endif; ?>
 			position: relative;
 		}
+
+		/*
+		 * LEGACY PORTRAIT ORIENTATION (9:16) - Preserved for future use
+		 *
+		 * To restore portrait orientation, set in functions.php:
+		 * define( 'GCB_VIDEO_RAIL_ORIENTATION', 'portrait' );
+		 *
+		 * Portrait configuration:
+		 * - padding-bottom: 177.78%
+		 * - Optimized for vertical video formats (Instagram Reels, TikTok)
+		 * - Card widths: 224px (mobile), 256px (tablet), 288px (desktop)
+		 */
 
 		/* Play button: responsive sizing (North Star: 64px → 80px) */
 		.video-play-button {

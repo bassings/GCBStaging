@@ -69,7 +69,8 @@ if ( ! $grid_posts->have_posts() ) {
 						<img
 							src="<?php echo esc_url( $thumbnail ); ?>"
 							alt="<?php echo esc_attr( get_the_title() ); ?>"
-							style="width: 100%; height: <?php echo $is_featured ? '400px' : '200px'; ?>; object-fit: cover; display: block; border-bottom: 2px solid var(--wp--preset--color--brutal-border); filter: grayscale(100%) contrast(1.3);"
+							class="gcb-bento-card__image"
+						style="width: 100%; object-fit: cover; display: block; border-bottom: 2px solid var(--wp--preset--color--brutal-border); filter: grayscale(100%) contrast(1.3);"
 							loading="lazy"
 						/>
 
@@ -154,5 +155,34 @@ if ( ! $grid_posts->have_posts() ) {
 	/* Hover effect */
 	.bento-item:hover {
 		border-color: var(--wp--preset--color--acid-lime) !important;
+	}
+
+	/* Bento Grid Image Heights - Optimized to reduce cropping */
+	.bento-item--featured .gcb-bento-card__image {
+		height: 280px; /* Mobile */
+	}
+	@media (min-width: 768px) {
+		.bento-item--featured .gcb-bento-card__image {
+			height: 320px; /* Tablet */
+		}
+	}
+	@media (min-width: 1024px) {
+		.bento-item--featured .gcb-bento-card__image {
+			height: 350px; /* Desktop - reduced from 400px */
+		}
+	}
+
+	.bento-item:not(.bento-item--featured) .gcb-bento-card__image {
+		height: 200px; /* Mobile - unchanged */
+	}
+	@media (min-width: 768px) {
+		.bento-item:not(.bento-item--featured) .gcb-bento-card__image {
+			height: 210px; /* Tablet */
+		}
+	}
+	@media (min-width: 1024px) {
+		.bento-item:not(.bento-item--featured) .gcb-bento-card__image {
+			height: 220px; /* Desktop - increased from 200px */
+		}
 	}
 </style>

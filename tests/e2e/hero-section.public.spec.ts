@@ -103,9 +103,85 @@ test.describe('GCB Hero Section Pattern', () => {
       return el.getBoundingClientRect().height;
     });
 
-    // Assert: Feature card is approximately 500px (allow 450-550px range)
-    expect(cardHeight).toBeGreaterThanOrEqual(450);
-    expect(cardHeight).toBeLessThanOrEqual(550);
+    // Assert: Feature card is 450px on desktop (reduced from 500px to reduce cropping)
+    expect(cardHeight).toBeGreaterThanOrEqual(440);
+    expect(cardHeight).toBeLessThanOrEqual(460);
+  });
+
+  test('Feature card images are not over-cropped', async ({ page, request }) => {
+    test.setTimeout(60000);
+
+    await request.delete('/wp-json/gcb-testing/v1/reset', {
+      headers: { 'GCB-Test-Key': 'test-secret-key-local' }
+    });
+
+    await request.post('/wp-json/gcb-testing/v1/create-post', {
+      data: {
+        title: 'Image Cropping Test',
+        content: 'Testing image aspect ratio handling.',
+        status: 'publish'
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'GCB-Test-Key': 'test-secret-key-local'
+      }
+    });
+
+    await page.setViewportSize({ width: 1920, height: 1080 });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+
+    const featureCard = page.locator('.gcb-hero__feature, .hero-feature-card');
+    const cardImage = featureCard.locator('img');
+
+    // Assert: object-fit: cover is still applied (maintains design)
+    const objectFit = await cardImage.evaluate(el => window.getComputedStyle(el).objectFit);
+    expect(objectFit).toBe('cover');
+
+    // Assert: Image container height allows more image to show
+    const cardHeight = await featureCard.evaluate(el => el.getBoundingClientRect().height);
+
+    // New height (450px) vs old height (500px) = 10% reduction in cropping
+    expect(cardHeight).toBeLessThanOrEqual(450);
+    expect(cardHeight).toBeGreaterThanOrEqual(440); // Allow small variance
+  });
+
+  test('Opinion card height increased on tablet/desktop', async ({ page, request }) => {
+    await request.delete('/wp-json/gcb-testing/v1/reset', {
+      headers: { 'GCB-Test-Key': 'test-secret-key-local' }
+    });
+
+    // Create 2 posts (feature + opinion)
+    for (let i = 0; i < 2; i++) {
+      await request.post('/wp-json/gcb-testing/v1/create-post', {
+        data: {
+          title: `Post ${i + 1}`,
+          content: `Content ${i + 1}`,
+          status: 'publish'
+        },
+        headers: {
+          'Content-Type': 'application/json',
+          'GCB-Test-Key': 'test-secret-key-local'
+        }
+      });
+    }
+
+    // Desktop viewport
+    await page.setViewportSize({ width: 1280, height: 720 });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+
+    const opinionCard = page.locator('.gcb-hero__opinion, .hero-opinion-card');
+    const desktopHeight = await opinionCard.evaluate(el => el.getBoundingClientRect().height);
+
+    expect(desktopHeight).toBeGreaterThanOrEqual(270); // 280px ± 10px
+    expect(desktopHeight).toBeLessThanOrEqual(290);
+
+    // Mobile viewport
+    await page.setViewportSize({ width: 375, height: 667 });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+
+    const mobileHeight = await opinionCard.evaluate(el => el.getBoundingClientRect().height);
+    expect(mobileHeight).toBeGreaterThanOrEqual(230); // 240px ± 10px
+    expect(mobileHeight).toBeLessThanOrEqual(250);
   });
 
   test('Opinion card has correct height on desktop (256px)', async ({ page, request }) => {

@@ -14,6 +14,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Video Rail Orientation Configuration
+ *
+ * Controls aspect ratio for video rail pattern.
+ *
+ * Options:
+ *   - 'landscape' (default): 16:9 aspect ratio (56.25% padding-bottom)
+ *   - 'portrait': 9:16 aspect ratio (177.78% padding-bottom)
+ *
+ * @since 1.0.0
+ */
+if ( ! defined( 'GCB_VIDEO_RAIL_ORIENTATION' ) ) {
+	define( 'GCB_VIDEO_RAIL_ORIENTATION', 'landscape' );
+}
+
+/**
  * Add responsive video CSS for Fusion Builder embeds
  *
  * Makes Fusion Builder video embeds responsive on all screen sizes.
