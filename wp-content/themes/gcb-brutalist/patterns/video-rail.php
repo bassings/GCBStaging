@@ -49,18 +49,18 @@ if ( empty( $videos ) ) {
 			background: var(--wp--preset--color--acid-lime);
 		}
 
-		/* Video card: responsive widths (North Star: 224/256/288px) */
+		/* Video card: responsive widths - scaled up to match bento card sizes */
 		.gcb-video-card {
-			flex: 0 0 224px; /* Mobile: w-56 */
+			flex: 0 0 320px; /* Mobile: larger cards for better visibility */
 		}
 		@media (min-width: 640px) {
 			.gcb-video-card {
-				flex: 0 0 256px; /* Tablet: w-64 */
+				flex: 0 0 380px; /* Tablet: matches bento card scale */
 			}
 		}
 		@media (min-width: 768px) {
 			.gcb-video-card {
-				flex: 0 0 288px; /* Desktop: w-72 */
+				flex: 0 0 450px; /* Desktop: comparable to bento cards */
 			}
 		}
 

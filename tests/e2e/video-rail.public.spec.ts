@@ -168,15 +168,15 @@ test.describe('GCB Content Intelligence - Video Rail Pattern', () => {
 
     expect(cardDimensions).not.toBeNull();
 
-    // Desktop card width is 288px
-    // Landscape 16:9 height should be ~162px (288 * 0.5625)
-    // Portrait 9:16 height would be ~512px (288 * 1.7778)
+    // Desktop card width is 450px (scaled up to match bento cards)
+    // Landscape 16:9 height should be ~253px (450 * 0.5625)
+    // Portrait 9:16 height would be ~800px (450 * 1.7778)
 
-    expect(cardDimensions!.height).toBeLessThan(300); // Much less than portrait
-    expect(cardDimensions!.height).toBeGreaterThan(140); // But not too short
-    // 16:9 landscape: 288px * 0.5625 = 162px (allow ±5px for browser rounding)
-    expect(cardDimensions!.height).toBeGreaterThanOrEqual(157);
-    expect(cardDimensions!.height).toBeLessThanOrEqual(167);
+    expect(cardDimensions!.height).toBeLessThan(500); // Much less than portrait
+    expect(cardDimensions!.height).toBeGreaterThan(200); // But not too short
+    // 16:9 landscape: 450px * 0.5625 = 253px (allow ±10px for browser rounding)
+    expect(cardDimensions!.height).toBeGreaterThanOrEqual(243);
+    expect(cardDimensions!.height).toBeLessThanOrEqual(263);
   });
 
   test('Video rail uses Editorial Brutalism design tokens', async ({ page, request }) => {
