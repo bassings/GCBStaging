@@ -19,7 +19,7 @@
 <a href="#main-content" class="skip-link">Skip to main content</a>
 
 <!-- Sticky Header with Mobile Menu -->
-<header class="site-header" role="banner">
+<header class="site-header">
 	<div class="header-wrapper">
 		<!-- Logo -->
 		<div class="site-logo">

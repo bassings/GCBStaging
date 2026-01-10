@@ -7,15 +7,24 @@
  * Keywords: bento, grid, mixed, layout, brutalism
  */
 
-// Query all recent posts (mixed video and standard)
-$grid_posts = new WP_Query(
-	array(
-		'post_type'      => 'post',
-		'posts_per_page' => 8,
-		'orderby'        => 'date',
-		'order'          => 'DESC',
-	)
-);
+// Cache key for transient (invalidates when posts are updated)
+$cache_key   = 'gcb_bento_grid_' . date( 'Y-m-d-H' ); // Hourly cache.
+$grid_posts  = get_transient( $cache_key );
+
+if ( false === $grid_posts ) {
+	// Query all recent posts (mixed video and standard)
+	$grid_posts = new WP_Query(
+		array(
+			'post_type'      => 'post',
+			'posts_per_page' => 8,
+			'orderby'        => 'date',
+			'order'          => 'DESC',
+		)
+	);
+
+	// Cache for 1 hour (reduce DB load).
+	set_transient( $cache_key, $grid_posts, HOUR_IN_SECONDS );
+}
 
 if ( ! $grid_posts->have_posts() ) {
 	return;
@@ -48,8 +57,11 @@ if ( ! $grid_posts->have_posts() ) {
 			$size_class  = $is_featured ? 'bento-item--featured bento-item--large' : '';
 			$grid_span   = $is_featured ? 'grid-column: span 2;' : '';
 
-			// Get thumbnail
-			$thumbnail = get_the_post_thumbnail_url( $post_id, 'large' );
+			// Get thumbnail with dimensions for CLS prevention.
+			$thumbnail_id = get_post_thumbnail_id( $post_id );
+			$thumbnail    = get_the_post_thumbnail_url( $post_id, 'large' );
+			$srcset       = $thumbnail_id ? wp_get_attachment_image_srcset( $thumbnail_id, 'large' ) : '';
+			$sizes        = $is_featured ? '(max-width: 768px) 100vw, 66vw' : '(max-width: 768px) 100vw, 33vw';
 			?>
 
 			<!-- Bento Grid Item -->
@@ -62,7 +74,13 @@ if ( ! $grid_posts->have_posts() ) {
 							src="<?php echo esc_url( $thumbnail ); ?>"
 							alt="<?php echo esc_attr( get_the_title() ); ?>"
 							class="gcb-bento-card__image"
-						style="width: 100%; object-fit: cover; display: block; border-bottom: 2px solid var(--wp--preset--color--brutal-border);<?php echo ( defined( 'GCB_IMAGE_MODE' ) && 'grayscale' === GCB_IMAGE_MODE ) ? ' filter: grayscale(100%) contrast(1.3);' : ''; ?>"
+							width="800"
+							height="450"
+							<?php if ( $srcset ) : ?>
+								srcset="<?php echo esc_attr( $srcset ); ?>"
+								sizes="<?php echo esc_attr( $sizes ); ?>"
+							<?php endif; ?>
+							style="width: 100%; object-fit: cover; display: block; border-bottom: 2px solid var(--wp--preset--color--brutal-border);<?php echo ( defined( 'GCB_IMAGE_MODE' ) && 'grayscale' === GCB_IMAGE_MODE ) ? ' filter: grayscale(100%) contrast(1.3);' : ''; ?>"
 							loading="lazy"
 						/>
 					</a>

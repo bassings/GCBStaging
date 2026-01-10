@@ -15,19 +15,28 @@
  * - Responsive: 1 col mobile, 2 col tablet, 4 col desktop
  */
 
-// Query for all posts
-$culture_grid_args = array(
-    'post_type'      => 'post',
-    'posts_per_page' => 8,
-    'post_status'    => 'publish',
-    'orderby'        => 'date',
-    'order'          => 'DESC',
-);
+// Cache key for transient (invalidates hourly).
+$cache_key          = 'gcb_culture_grid_' . date( 'Y-m-d-H' );
+$culture_grid_query = get_transient( $cache_key );
 
-$culture_grid_query = new WP_Query($culture_grid_args);
+if ( false === $culture_grid_query ) {
+	// Query for all posts.
+	$culture_grid_args = array(
+		'post_type'      => 'post',
+		'posts_per_page' => 8,
+		'post_status'    => 'publish',
+		'orderby'        => 'date',
+		'order'          => 'DESC',
+	);
 
-if (!$culture_grid_query->have_posts()) {
-    return;
+	$culture_grid_query = new WP_Query( $culture_grid_args );
+
+	// Cache for 1 hour (reduce DB load).
+	set_transient( $cache_key, $culture_grid_query, HOUR_IN_SECONDS );
+}
+
+if ( ! $culture_grid_query->have_posts() ) {
+	return;
 }
 ?>
 

@@ -124,11 +124,13 @@ if ( empty( $videos ) ) {
 					<!-- 9:16 Aspect Ratio Container -->
 					<div class="gcb-video-card__aspect gcb-video-card__border" style="border: 1px solid var(--wp--preset--color--brutal-border); overflow: hidden; position: relative;">
 
-						<!-- Background Image -->
+						<!-- Background Image (YouTube standard thumbnail dimensions) -->
 						<?php if ( $thumbnail ) : ?>
 							<img
 								src="<?php echo esc_url( $thumbnail ); ?>"
 								alt="<?php echo esc_attr( $title ); ?>"
+								width="480"
+								height="360"
 								style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;<?php echo ( defined( 'GCB_IMAGE_MODE' ) && 'grayscale' === GCB_IMAGE_MODE ) ? ' filter: grayscale(100%) contrast(1.3);' : ''; ?>"
 								loading="lazy"
 							/>
@@ -139,7 +141,8 @@ if ( empty( $videos ) ) {
 
 						<!-- Play Button Overlay (Center) -->
 						<div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
-							<svg class="video-play-button" style="color: var(--wp--preset--color--acid-lime); filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));" viewBox="0 0 100 100" fill="currentColor">
+							<svg class="video-play-button" style="color: var(--wp--preset--color--acid-lime); filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));" viewBox="0 0 100 100" fill="currentColor" role="img" aria-label="<?php echo esc_attr( sprintf( __( 'Play video: %s', 'gcb-brutalist' ), $title ) ); ?>">
+								<title><?php echo esc_html( sprintf( __( 'Play video: %s', 'gcb-brutalist' ), $title ) ); ?></title>
 								<polygon points="30,20 30,80 80,50" />
 							</svg>
 						</div>

@@ -26,6 +26,7 @@
 		<!-- Terminal Search Form -->
 		<form class="terminal-search-form"
 		      role="search"
+		      aria-label="<?php esc_attr_e( 'Site search', 'gcb-brutalist' ); ?>"
 		      method="get"
 		      action="<?php echo esc_url( home_url( '/' ) ); ?>">
 

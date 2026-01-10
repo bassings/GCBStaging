@@ -30,6 +30,14 @@ Tags: full-site-editing, block-theme, brutalism, editorial, magazine
 	transition: transform 0.3s ease !important;
 }
 
+/* Respect user's motion preferences (WCAG 2.2 AAA) */
+@media (prefers-reduced-motion: reduce) {
+	.mobile-menu,
+	.menu-overlay {
+		transition: none !important;
+	}
+}
+
 /**
  * Archive Broken Grid Layout
  * Creates intentional visual disruption with offset rhythm

@@ -47,19 +47,19 @@ if ( ! defined( 'GCB_IMAGE_MODE' ) ) {
 }
 
 /**
- * Output conditional CSS for image mode
+ * Output conditional CSS for image mode using wp_add_inline_style.
  *
- * When color mode is enabled, this overrides the grayscale filters in style.css
- * Uses wp_footer to ensure it loads AFTER style.css
+ * When color mode is enabled, this overrides the grayscale filters in style.css.
+ * Uses wp_add_inline_style() for proper CSS loading order and caching.
  */
 function gcb_image_mode_css(): void {
 	if ( is_admin() ) {
 		return;
 	}
 
-	// Only output CSS if color mode is enabled (overrides grayscale in style.css)
+	// Only output CSS if color mode is enabled (overrides grayscale in style.css).
 	if ( defined( 'GCB_IMAGE_MODE' ) && 'color' === GCB_IMAGE_MODE ) {
-		echo '<style id="gcb-image-mode-override">
+		$css = '
 /* Color mode: Remove brutalist grayscale filters */
 .wp-block-post-featured-image img,
 .wp-block-image img,
@@ -71,11 +71,11 @@ function gcb_image_mode_css(): void {
 .wp-block-post-content .wp-block-image img,
 .search-results-page .bento-item.gcb-bento-card .wp-block-post-featured-image img {
 	filter: none !important;
-}
-</style>';
+}';
+		wp_add_inline_style( 'wp-block-library', $css );
 	}
 }
-add_action( 'wp_footer', 'gcb_image_mode_css' );
+add_action( 'wp_enqueue_scripts', 'gcb_image_mode_css' );
 
 /**
  * Add responsive video CSS for Fusion Builder embeds
@@ -111,6 +111,31 @@ function gcb_responsive_video_css(): void {
 	wp_add_inline_style( 'wp-block-library', $css );
 }
 add_action( 'wp_enqueue_scripts', 'gcb_responsive_video_css' );
+
+/**
+ * Enqueue Google Fonts with font-display: swap for optimal loading.
+ *
+ * Uses Google Fonts API v2 with display=swap parameter to prevent
+ * Flash of Invisible Text (FOIT) and reduce Cumulative Layout Shift (CLS).
+ */
+function gcb_enqueue_google_fonts(): void {
+	// Build Google Fonts URL with display=swap.
+	$fonts_url = add_query_arg(
+		array(
+			'family'  => 'Playfair+Display:wght@400;700;900|Space+Mono:wght@400;700',
+			'display' => 'swap',
+		),
+		'https://fonts.googleapis.com/css2'
+	);
+
+	wp_enqueue_style(
+		'gcb-google-fonts',
+		$fonts_url,
+		array(),
+		null // No version for external resources.
+	);
+}
+add_action( 'wp_enqueue_scripts', 'gcb_enqueue_google_fonts' );
 
 /**
  * Add content_format taxonomy classes to body
@@ -756,6 +781,28 @@ add_action( 'wp_enqueue_scripts', 'gcb_dequeue_fusion_scripts', 999 );
  * Ensures YouTube embeds work even when Fusion Builder plugin is inactive.
  * Uses WordPress's built-in oEmbed functionality as a fallback.
  */
+
+/**
+ * Sanitize and validate a YouTube video ID.
+ *
+ * YouTube IDs are 11 characters long and contain only alphanumeric characters,
+ * hyphens, and underscores.
+ *
+ * @param string $id The raw YouTube ID.
+ * @return string|false Sanitized ID or false if invalid.
+ */
+function gcb_sanitize_youtube_id( string $id ): string|false {
+	// Remove any characters that aren't valid in YouTube IDs.
+	$sanitized = preg_replace( '/[^a-zA-Z0-9_-]/', '', trim( $id ) );
+
+	// YouTube IDs are exactly 11 characters.
+	if ( empty( $sanitized ) || strlen( $sanitized ) > 11 ) {
+		return false;
+	}
+
+	return $sanitized;
+}
+
 function gcb_process_fusion_video_fallback( $content ): string {
 	// Only apply fallback if Fusion Builder is NOT active
 	// Check both class existence and if shortcode is actually registered
@@ -768,7 +815,11 @@ function gcb_process_fusion_video_fallback( $content ): string {
 	// Look for fusion_youtube shortcode pattern with id parameter
 	$pattern = '/\[fusion_youtube[^\]]*id=["\']?([^"\'\s\]]+)["\']?[^\]]*\]/i';
 	$content = preg_replace_callback( $pattern, function( $matches ) {
-		$youtube_id = trim( $matches[1] );
+		$youtube_id = gcb_sanitize_youtube_id( $matches[1] );
+
+		if ( false === $youtube_id ) {
+			return '<!-- Invalid YouTube ID -->';
+		}
 
 		// Generate responsive YouTube embed HTML with explicit dimensions
 		// Using absolute positioning for the iframe ensures it fills the container
@@ -789,7 +840,11 @@ function gcb_process_fusion_video_fallback( $content ): string {
 	// Also handle generic [fusion_code] wrapped YouTube URLs
 	$pattern = '/\[fusion_code[^\]]*\](https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)[^\[]*)\[\/fusion_code\]/i';
 	$content = preg_replace_callback( $pattern, function( $matches ) {
-		$youtube_id = trim( $matches[2] );
+		$youtube_id = gcb_sanitize_youtube_id( $matches[2] );
+
+		if ( false === $youtube_id ) {
+			return '<!-- Invalid YouTube ID -->';
+		}
 
 		// Generate responsive YouTube embed HTML
 		$embed_html = '<div class="fusion-youtube video-shortcode" style="position: relative; width: 100%; max-width: 100%; padding-bottom: 56.25%; height: 0; overflow: hidden; margin: 1rem 0;">' .
@@ -852,10 +907,10 @@ function gcb_fusion_youtube_shortcode_fallback( array $atts ): string {
 		'fusion_youtube'
 	);
 
-	$youtube_id = trim( $atts['id'] );
+	$youtube_id = gcb_sanitize_youtube_id( $atts['id'] );
 
-	if ( empty( $youtube_id ) ) {
-		return '<!-- YouTube ID missing -->';
+	if ( false === $youtube_id ) {
+		return '<!-- Invalid or missing YouTube ID -->';
 	}
 
 	// Generate responsive YouTube embed
@@ -882,7 +937,11 @@ function gcb_fusion_youtube_shortcode_fallback( array $atts ): string {
 function gcb_fusion_code_shortcode_fallback( array $atts, string $content = '' ): string {
 	// Check if content contains a YouTube URL
 	if ( preg_match( '/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/i', $content, $matches ) ) {
-		$youtube_id = $matches[1];
+		$youtube_id = gcb_sanitize_youtube_id( $matches[1] );
+
+		if ( false === $youtube_id ) {
+			return '<!-- Invalid YouTube ID -->';
+		}
 
 		// Return YouTube embed
 		return '<div class="fusion-youtube video-shortcode" style="position: relative; width: 100%; max-width: 100%; padding-bottom: 56.25%; height: 0; overflow: hidden; margin: 1rem 0;">' .
@@ -898,12 +957,13 @@ function gcb_fusion_code_shortcode_fallback( array $atts, string $content = '' )
 		'</div>';
 	}
 
-	// Otherwise, decode and return as-is (base64 encoded content)
+	// Otherwise, decode and return base64 encoded content (sanitized)
 	if ( ! empty( $content ) ) {
 		// Fusion Builder encodes content in base64
-		$decoded = base64_decode( $content );
-		if ( $decoded !== false ) {
-			return $decoded;
+		$decoded = base64_decode( $content, true ); // Strict mode.
+		if ( false !== $decoded ) {
+			// Sanitize HTML to prevent XSS from malicious encoded content.
+			return wp_kses_post( $decoded );
 		}
 	}
 
