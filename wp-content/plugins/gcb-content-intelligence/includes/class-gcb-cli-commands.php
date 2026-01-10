@@ -323,6 +323,9 @@ class GCB_CLI_Commands {
 			'warnings'            => 0,
 		);
 
+		// Track unique unknown shortcodes.
+		$unknown_shortcodes = array();
+
 		// Open error log.
 		$log_file = null;
 		if ( ! $dry_run ) {
@@ -364,11 +367,19 @@ class GCB_CLI_Commands {
 					continue;
 				}
 
-				// Log warnings.
+				// Log warnings and track unknown shortcodes.
 				foreach ( $result->warnings as $warning ) {
 					$stats['warnings']++;
 					if ( $log_file ) {
 						fwrite( $log_file, "[{$post_id}] WARNING: {$warning}\n" );
+					}
+					// Extract shortcode name from warning.
+					if ( preg_match( '/Unknown shortcode: \[([^\]]+)\]/', $warning, $matches ) ) {
+						$shortcode = $matches[1];
+						if ( ! isset( $unknown_shortcodes[ $shortcode ] ) ) {
+							$unknown_shortcodes[ $shortcode ] = 0;
+						}
+						$unknown_shortcodes[ $shortcode ]++;
 					}
 				}
 
@@ -437,6 +448,16 @@ class GCB_CLI_Commands {
 			WP_CLI::log( '' );
 			WP_CLI::warning( "Check wp-content/migration_errors.log for details on failures." );
 		}
+
+		// Display unknown shortcodes summary.
+		if ( ! empty( $unknown_shortcodes ) ) {
+			arsort( $unknown_shortcodes );
+			WP_CLI::log( '' );
+			WP_CLI::log( '📋 Unknown shortcodes (need transformers):' );
+			foreach ( $unknown_shortcodes as $shortcode => $count ) {
+				WP_CLI::log( "   [{$shortcode}] - {$count} occurrences" );
+			}
+		}
 	}
 
 	/**
@@ -463,6 +484,7 @@ class GCB_CLI_Commands {
 		require_once $base . 'Converter/Transformers/class-gcb-code-transformer.php';
 		require_once $base . 'Converter/Transformers/class-gcb-button-transformer.php';
 		require_once $base . 'Converter/Transformers/class-gcb-image-transformer.php';
+		require_once $base . 'Converter/Transformers/class-gcb-gallery-transformer.php';
 
 		// Service.
 		require_once $base . 'CLI/class-gcb-migration-service.php';

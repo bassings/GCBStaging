@@ -57,6 +57,7 @@ final class GCB_Migration_Service {
 		$this->converter->registerTransformer( new GCB_Code_Transformer() );
 		$this->converter->registerTransformer( new GCB_Button_Transformer() );
 		$this->converter->registerTransformer( new GCB_Image_Transformer() );
+		$this->converter->registerTransformer( new GCB_Gallery_Transformer() );
 	}
 
 	/**
@@ -171,6 +172,9 @@ final class GCB_Migration_Service {
 			'fusion_tagline_box',
 			'fusion_imageframe',
 			'fusion_image',
+			'fusion_gallery',
+			'fusion_gallery_image',
+			'fusion_images',
 		];
 
 		$unknown = [];

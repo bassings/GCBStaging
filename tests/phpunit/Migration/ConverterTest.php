@@ -27,6 +27,7 @@ require_once dirname( __DIR__, 3 ) . '/wp-content/plugins/gcb-content-intelligen
 require_once dirname( __DIR__, 3 ) . '/wp-content/plugins/gcb-content-intelligence/migration/Converter/Transformers/class-gcb-code-transformer.php';
 require_once dirname( __DIR__, 3 ) . '/wp-content/plugins/gcb-content-intelligence/migration/Converter/Transformers/class-gcb-button-transformer.php';
 require_once dirname( __DIR__, 3 ) . '/wp-content/plugins/gcb-content-intelligence/migration/Converter/Transformers/class-gcb-image-transformer.php';
+require_once dirname( __DIR__, 3 ) . '/wp-content/plugins/gcb-content-intelligence/migration/Converter/Transformers/class-gcb-gallery-transformer.php';
 
 /**
  * Class ConverterTest
@@ -68,6 +69,7 @@ class ConverterTest extends TestCase {
 		$this->converter->registerTransformer( new GCB_Code_Transformer() );
 		$this->converter->registerTransformer( new GCB_Button_Transformer() );
 		$this->converter->registerTransformer( new GCB_Image_Transformer() );
+		$this->converter->registerTransformer( new GCB_Gallery_Transformer() );
 	}
 
 	/**
