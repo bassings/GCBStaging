@@ -39,3 +39,5 @@ node_modules/
 
 # Coverage reports
 /coverage/
+.phpunit.result.cache
+vendor/
