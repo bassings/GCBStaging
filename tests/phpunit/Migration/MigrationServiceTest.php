@@ -23,6 +23,10 @@ require_once dirname( __DIR__, 3 ) . '/wp-content/plugins/gcb-content-intelligen
 require_once dirname( __DIR__, 3 ) . '/wp-content/plugins/gcb-content-intelligence/migration/Converter/Transformers/class-gcb-column-transformer.php';
 require_once dirname( __DIR__, 3 ) . '/wp-content/plugins/gcb-content-intelligence/migration/Converter/Transformers/class-gcb-text-transformer.php';
 require_once dirname( __DIR__, 3 ) . '/wp-content/plugins/gcb-content-intelligence/migration/Converter/Transformers/class-gcb-youtube-transformer.php';
+require_once dirname( __DIR__, 3 ) . '/wp-content/plugins/gcb-content-intelligence/migration/Converter/Transformers/class-gcb-separator-transformer.php';
+require_once dirname( __DIR__, 3 ) . '/wp-content/plugins/gcb-content-intelligence/migration/Converter/Transformers/class-gcb-code-transformer.php';
+require_once dirname( __DIR__, 3 ) . '/wp-content/plugins/gcb-content-intelligence/migration/Converter/Transformers/class-gcb-button-transformer.php';
+require_once dirname( __DIR__, 3 ) . '/wp-content/plugins/gcb-content-intelligence/migration/Converter/Transformers/class-gcb-image-transformer.php';
 
 // Migration service.
 require_once dirname( __DIR__, 3 ) . '/wp-content/plugins/gcb-content-intelligence/migration/CLI/class-gcb-migration-service.php';

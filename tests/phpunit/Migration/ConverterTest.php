@@ -23,6 +23,10 @@ require_once dirname( __DIR__, 3 ) . '/wp-content/plugins/gcb-content-intelligen
 require_once dirname( __DIR__, 3 ) . '/wp-content/plugins/gcb-content-intelligence/migration/Converter/Transformers/class-gcb-column-transformer.php';
 require_once dirname( __DIR__, 3 ) . '/wp-content/plugins/gcb-content-intelligence/migration/Converter/Transformers/class-gcb-text-transformer.php';
 require_once dirname( __DIR__, 3 ) . '/wp-content/plugins/gcb-content-intelligence/migration/Converter/Transformers/class-gcb-youtube-transformer.php';
+require_once dirname( __DIR__, 3 ) . '/wp-content/plugins/gcb-content-intelligence/migration/Converter/Transformers/class-gcb-separator-transformer.php';
+require_once dirname( __DIR__, 3 ) . '/wp-content/plugins/gcb-content-intelligence/migration/Converter/Transformers/class-gcb-code-transformer.php';
+require_once dirname( __DIR__, 3 ) . '/wp-content/plugins/gcb-content-intelligence/migration/Converter/Transformers/class-gcb-button-transformer.php';
+require_once dirname( __DIR__, 3 ) . '/wp-content/plugins/gcb-content-intelligence/migration/Converter/Transformers/class-gcb-image-transformer.php';
 
 /**
  * Class ConverterTest
@@ -60,6 +64,10 @@ class ConverterTest extends TestCase {
 		$this->converter->registerTransformer( new GCB_Column_Transformer() );
 		$this->converter->registerTransformer( new GCB_Text_Transformer() );
 		$this->converter->registerTransformer( new GCB_YouTube_Transformer() );
+		$this->converter->registerTransformer( new GCB_Separator_Transformer() );
+		$this->converter->registerTransformer( new GCB_Code_Transformer() );
+		$this->converter->registerTransformer( new GCB_Button_Transformer() );
+		$this->converter->registerTransformer( new GCB_Image_Transformer() );
 	}
 
 	/**
@@ -372,5 +380,144 @@ AVADA;
 		$output = $this->converter->convert( $ast );
 
 		$this->assertSame( '', $output );
+	}
+
+	/**
+	 * Test converting fusion_separator to core/separator.
+	 *
+	 * @return void
+	 */
+	public function test_converts_separator_to_block(): void {
+		$content = '[fusion_separator style_type="single solid" /]';
+		$ast     = $this->parser->parse( $content );
+		$output  = $this->converter->convert( $ast );
+
+		$this->assertStringContainsString( '<!-- wp:separator', $output );
+		$this->assertStringContainsString( '<hr class="wp-block-separator', $output );
+		$this->assertStringContainsString( '<!-- /wp:separator -->', $output );
+	}
+
+	/**
+	 * Test separator with different styles.
+	 *
+	 * @return void
+	 */
+	public function test_separator_wide_style(): void {
+		$content = '[fusion_separator style_type="single solid" sep_color="#333333" /]';
+		$ast     = $this->parser->parse( $content );
+		$output  = $this->converter->convert( $ast );
+
+		$this->assertStringContainsString( '<!-- wp:separator', $output );
+		$this->assertStringContainsString( 'is-style-wide', $output );
+	}
+
+	/**
+	 * Test converting fusion_code with base64 content.
+	 *
+	 * @return void
+	 */
+	public function test_converts_code_with_base64(): void {
+		// Base64 encoded "<p>Hello World</p>"
+		$encoded = base64_encode( '<p>Hello World</p>' );
+		$content = "[fusion_code]{$encoded}[/fusion_code]";
+		$ast     = $this->parser->parse( $content );
+		$output  = $this->converter->convert( $ast );
+
+		$this->assertStringContainsString( '<!-- wp:html -->', $output );
+		$this->assertStringContainsString( '<p>Hello World</p>', $output );
+		$this->assertStringContainsString( '<!-- /wp:html -->', $output );
+	}
+
+	/**
+	 * Test converting fusion_code with plain HTML.
+	 *
+	 * @return void
+	 */
+	public function test_converts_code_with_plain_html(): void {
+		$content = '[fusion_code]<div class="custom">Content</div>[/fusion_code]';
+		$ast     = $this->parser->parse( $content );
+		$output  = $this->converter->convert( $ast );
+
+		$this->assertStringContainsString( '<!-- wp:html -->', $output );
+		$this->assertStringContainsString( '<div class="custom">Content</div>', $output );
+	}
+
+	/**
+	 * Test converting fusion_button to core/buttons.
+	 *
+	 * @return void
+	 */
+	public function test_converts_button_to_block(): void {
+		$content = '[fusion_button link="https://example.com" title="Click Me"]Click Me[/fusion_button]';
+		$ast     = $this->parser->parse( $content );
+		$output  = $this->converter->convert( $ast );
+
+		$this->assertStringContainsString( '<!-- wp:buttons -->', $output );
+		$this->assertStringContainsString( '<!-- wp:button -->', $output );
+		$this->assertStringContainsString( 'href="https://example.com"', $output );
+		$this->assertStringContainsString( 'Click Me', $output );
+		$this->assertStringContainsString( '<!-- /wp:button -->', $output );
+		$this->assertStringContainsString( '<!-- /wp:buttons -->', $output );
+	}
+
+	/**
+	 * Test button with target attribute.
+	 *
+	 * @return void
+	 */
+	public function test_button_with_target(): void {
+		$content = '[fusion_button link="https://example.com" target="_blank"]External[/fusion_button]';
+		$ast     = $this->parser->parse( $content );
+		$output  = $this->converter->convert( $ast );
+
+		$this->assertStringContainsString( 'target="_blank"', $output );
+		$this->assertStringContainsString( 'rel="noopener"', $output );
+	}
+
+	/**
+	 * Test converting fusion_imageframe to core/image.
+	 *
+	 * @return void
+	 */
+	public function test_converts_imageframe_to_block(): void {
+		$content = '[fusion_imageframe image_id="123" style_type="none"]<img src="https://example.com/image.jpg" alt="Test Image" />[/fusion_imageframe]';
+		$ast     = $this->parser->parse( $content );
+		$output  = $this->converter->convert( $ast );
+
+		$this->assertStringContainsString( '<!-- wp:image', $output );
+		$this->assertStringContainsString( 'src="https://example.com/image.jpg"', $output );
+		$this->assertStringContainsString( 'alt="Test Image"', $output );
+		$this->assertStringContainsString( '<!-- /wp:image -->', $output );
+	}
+
+	/**
+	 * Test image with link.
+	 *
+	 * @return void
+	 */
+	public function test_image_with_link(): void {
+		$content = '[fusion_imageframe link="https://example.com" linktarget="_blank"]<img src="https://example.com/image.jpg" />[/fusion_imageframe]';
+		$ast     = $this->parser->parse( $content );
+		$output  = $this->converter->convert( $ast );
+
+		$this->assertStringContainsString( '<!-- wp:image', $output );
+		$this->assertStringContainsString( '"linkDestination":"custom"', $output );
+		$this->assertStringContainsString( 'href="https://example.com"', $output );
+	}
+
+	/**
+	 * Test converting fusion_vimeo to core/embed.
+	 *
+	 * @return void
+	 */
+	public function test_converts_vimeo_to_embed(): void {
+		$content = '[fusion_vimeo id="123456789"]';
+		$ast     = $this->parser->parse( $content );
+		$output  = $this->converter->convert( $ast );
+
+		$this->assertStringContainsString( '<!-- wp:embed', $output );
+		$this->assertStringContainsString( '"providerNameSlug":"vimeo"', $output );
+		$this->assertStringContainsString( 'https://vimeo.com/123456789', $output );
+		$this->assertStringContainsString( '<!-- /wp:embed -->', $output );
 	}
 }

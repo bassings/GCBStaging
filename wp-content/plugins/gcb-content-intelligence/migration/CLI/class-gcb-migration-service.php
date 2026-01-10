@@ -53,6 +53,10 @@ final class GCB_Migration_Service {
 		$this->converter->registerTransformer( new GCB_Column_Transformer() );
 		$this->converter->registerTransformer( new GCB_Text_Transformer() );
 		$this->converter->registerTransformer( new GCB_YouTube_Transformer() );
+		$this->converter->registerTransformer( new GCB_Separator_Transformer() );
+		$this->converter->registerTransformer( new GCB_Code_Transformer() );
+		$this->converter->registerTransformer( new GCB_Button_Transformer() );
+		$this->converter->registerTransformer( new GCB_Image_Transformer() );
 	}
 
 	/**
@@ -160,6 +164,13 @@ final class GCB_Migration_Service {
 			'fusion_text',
 			'fusion_youtube',
 			'fusion_vimeo',
+			'fusion_separator',
+			'fusion_section_separator',
+			'fusion_code',
+			'fusion_button',
+			'fusion_tagline_box',
+			'fusion_imageframe',
+			'fusion_image',
 		];
 
 		$unknown = [];
