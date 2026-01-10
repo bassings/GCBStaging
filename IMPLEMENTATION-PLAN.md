@@ -1,6 +1,6 @@
 # GCB Modernization Implementation Plan
 **Project:** Gay Car Boys (GCB) Editorial Brutalism Redesign
-**Status:** Avada to Gutenberg Migration - Phase 2 Complete
+**Status:** Avada to Gutenberg Migration - Phase 4 Complete
 **Last Updated:** January 10, 2026
 
 ---
@@ -93,10 +93,53 @@ OK (43 tests, 123 assertions)
 - Unknown shortcode handling
 - Inline formatting preservation
 
+### Phase 4 Progress: WP-CLI Command ✅ COMPLETE
+
+**Command:** `wp gcb migrate-posts`
+
+**Features Implemented:**
+- Batch processing with configurable batch size (default: 50)
+- Memory management with `wp_cache_flush()` and `gc_collect_cycles()`
+- `--dry-run` flag for preview without database changes
+- `--limit=X` to process specific number of posts
+- `--post-id=123` to migrate single post
+- `--post-type` and `--status` filters
+- Error logging to `wp-content/migration_errors.log`
+- Original content backup in `_gcb_original_avada_content` post meta
+- Migration timestamp in `_gcb_migrated_at` post meta
+- Progress bar with real-time statistics
+
+**Files Created:**
+- `migration/CLI/class-gcb-migration-service.php` - Core migration service
+- `tests/phpunit/Migration/MigrationServiceTest.php` - 21 unit tests
+
+**Files Modified:**
+- `includes/class-gcb-cli-commands.php` - Added `migrate_posts` command
+
+**Usage Examples:**
+```bash
+# Preview migration (dry run)
+wp gcb migrate-posts --dry-run --limit=10
+
+# Migrate all posts in batches of 50
+wp gcb migrate-posts
+
+# Migrate single post
+wp gcb migrate-posts --post-id=1234
+
+# Migrate with smaller batches
+wp gcb migrate-posts --batch-size=25
+```
+
+**Test Coverage (64 total migration tests):**
+```
+PHPUnit 10.5.60
+OK (64 tests, 166 assertions)
+```
+
 ### Next Steps (Remaining Phases)
-- **Phase 3:** Carousel Gallery → Spectra blocks
-- **Phase 4:** WP-CLI command (`wp gcb migrate-posts`)
-- **Phase 5:** Synced Patterns with WP 6.7 Binding API
+- **Phase 3:** Carousel Gallery → Spectra blocks (optional)
+- **Phase 5:** Synced Patterns with WP 6.7 Binding API (optional)
 - **Phase 6:** E2E Testing (Playwright)
 
 ### Plan File
