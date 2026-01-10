@@ -47,19 +47,21 @@ if ( ! defined( 'GCB_IMAGE_MODE' ) ) {
 }
 
 /**
- * Output conditional CSS for image mode using wp_add_inline_style.
+ * Output conditional CSS for image mode in the footer.
  *
- * When color mode is enabled, this overrides the grayscale filters in style.css.
- * Uses wp_add_inline_style() for proper CSS loading order and caching.
+ * When color mode is enabled, this overrides the grayscale filters in style.css
+ * and inline template styles. Uses wp_footer to ensure it loads AFTER all other
+ * CSS including inline styles in block templates (like search.html).
  */
 function gcb_image_mode_css(): void {
 	if ( is_admin() ) {
 		return;
 	}
 
-	// Only output CSS if color mode is enabled (overrides grayscale in style.css).
+	// Only output CSS if color mode is enabled (overrides grayscale everywhere).
 	if ( defined( 'GCB_IMAGE_MODE' ) && 'color' === GCB_IMAGE_MODE ) {
-		$css = '
+		?>
+		<style id="gcb-image-mode-override">
 /* Color mode: Remove brutalist grayscale filters */
 .wp-block-post-featured-image img,
 .wp-block-image img,
@@ -69,13 +71,16 @@ function gcb_image_mode_css(): void {
 .search-result-thumbnail img,
 .wp-block-post-content img,
 .wp-block-post-content .wp-block-image img,
-.search-results-page .bento-item.gcb-bento-card .wp-block-post-featured-image img {
+.search-results-page .bento-item.gcb-bento-card .wp-block-post-featured-image img,
+.gcb-bento-card__image,
+.gcb-video-card img {
 	filter: none !important;
-}';
-		wp_add_inline_style( 'wp-block-library', $css );
+}
+		</style>
+		<?php
 	}
 }
-add_action( 'wp_enqueue_scripts', 'gcb_image_mode_css' );
+add_action( 'wp_footer', 'gcb_image_mode_css' );
 
 /**
  * Add responsive video CSS for Fusion Builder embeds
