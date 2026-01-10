@@ -286,10 +286,11 @@ class GCB_CLI_Commands {
 		bool $dry_run
 	): void {
 		// Get posts with Fusion shortcodes.
+		// Use -1 for unlimited, or respect user's --limit flag.
 		$query_args = array(
 			'post_type'      => $post_type,
 			'post_status'    => $status,
-			'posts_per_page' => $limit > 0 ? min( $limit, 1000 ) : 1000,
+			'posts_per_page' => $limit > 0 ? $limit : -1,
 			's'              => '[fusion_',
 			'fields'         => 'ids',
 		);
@@ -485,6 +486,7 @@ class GCB_CLI_Commands {
 		require_once $base . 'Converter/Transformers/class-gcb-button-transformer.php';
 		require_once $base . 'Converter/Transformers/class-gcb-image-transformer.php';
 		require_once $base . 'Converter/Transformers/class-gcb-gallery-transformer.php';
+		require_once $base . 'Converter/Transformers/class-gcb-misc-transformer.php';
 
 		// Service.
 		require_once $base . 'CLI/class-gcb-migration-service.php';

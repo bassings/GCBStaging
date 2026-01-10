@@ -58,6 +58,7 @@ final class GCB_Migration_Service {
 		$this->converter->registerTransformer( new GCB_Button_Transformer() );
 		$this->converter->registerTransformer( new GCB_Image_Transformer() );
 		$this->converter->registerTransformer( new GCB_Gallery_Transformer() );
+		$this->converter->registerTransformer( new GCB_Misc_Transformer() );
 	}
 
 	/**
@@ -175,6 +176,42 @@ final class GCB_Migration_Service {
 			'fusion_gallery',
 			'fusion_gallery_image',
 			'fusion_images',
+			'fusion_global',
+			'fusion_audio',
+			'fusion_soundcloud',
+			'fusion_alert',
+			'fusion_accordion',
+			'fusion_toggle',
+			'fusion_tabs',
+			'fusion_tab',
+			'fusion_pricing_table',
+			'fusion_testimonial',
+			'fusion_testimonials',
+			'fusion_person',
+			'fusion_social_links',
+			'fusion_sharing',
+			'fusion_title',
+			'fusion_breadcrumbs',
+			'fusion_menu',
+			'fusion_checklist',
+			'fusion_li_item',
+			'fusion_countdown',
+			'fusion_counters_circle',
+			'fusion_counter_circle',
+			'fusion_counters_box',
+			'fusion_counter_box',
+			'fusion_progress',
+			'fusion_modal',
+			'fusion_modal_text_link',
+			'fusion_popover',
+			'fusion_tooltip',
+			'fusion_highlight',
+			'fusion_dropcap',
+			'fusion_flip_box',
+			'fusion_content_box',
+			'fusion_content_boxes',
+			'fusion_fontawesome',
+			'fusion_map',
 		];
 
 		$unknown = [];

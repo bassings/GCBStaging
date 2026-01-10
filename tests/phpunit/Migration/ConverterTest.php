@@ -28,6 +28,7 @@ require_once dirname( __DIR__, 3 ) . '/wp-content/plugins/gcb-content-intelligen
 require_once dirname( __DIR__, 3 ) . '/wp-content/plugins/gcb-content-intelligence/migration/Converter/Transformers/class-gcb-button-transformer.php';
 require_once dirname( __DIR__, 3 ) . '/wp-content/plugins/gcb-content-intelligence/migration/Converter/Transformers/class-gcb-image-transformer.php';
 require_once dirname( __DIR__, 3 ) . '/wp-content/plugins/gcb-content-intelligence/migration/Converter/Transformers/class-gcb-gallery-transformer.php';
+require_once dirname( __DIR__, 3 ) . '/wp-content/plugins/gcb-content-intelligence/migration/Converter/Transformers/class-gcb-misc-transformer.php';
 
 /**
  * Class ConverterTest
@@ -70,6 +71,7 @@ class ConverterTest extends TestCase {
 		$this->converter->registerTransformer( new GCB_Button_Transformer() );
 		$this->converter->registerTransformer( new GCB_Image_Transformer() );
 		$this->converter->registerTransformer( new GCB_Gallery_Transformer() );
+		$this->converter->registerTransformer( new GCB_Misc_Transformer() );
 	}
 
 	/**
@@ -521,5 +523,50 @@ AVADA;
 		$this->assertStringContainsString( '"providerNameSlug":"vimeo"', $output );
 		$this->assertStringContainsString( 'https://vimeo.com/123456789', $output );
 		$this->assertStringContainsString( '<!-- /wp:embed -->', $output );
+	}
+
+	/**
+	 * Test converting fusion_gallery to Spectra uagb/image-gallery.
+	 *
+	 * @return void
+	 */
+	public function test_converts_gallery_to_spectra(): void {
+		$content = '[fusion_gallery][fusion_gallery_image image="https://example.com/img1.jpg" image_id="1"][/fusion_gallery_image][fusion_gallery_image image="https://example.com/img2.jpg" image_id="2"][/fusion_gallery_image][/fusion_gallery]';
+		$ast     = $this->parser->parse( $content );
+		$output  = $this->converter->convert( $ast );
+
+		$this->assertStringContainsString( '<!-- wp:uagb/image-gallery', $output );
+		$this->assertStringContainsString( '"feedLayout": "carousel"', $output );
+		$this->assertStringContainsString( '"carouselArrows": true', $output );
+		$this->assertStringContainsString( '"carouselDots": true', $output );
+		$this->assertStringContainsString( 'uagb-image-gallery', $output );
+		$this->assertStringContainsString( '<!-- /wp:uagb/image-gallery -->', $output );
+	}
+
+	/**
+	 * Test gallery with grid layout outputs grid instead of carousel.
+	 *
+	 * @return void
+	 */
+	public function test_gallery_grid_layout(): void {
+		$content = '[fusion_gallery layout="grid" columns="4"][fusion_gallery_image image="https://example.com/img.jpg"][/fusion_gallery_image][/fusion_gallery]';
+		$ast     = $this->parser->parse( $content );
+		$output  = $this->converter->convert( $ast );
+
+		$this->assertStringContainsString( '"feedLayout": "grid"', $output );
+		$this->assertStringContainsString( '"columnsDesk": 4', $output );
+	}
+
+	/**
+	 * Test empty gallery returns comment.
+	 *
+	 * @return void
+	 */
+	public function test_empty_gallery_returns_comment(): void {
+		$content = '[fusion_gallery][/fusion_gallery]';
+		$ast     = $this->parser->parse( $content );
+		$output  = $this->converter->convert( $ast );
+
+		$this->assertStringContainsString( '<!-- gcb-migration: empty gallery -->', $output );
 	}
 }
