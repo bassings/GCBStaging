@@ -459,6 +459,10 @@ class GCB_CLI_Commands {
 		require_once $base . 'Converter/Transformers/class-gcb-column-transformer.php';
 		require_once $base . 'Converter/Transformers/class-gcb-text-transformer.php';
 		require_once $base . 'Converter/Transformers/class-gcb-youtube-transformer.php';
+		require_once $base . 'Converter/Transformers/class-gcb-separator-transformer.php';
+		require_once $base . 'Converter/Transformers/class-gcb-code-transformer.php';
+		require_once $base . 'Converter/Transformers/class-gcb-button-transformer.php';
+		require_once $base . 'Converter/Transformers/class-gcb-image-transformer.php';
 
 		// Service.
 		require_once $base . 'CLI/class-gcb-migration-service.php';
