@@ -12,7 +12,16 @@
     "test:report": "playwright show-report",
     "test:codegen": "playwright codegen http://localhost:8881",
     "playwright:install": "playwright install chromium --with-deps",
-    "validate": "playwright install chromium --with-deps && playwright test --config=playwright.config.ci.ts"
+    "validate": "playwright install chromium --with-deps && playwright test --config=playwright.config.ci.ts",
+    "debug": "PWDEBUG=1 playwright test --headed --workers=1",
+    "debug:ui": "playwright test --ui --headed",
+    "debug:slow": "SLOW_MO=500 playwright test --headed --workers=1",
+    "debug:trace": "playwright test --trace on --headed",
+    "test:visual": "playwright test tests/e2e/visual-*.spec.ts",
+    "test:visual:update": "playwright test tests/e2e/visual-*.spec.ts --update-snapshots",
+    "test:perf": "playwright test tests/e2e/performance.*.spec.ts",
+    "test:security": "playwright test tests/e2e/security.*.spec.ts",
+    "test:a11y": "playwright test tests/e2e/accessibility-*.spec.ts"
   },
   "keywords": [
     "wordpress",
@@ -23,6 +32,7 @@
   "author": "Gay Car Boys",
   "license": "UNLICENSED",
   "devDependencies": {
+    "@axe-core/playwright": "^4.8.0",
     "@playwright/test": "^1.48.0",
     "@types/node": "^22.0.0",
     "typescript": "^5.6.0"

@@ -350,6 +350,76 @@ Some modern CSS properties can cause syntax errors when WordPress renders templa
 - A single CSS syntax error can break ALL JavaScript site-wide
 - Check browser console for "Uncaught SyntaxError" after CSS changes
 
+⚠️ CRITICAL PROTOCOL: FRONTEND ERROR DETECTION & QUALITY GATES
+Added: January 12, 2026
+
+Console Error Capture:
+Tests using `@utils/fixtures` automatically fail on JavaScript console errors.
+- Console errors (console.error)
+- Uncaught exceptions (pageerror)
+- Failed network requests (requestfailed)
+- Ignores analytics/third-party failures automatically
+
+To disable for specific test:
+```typescript
+import { test } from '@utils/fixtures';
+test.use({ failOnConsoleError: false });
+```
+
+Required Quality Checks for ALL Changes:
+BEFORE marking any task complete, verify:
+1. Console Errors: Run `npm run debug:ui` and check browser console
+2. Performance: Run `npm run test:perf` - all Core Web Vitals must pass
+3. Security: Run `npm run test:security` - headers and CSP validated
+4. Accessibility: Run `npm run test:a11y` - axe-core WCAG 2.2 AA audit
+
+Debug Commands:
+| Command | Use Case |
+|---------|----------|
+| `npm run debug` | Open Playwright Inspector for step-through debugging |
+| `npm run debug:ui` | Interactive test runner with live browser preview |
+| `npm run debug:slow` | Slowed execution (500ms delay) for visual debugging |
+| `npm run debug:trace` | Full trace capture for post-mortem analysis |
+
+Visual Regression Testing:
+Baselines stored in `tests/visual-baselines/`.
+- Update baselines: `npm run test:visual:update`
+- Compare current: `npm run test:visual`
+- Mask dynamic content (dates, view counts) to prevent false failures
+
+Performance Thresholds (Core Web Vitals):
+| Metric | Threshold | Description |
+|--------|-----------|-------------|
+| LCP | < 2500ms | Largest Contentful Paint |
+| FCP | < 1800ms | First Contentful Paint |
+| CLS | < 0.1 | Cumulative Layout Shift |
+| TTFB | < 800ms | Time to First Byte |
+
+Security Headers Required:
+| Header | Valid Values |
+|--------|--------------|
+| X-Frame-Options | DENY, SAMEORIGIN |
+| X-Content-Type-Options | nosniff |
+| X-XSS-Protection | 1; mode=block |
+| Referrer-Policy | strict-origin-when-cross-origin |
+
+Test Categories:
+| Category | Command | Test Count |
+|----------|---------|------------|
+| Performance | `npm run test:perf` | 8 tests |
+| Security | `npm run test:security` | 11 tests |
+| Accessibility | `npm run test:a11y` | 12 tests |
+| Visual Regression | `npm run test:visual` | 12 tests |
+| All New Tests | Combined | 43 tests |
+
+Utility Files (tests/utils/):
+- fixtures.ts: Console error capture with auto-fail
+- performance.ts: Core Web Vitals measurement
+- security.ts: Header validation and XSS checks
+- accessibility.ts: axe-core WCAG 2.2 AA wrapper
+- visual-regression.ts: Screenshot comparison
+- debug-helpers.ts: Interactive debugging tools
+
 6. Pattern Specifications
 
 Video Rail Pattern:

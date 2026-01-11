@@ -8,7 +8,14 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './tests/e2e',
   timeout: 30000,
-  expect: { timeout: 10000 },
+  expect: {
+    timeout: 10000,
+    // Visual regression settings
+    toHaveScreenshot: {
+      maxDiffPixelRatio: 0.1, // 10% pixel difference allowed
+      threshold: 0.2, // Individual pixel comparison threshold
+    },
+  },
 
   // Tests share database - must run sequentially
   fullyParallel: false,
@@ -74,6 +81,34 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         storageState: 'tests/auth/.auth/admin.json',
       },
+    },
+
+    // Performance tests - Core Web Vitals validation
+    {
+      name: 'performance',
+      testMatch: /.*performance.*\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'] },
+    },
+
+    // Security tests - header and CSP validation
+    {
+      name: 'security',
+      testMatch: /.*security.*\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'] },
+    },
+
+    // Accessibility tests - axe-core WCAG 2.2 AA audits
+    {
+      name: 'accessibility',
+      testMatch: /.*accessibility-axe.*\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'] },
+    },
+
+    // Visual regression tests - screenshot comparison
+    {
+      name: 'visual',
+      testMatch: /.*visual-regression.*\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'] },
     },
   ],
 
