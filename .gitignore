@@ -41,3 +41,4 @@ node_modules/
 /coverage/
 .phpunit.result.cache
 vendor/
+backups/
