@@ -25,6 +25,31 @@
 <!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->
 
 <style>
+/* Reduce excessive spacing between migrated Gutenberg blocks */
+/* Override WordPress generated layout margins */
+#main-content .wp-block-post-content > * + * {
+	margin-block-start: 0.5rem !important;
+}
+
+#main-content .wp-block-post-content > .wp-block-group + .wp-block-group {
+	margin-block-start: 0.5rem !important;
+}
+
+#main-content .wp-block-post-content .wp-block-group > .wp-block-columns {
+	margin-block-start: 0 !important;
+	margin-block-end: 0 !important;
+}
+
+#main-content .wp-block-post-content .wp-block-columns {
+	margin-bottom: 0 !important;
+	margin-block-end: 0 !important;
+}
+
+/* Tighten internal column spacing */
+#main-content .wp-block-post-content .wp-block-column > * + * {
+	margin-block-start: 0.5rem !important;
+}
+
 /* Remove Fusion Builder white backgrounds and borders */
 #main-content .wp-block-post-content,
 #main-content .wp-block-post-content > *,

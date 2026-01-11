@@ -24,16 +24,16 @@ final class GCB_Shortcode_Parser {
 	 * @var array<string, bool>
 	 */
 	private const SELF_CLOSING_TAGS = [
-		'fusion_youtube'    => true,
-		'fusion_vimeo'      => true,
-		'fusion_separator'  => true,
-		'fusion_imageframe' => true,
-		'fusion_button'     => true,
-		'fusion_fontawesome' => true,
-		'fusion_social_links' => true,
-		'fusion_sharing'    => true,
-		'fusion_person'     => true,
-		'fusion_image'      => true,
+		'fusion_youtube'       => true,
+		'fusion_vimeo'         => true,
+		'fusion_separator'     => true,
+		'fusion_imageframe'    => true,
+		'fusion_button'        => true,
+		'fusion_fontawesome'   => true,
+		'fusion_social_links'  => true,
+		'fusion_sharing'       => true,
+		'fusion_person'        => true,
+		'fusion_image'         => true,
 	];
 
 	/**
@@ -84,7 +84,7 @@ final class GCB_Shortcode_Parser {
 							$shortcodeData['startPosition']
 						);
 
-						if ( $this->isSelfClosing( $shortcodeData['tag'] ) ) {
+						if ( $this->isSelfClosing( $shortcodeData['tag'] ) || $shortcodeData['isSelfClosingBySyntax'] ) {
 							// Self-closing: Add directly, don't push to stack.
 							$this->appendNode( $nodes, $stack, $node );
 						} else {
@@ -158,6 +158,13 @@ final class GCB_Shortcode_Parser {
 			$shortcodeContent = substr( $shortcodeContent, 1 );
 		}
 
+		// Check for self-closing syntax: [tag ... /] (ends with space and /).
+		$isSelfClosingBySyntax = false;
+		if ( ! $isClosing && str_ends_with( $shortcodeContent, ' /' ) ) {
+			$isSelfClosingBySyntax = true;
+			$shortcodeContent      = substr( $shortcodeContent, 0, -2 );
+		}
+
 		// Parse tag name (first word).
 		$spacePos = strpos( $shortcodeContent, ' ' );
 		if ( false !== $spacePos ) {
@@ -186,11 +193,12 @@ final class GCB_Shortcode_Parser {
 		}
 
 		return [
-			'tag'           => $tag,
-			'attributes'    => $attributes,
-			'isClosing'     => $isClosing,
-			'startPosition' => $startPosition,
-			'endPosition'   => $bracketEnd + 1,
+			'tag'                   => $tag,
+			'attributes'            => $attributes,
+			'isClosing'             => $isClosing,
+			'isSelfClosingBySyntax' => $isSelfClosingBySyntax,
+			'startPosition'         => $startPosition,
+			'endPosition'           => $bracketEnd + 1,
 		];
 	}
 

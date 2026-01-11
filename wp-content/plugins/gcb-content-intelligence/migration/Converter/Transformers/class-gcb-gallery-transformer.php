@@ -42,11 +42,11 @@ final class GCB_Gallery_Transformer implements GCB_Transformer_Interface {
 	}
 
 	/**
-	 * Transform a gallery container to Spectra uagb/image-gallery.
+	 * Transform a gallery container to core/gallery block.
 	 *
 	 * @param GCB_Shortcode_Node $node         The gallery node.
 	 * @param string             $childContent Converted child content (contains image markers).
-	 * @return string Spectra gallery block markup.
+	 * @return string Gallery block markup.
 	 */
 	private function transformGallery( GCB_Shortcode_Node $node, string $childContent ): string {
 		// Extract image data from child markers.
@@ -57,49 +57,29 @@ final class GCB_Gallery_Transformer implements GCB_Transformer_Interface {
 			return "<!-- gcb-migration: empty gallery -->\n";
 		}
 
-		// Generate unique block ID.
-		$blockId = 'gcb-gallery-' . substr( md5( uniqid( '', true ) ), 0, 8 );
+		// Get columns from Fusion attributes.
+		$columns = $node->getAttribute( 'columns' );
+		$cols    = ( '' !== $columns && is_numeric( $columns ) ) ? (int) $columns : 3;
 
-		// Get layout preferences from Fusion attributes.
-		$layout       = $node->getAttribute( 'layout' );
-		$columns      = $node->getAttribute( 'columns' );
-		$isCarousel   = ( 'slider' === $layout || 'carousel' === $layout || '' === $layout );
-
-		// Build Spectra block attributes.
+		// Build core/gallery block attributes.
 		$attributes = [
-			'block_id'         => $blockId,
-			'feedLayout'       => $isCarousel ? 'carousel' : 'grid',
-			'imageSize'        => 'large',
-			'mediaGallery'     => $mediaGallery,
-			'carouselArrows'   => true,
-			'carouselDots'     => true,
-			'carouselAutoplay' => true,
-			'carouselSpeed'    => 3000,
-			'focusOnSelect'    => true,
+			'linkTo'  => 'none',
+			'columns' => $cols,
 		];
 
-		// Add columns for grid layout.
-		if ( ! $isCarousel && '' !== $columns && is_numeric( $columns ) ) {
-			$attributes['columnsDesk'] = (int) $columns;
-			$attributes['columnsTab']  = min( (int) $columns, 3 );
-			$attributes['columnsMob']  = 1;
-		}
-
-		$attrJson = json_encode( $attributes, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT );
+		$attrJson = json_encode( $attributes, JSON_UNESCAPED_SLASHES );
 
 		// Build the inner HTML with image figures.
-		$innerHtml = $this->buildGalleryInnerHtml( $mediaGallery, $blockId );
+		$innerHtml = $this->buildCoreGalleryHtml( $mediaGallery );
 
 		return sprintf(
-			"<!-- wp:uagb/image-gallery %s -->\n" .
-			"<div class=\"wp-block-uagb-image-gallery uagb-block-%s\">\n" .
-			"<div class=\"uagb-image-gallery\">\n" .
+			"<!-- wp:gallery %s -->\n" .
+			"<figure class=\"wp-block-gallery has-nested-images columns-%d is-cropped\">\n" .
 			"%s" .
-			"</div>\n" .
-			"</div>\n" .
-			"<!-- /wp:uagb/image-gallery -->\n",
+			"</figure>\n" .
+			"<!-- /wp:gallery -->\n",
 			$attrJson,
-			$blockId,
+			$cols,
 			$innerHtml
 		);
 	}
@@ -181,37 +161,43 @@ final class GCB_Gallery_Transformer implements GCB_Transformer_Interface {
 	}
 
 	/**
-	 * Build inner HTML for gallery images.
+	 * Build HTML for core/gallery images using nested wp:image blocks.
 	 *
-	 * @param array  $mediaGallery Array of media objects.
-	 * @param string $blockId      Block ID for classes.
+	 * @param array $mediaGallery Array of media objects.
 	 * @return string HTML for gallery images.
 	 */
-	private function buildGalleryInnerHtml( array $mediaGallery, string $blockId ): string {
+	private function buildCoreGalleryHtml( array $mediaGallery ): string {
 		$html = '';
 
-		foreach ( $mediaGallery as $index => $media ) {
+		foreach ( $mediaGallery as $media ) {
+			$id      = (int) ( $media['id'] ?? 0 );
 			$src     = htmlspecialchars( $media['url'], ENT_QUOTES, 'UTF-8' );
 			$alt     = htmlspecialchars( $media['alt'] ?? '', ENT_QUOTES, 'UTF-8' );
 			$caption = htmlspecialchars( $media['caption'] ?? '', ENT_QUOTES, 'UTF-8' );
 
-			$imgTag = sprintf( '<img src="%s" alt="%s" />', $src, $alt );
-
-			// Wrap in link if specified.
-			if ( ! empty( $media['link'] ) ) {
-				$link   = htmlspecialchars( $media['link'], ENT_QUOTES, 'UTF-8' );
-				$imgTag = sprintf( '<a href="%s" target="_blank" rel="noopener">%s</a>', $link, $imgTag );
+			// Build wp:image block attributes.
+			$imageAttrs = [ 'sizeSlug' => 'large' ];
+			if ( $id > 0 ) {
+				$imageAttrs['id'] = $id;
 			}
+			$imageAttrJson = json_encode( $imageAttrs, JSON_UNESCAPED_SLASHES );
+
+			$captionHtml = '' !== $caption
+				? sprintf( "<figcaption class=\"wp-element-caption\">%s</figcaption>\n", $caption )
+				: '';
 
 			$html .= sprintf(
-				"<figure class=\"uagb-image-gallery__media-wrapper\">\n" .
-				"<div class=\"uagb-image-gallery__media\">\n" .
-				"%s\n" .
-				"</div>\n" .
+				"<!-- wp:image %s -->\n" .
+				"<figure class=\"wp-block-image size-large\">" .
+				"<img src=\"%s\" alt=\"%s\" class=\"%s\" />" .
 				"%s" .
-				"</figure>\n",
-				$imgTag,
-				'' !== $caption ? sprintf( "<figcaption>%s</figcaption>\n", $caption ) : ''
+				"</figure>\n" .
+				"<!-- /wp:image -->\n",
+				$imageAttrJson,
+				$src,
+				$alt,
+				$id > 0 ? "wp-image-{$id}" : '',
+				$captionHtml
 			);
 		}
 

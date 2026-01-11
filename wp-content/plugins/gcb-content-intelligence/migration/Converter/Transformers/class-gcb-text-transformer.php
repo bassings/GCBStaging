@@ -39,6 +39,16 @@ final class GCB_Text_Transformer implements GCB_Transformer_Interface {
 	}
 
 	/**
+	 * Inline element tags that should be combined into paragraphs.
+	 *
+	 * @var array
+	 */
+	private const INLINE_TAGS = [
+		'strong', 'b', 'em', 'i', 'a', 'span', 'code', 'mark', 'small',
+		'sub', 'sup', 'u', 's', 'strike', 'del', 'ins', 'abbr', 'cite', 'br',
+	];
+
+	/**
 	 * Parse HTML content into Gutenberg blocks.
 	 *
 	 * @param string $html HTML content to parse.
@@ -70,33 +80,100 @@ final class GCB_Text_Transformer implements GCB_Transformer_Interface {
 
 		$output = '';
 
-		// Process each child node.
-		foreach ( $wrapper->childNodes as $childNode ) {
-			$output .= $this->processNode( $childNode, $doc );
+		// Collect and process nodes, combining inline content.
+		$output = $this->processChildNodes( $wrapper, $doc );
+
+		return $output;
+	}
+
+	/**
+	 * Process child nodes, combining consecutive inline content into paragraphs.
+	 *
+	 * @param DOMNode     $parent Parent node.
+	 * @param DOMDocument $doc    Parent document.
+	 * @return string Block markup.
+	 */
+	private function processChildNodes( DOMNode $parent, DOMDocument $doc ): string {
+		$output        = '';
+		$inlineBuffer  = '';
+
+		foreach ( $parent->childNodes as $childNode ) {
+			if ( $this->isInlineContent( $childNode ) ) {
+				// Accumulate inline content.
+				$inlineBuffer .= $doc->saveHTML( $childNode );
+			} else {
+				// Flush inline buffer before processing block element.
+				if ( '' !== trim( $inlineBuffer ) ) {
+					$output       .= $this->createParagraphsFromText( $inlineBuffer );
+					$inlineBuffer  = '';
+				}
+
+				// Process block-level node.
+				$output .= $this->processBlockNode( $childNode, $doc );
+			}
+		}
+
+		// Flush any remaining inline content.
+		if ( '' !== trim( $inlineBuffer ) ) {
+			$output .= $this->createParagraphsFromText( $inlineBuffer );
 		}
 
 		return $output;
 	}
 
 	/**
-	 * Process a single DOM node.
+	 * Check if a node is inline content (text or inline element).
+	 *
+	 * @param DOMNode $node Node to check.
+	 * @return bool True if inline content.
+	 */
+	private function isInlineContent( DOMNode $node ): bool {
+		// Text nodes are inline.
+		if ( XML_TEXT_NODE === $node->nodeType ) {
+			return true;
+		}
+
+		// Check if element is an inline tag.
+		if ( XML_ELEMENT_NODE === $node->nodeType ) {
+			$tagName = strtolower( $node->nodeName );
+			return in_array( $tagName, self::INLINE_TAGS, true );
+		}
+
+		return false;
+	}
+
+	/**
+	 * Create paragraph blocks from text that may contain line breaks.
+	 *
+	 * @param string $text Text content (may contain inline HTML).
+	 * @return string Paragraph block(s).
+	 */
+	private function createParagraphsFromText( string $text ): string {
+		// Split by double line breaks (paragraph separator).
+		$paragraphs = preg_split( '/\n\s*\n/', $text );
+		$output     = '';
+
+		foreach ( $paragraphs as $para ) {
+			$para = trim( $para );
+			if ( '' !== $para ) {
+				// Replace single newlines with spaces.
+				$para    = preg_replace( '/\s*\n\s*/', ' ', $para );
+				$output .= $this->createParagraphBlock( $para );
+			}
+		}
+
+		return $output;
+	}
+
+	/**
+	 * Process a block-level DOM node.
 	 *
 	 * @param DOMNode     $domNode DOM node to process.
 	 * @param DOMDocument $doc     Parent document.
 	 * @return string Block markup.
 	 */
-	private function processNode( DOMNode $domNode, DOMDocument $doc ): string {
-		// Skip whitespace-only text nodes.
-		if ( XML_TEXT_NODE === $domNode->nodeType ) {
-			$text = trim( $domNode->textContent );
-			if ( '' === $text ) {
-				return '';
-			}
-			// Standalone text: wrap in paragraph.
-			return $this->createParagraphBlock( $domNode->textContent );
-		}
-
-		// Skip non-element nodes.
+	private function processBlockNode( DOMNode $domNode, DOMDocument $doc ): string {
+		// Skip non-element nodes (text is handled by inline processing).
 		if ( XML_ELEMENT_NODE !== $domNode->nodeType ) {
 			return '';
 		}
@@ -134,13 +211,14 @@ final class GCB_Text_Transformer implements GCB_Transformer_Interface {
 			return $this->createQuoteBlock( $content );
 		}
 
-		// Handle divs: recursively process children.
+		// Handle divs: recursively process children using inline-aware method.
 		if ( 'div' === $tagName ) {
-			$output = '';
-			foreach ( $domNode->childNodes as $child ) {
-				$output .= $this->processNode( $child, $doc );
-			}
-			return $output;
+			return $this->processChildNodes( $domNode, $doc );
+		}
+
+		// Handle br tags: they're part of inline content, skip here.
+		if ( 'br' === $tagName ) {
+			return '';
 		}
 
 		// Default: wrap in paragraph.

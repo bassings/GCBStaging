@@ -41,7 +41,7 @@ final class GCB_Row_Transformer implements GCB_Transformer_Interface {
 			"<div class=\"wp-block-columns\">\n" .
 			"%s" .
 			"</div>\n" .
-			"<!-- /wp:columns -->",
+			"<!-- /wp:columns -->\n",
 			$attrJson,
 			$childContent
 		);

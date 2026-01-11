@@ -5,7 +5,59 @@
 
 ---
 
-## 🚀 Latest Update: Avada to Gutenberg Migration System (January 10, 2026)
+## 🚀 Latest Update: Migration Fixes & Block Validation (January 11, 2026)
+
+**Status:** Migrated Polestar 4 article with updated transformers - block validation errors fixed
+
+### Session Summary
+
+**Issues Fixed:**
+1. ✅ **Gallery blocks**: Changed from Spectra (`uagb/image-gallery`) to WordPress core (`core/gallery`) with nested `wp:image` blocks
+2. ✅ **Inline text formatting**: Fixed `<strong>` and other inline tags being split to new lines
+3. ✅ **Self-closing shortcode detection**: Parser now detects `/]` syntax (e.g., `[fusion_gallery_image /]`)
+4. ✅ **Block spacing CSS**: Reduced excessive gaps between migrated Gutenberg blocks
+
+**Files Modified:**
+- `migration/Converter/Transformers/class-gcb-gallery-transformer.php` - Outputs core/gallery instead of Spectra
+- `migration/Converter/Transformers/class-gcb-text-transformer.php` - Preserves inline content in paragraphs
+- `migration/Parser/class-gcb-shortcode-parser.php` - Detects `isSelfClosingBySyntax` for `/]` tags
+- `migration/Converter/Transformers/class-gcb-container-transformer.php` - Added trailing newlines
+- `migration/Converter/Transformers/class-gcb-row-transformer.php` - Added trailing newlines
+- `migration/Converter/Transformers/class-gcb-column-transformer.php` - Added trailing newlines
+- `tests/phpunit/Migration/ConverterTest.php` - Updated gallery test expectations
+- `wp-content/themes/gcb-brutalist/templates/single.html` - CSS to reduce block spacing
+
+**Test Results:**
+```
+PHPUnit 10.5.60
+OK (76 tests, 204 assertions)
+```
+
+**Migration Status:**
+- Post 95298 (Polestar 4 review) migrated successfully with 33 shortcodes converted
+- Post 13711 (Volvo XC60) migrated successfully with 41 shortcodes converted
+- Core/gallery blocks render correctly without Spectra plugin dependency
+- Inline formatting preserved (bold text stays inline)
+
+**CSS Block Spacing Fix:**
+Added to `single.html` to reduce gaps between migrated blocks:
+```css
+#main-content .wp-block-post-content > * + * {
+    margin-block-start: 0.5rem !important;
+}
+```
+
+**Database Backup:**
+- `/Volumes/Storage/home/scott.b/repos/GCBStaging/backups/database_backup_20260111_112140.db`
+
+**Next Steps:**
+- Verify block spacing CSS is working (user should refresh browser)
+- Run full migration dry-run to validate all posts
+- Consider running actual migration on all posts
+
+---
+
+## Previous Update: Avada to Gutenberg Migration System (January 10, 2026)
 
 **Started:** Phase 1 - TDD Setup & Parser Foundation
 

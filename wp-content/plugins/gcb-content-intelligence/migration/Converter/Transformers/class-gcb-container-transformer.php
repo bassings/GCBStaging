@@ -46,7 +46,7 @@ final class GCB_Container_Transformer implements GCB_Transformer_Interface {
 			"<div class=\"wp-block-group\">\n" .
 			"%s" .
 			"</div>\n" .
-			"<!-- /wp:group -->",
+			"<!-- /wp:group -->\n",
 			$attrJson,
 			$childContent
 		);
