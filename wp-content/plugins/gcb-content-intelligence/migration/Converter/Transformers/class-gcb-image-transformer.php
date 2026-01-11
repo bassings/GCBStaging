@@ -34,12 +34,33 @@ final class GCB_Image_Transformer implements GCB_Transformer_Interface {
 		$linkTarget = $node->getAttribute( 'linktarget' );
 		$imageId    = $node->getAttribute( 'image_id' );
 
+		// Parse image_id which may contain size suffix (e.g., "32670|medium").
+		if ( '' !== $imageId && str_contains( $imageId, '|' ) ) {
+			$parts   = explode( '|', $imageId );
+			$imageId = $parts[0];
+		}
+
 		// Extract image details from inner content.
 		$src = '';
 		$alt = '';
 
+		// Method 1: Look for src= in an img tag.
 		if ( preg_match( '/src=["\']([^"\']+)["\']/', $childContent, $srcMatch ) ) {
 			$src = $srcMatch[1];
+		}
+
+		// Method 2: Fusion Builder stores URL as plain text content.
+		if ( '' === $src ) {
+			$trimmed = trim( $childContent );
+			// Check if content looks like a URL (starts with http or /).
+			if ( preg_match( '/^(https?:\/\/|\/)[^\s<>]+\.(jpg|jpeg|png|gif|webp|svg)(\?[^\s]*)?$/i', $trimmed ) ) {
+				$src = $trimmed;
+			}
+		}
+
+		// Method 3: Extract URL from anywhere in content.
+		if ( '' === $src && preg_match( '/(https?:\/\/[^\s<>"\']+\.(jpg|jpeg|png|gif|webp|svg)(\?[^\s]*)?)/i', $childContent, $urlMatch ) ) {
+			$src = $urlMatch[1];
 		}
 
 		if ( preg_match( '/alt=["\']([^"\']*)["\']/', $childContent, $altMatch ) ) {

@@ -21,19 +21,20 @@ final class GCB_Shortcode_Parser {
 	/**
 	 * Known self-closing shortcode tags (no closing tag expected).
 	 *
+	 * NOTE: fusion_imageframe is NOT self-closing because it often contains
+	 * the image URL as inner content: [fusion_imageframe ...]URL[/fusion_imageframe]
+	 *
 	 * @var array<string, bool>
 	 */
 	private const SELF_CLOSING_TAGS = [
 		'fusion_youtube'       => true,
 		'fusion_vimeo'         => true,
 		'fusion_separator'     => true,
-		'fusion_imageframe'    => true,
 		'fusion_button'        => true,
 		'fusion_fontawesome'   => true,
 		'fusion_social_links'  => true,
 		'fusion_sharing'       => true,
 		'fusion_person'        => true,
-		'fusion_image'         => true,
 	];
 
 	/**
