@@ -526,25 +526,25 @@ AVADA;
 	}
 
 	/**
-	 * Test converting fusion_gallery to Spectra uagb/image-gallery.
+	 * Test converting fusion_gallery to Spectra uagb/image-gallery carousel.
 	 *
 	 * @return void
 	 */
-	public function test_converts_gallery_to_core_gallery(): void {
+	public function test_converts_gallery_to_spectra_carousel(): void {
 		$content = '[fusion_gallery][fusion_gallery_image image="https://example.com/img1.jpg" image_id="1"][/fusion_gallery_image][fusion_gallery_image image="https://example.com/img2.jpg" image_id="2"][/fusion_gallery_image][/fusion_gallery]';
 		$ast     = $this->parser->parse( $content );
 		$output  = $this->converter->convert( $ast );
 
-		$this->assertStringContainsString( '<!-- wp:gallery', $output );
-		$this->assertStringContainsString( 'wp-block-gallery', $output );
-		$this->assertStringContainsString( '<!-- wp:image', $output );
+		$this->assertStringContainsString( '<!-- wp:uagb/image-gallery', $output );
+		$this->assertStringContainsString( '"feedLayout":"carousel"', $output );
+		$this->assertStringContainsString( '"mediaGallery":', $output );
 		$this->assertStringContainsString( 'img1.jpg', $output );
 		$this->assertStringContainsString( 'img2.jpg', $output );
-		$this->assertStringContainsString( '<!-- /wp:gallery -->', $output );
+		$this->assertStringContainsString( '/-->', $output ); // Self-closing block.
 	}
 
 	/**
-	 * Test gallery with columns attribute.
+	 * Test gallery with columns attribute maps to Spectra columnsDesk.
 	 *
 	 * @return void
 	 */
@@ -553,8 +553,9 @@ AVADA;
 		$ast     = $this->parser->parse( $content );
 		$output  = $this->converter->convert( $ast );
 
-		$this->assertStringContainsString( '"columns":4', $output );
-		$this->assertStringContainsString( 'columns-4', $output );
+		$this->assertStringContainsString( '"columnsDesk":4', $output );
+		$this->assertStringContainsString( '"columnsTab":3', $output ); // Capped at 3 for tablet.
+		$this->assertStringContainsString( '"columnsMob":1', $output );
 	}
 
 	/**
