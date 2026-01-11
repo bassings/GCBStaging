@@ -48,26 +48,37 @@ final class GCB_Image_Transformer implements GCB_Transformer_Interface {
 
 		// Build block attributes.
 		$attributes = [];
+		$sizeSlug   = 'full'; // Default size.
 
 		if ( '' !== $imageId ) {
 			$attributes['id'] = (int) $imageId;
 		}
 
+		$attributes['sizeSlug'] = $sizeSlug;
+
 		if ( '' !== $link ) {
 			$attributes['linkDestination'] = 'custom';
 		}
 
-		$attrJson = ! empty( $attributes )
-			? ' ' . json_encode( $attributes, JSON_UNESCAPED_SLASHES )
-			: '';
+		$attrJson = ' ' . json_encode( $attributes, JSON_UNESCAPED_SLASHES );
 
-		// Build image tag.
+		// Build figure classes - must include size class.
+		$figureClass = 'wp-block-image size-' . $sizeSlug;
+
+		// Build image tag with proper classes.
 		$imgAttrs = '';
 		if ( '' !== $src ) {
 			$imgAttrs .= sprintf( ' src="%s"', htmlspecialchars( $src, ENT_QUOTES, 'UTF-8' ) );
 		}
 		if ( '' !== $alt ) {
 			$imgAttrs .= sprintf( ' alt="%s"', htmlspecialchars( $alt, ENT_QUOTES, 'UTF-8' ) );
+		} else {
+			$imgAttrs .= ' alt=""'; // Always include alt attribute.
+		}
+
+		// Add wp-image-{id} class when image ID is known.
+		if ( '' !== $imageId ) {
+			$imgAttrs .= sprintf( ' class="wp-image-%d"', (int) $imageId );
 		}
 
 		$imgTag = sprintf( '<img%s/>', $imgAttrs );
@@ -83,9 +94,10 @@ final class GCB_Image_Transformer implements GCB_Transformer_Interface {
 
 		return sprintf(
 			"<!-- wp:image%s -->\n" .
-			"<figure class=\"wp-block-image\">%s</figure>\n" .
+			"<figure class=\"%s\">%s</figure>\n" .
 			"<!-- /wp:image -->\n",
 			$attrJson,
+			$figureClass,
 			$imgTag
 		);
 	}

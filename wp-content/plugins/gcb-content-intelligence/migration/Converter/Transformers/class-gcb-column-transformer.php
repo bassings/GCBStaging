@@ -59,13 +59,17 @@ final class GCB_Column_Transformer implements GCB_Transformer_Interface {
 
 		$attrJson = json_encode( $attributes, JSON_UNESCAPED_SLASHES );
 
+		// WordPress block validation requires the HTML to include flex-basis style
+		// when width attribute is specified. Without this, the block editor shows
+		// "Block contains unexpected or invalid content" error.
 		return sprintf(
 			"<!-- wp:column %s -->\n" .
-			"<div class=\"wp-block-column\">\n" .
+			"<div class=\"wp-block-column\" style=\"flex-basis:%s\">\n" .
 			"%s" .
 			"</div>\n" .
 			"<!-- /wp:column -->\n",
 			$attrJson,
+			$width,
 			$childContent
 		);
 	}

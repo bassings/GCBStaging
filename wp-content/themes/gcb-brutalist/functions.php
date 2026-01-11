@@ -118,29 +118,14 @@ function gcb_responsive_video_css(): void {
 add_action( 'wp_enqueue_scripts', 'gcb_responsive_video_css' );
 
 /**
- * Enqueue Google Fonts with font-display: swap for optimal loading.
+ * Google Fonts are now loaded via theme.json fontFace declarations.
  *
- * Uses Google Fonts API v2 with display=swap parameter to prevent
- * Flash of Invisible Text (FOIT) and reduce Cumulative Layout Shift (CLS).
+ * This provides better compatibility with WordPress.com hosting and avoids
+ * issues with the fonts-api.wp.com proxy. Font files are loaded directly
+ * from fonts.gstatic.com with font-display: swap for optimal performance.
+ *
+ * @see theme.json fontFamilies section for font definitions.
  */
-function gcb_enqueue_google_fonts(): void {
-	// Build Google Fonts URL with display=swap.
-	$fonts_url = add_query_arg(
-		array(
-			'family'  => 'Playfair+Display:wght@400;700;900|Space+Mono:wght@400;700',
-			'display' => 'swap',
-		),
-		'https://fonts.googleapis.com/css2'
-	);
-
-	wp_enqueue_style(
-		'gcb-google-fonts',
-		$fonts_url,
-		array(),
-		null // No version for external resources.
-	);
-}
-add_action( 'wp_enqueue_scripts', 'gcb_enqueue_google_fonts' );
 
 /**
  * Add content_format taxonomy classes to body
@@ -493,7 +478,16 @@ function gcb_search_results_shortcode() {
 					<li class="wp-block-post bento-item gcb-bento-card" style="border:2px solid var(--wp--preset--color--brutal-border);background:var(--wp--preset--color--void-black)">
 						<?php if ( has_post_thumbnail() ) : ?>
 							<a href="<?php the_permalink(); ?>" class="wp-block-post-featured-image">
-								<?php the_post_thumbnail( 'large' ); ?>
+								<?php
+								// Use medium_large (768px) for faster loading - cards are max 400px height
+								the_post_thumbnail(
+									'medium_large',
+									array(
+										'loading'  => 'lazy',
+										'decoding' => 'async',
+									)
+								);
+								?>
 							</a>
 						<?php endif; ?>
 						<div class="wp-block-group">

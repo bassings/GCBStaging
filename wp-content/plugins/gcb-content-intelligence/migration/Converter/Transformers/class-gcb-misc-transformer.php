@@ -207,7 +207,7 @@ final class GCB_Misc_Transformer implements GCB_Transformer_Interface {
 	 * Transform checklist to list block.
 	 *
 	 * @param GCB_Shortcode_Node $node         The checklist node.
-	 * @param string             $childContent Child content.
+	 * @param string             $childContent Child content (contains li items from transformListItem).
 	 * @return string List block.
 	 */
 	private function transformChecklist( GCB_Shortcode_Node $node, string $childContent ): string {
@@ -215,9 +215,16 @@ final class GCB_Misc_Transformer implements GCB_Transformer_Interface {
 			return '';
 		}
 
-		return sprintf(
-			"<!-- wp:list -->\n<ul>%s</ul>\n<!-- /wp:list -->\n",
+		// The childContent contains raw <li> items - wrap each in wp:list-item.
+		$wrappedItems = preg_replace(
+			'/<li>(.*?)<\/li>/is',
+			"<!-- wp:list-item -->\n<li>$1</li>\n<!-- /wp:list-item -->\n",
 			$childContent
+		);
+
+		return sprintf(
+			"<!-- wp:list -->\n<ul class=\"wp-block-list\">%s</ul>\n<!-- /wp:list -->\n",
+			$wrappedItems
 		);
 	}
 
@@ -250,8 +257,14 @@ final class GCB_Misc_Transformer implements GCB_Transformer_Interface {
 			return '';
 		}
 
+		$attributes = [
+			'layout' => [ 'type' => 'constrained' ],
+		];
+		$attrJson = json_encode( $attributes, JSON_UNESCAPED_SLASHES );
+
 		return sprintf(
-			"<!-- wp:group -->\n<div class=\"wp-block-group\">%s</div>\n<!-- /wp:group -->\n",
+			"<!-- wp:group %s -->\n<div class=\"wp-block-group\">\n%s</div>\n<!-- /wp:group -->\n",
+			$attrJson,
 			$childContent
 		);
 	}

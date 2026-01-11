@@ -195,14 +195,12 @@ final class GCB_Text_Transformer implements GCB_Transformer_Interface {
 
 		// Handle unordered lists.
 		if ( 'ul' === $tagName ) {
-			$content = $this->getOuterHtml( $domNode, $doc );
-			return $this->createListBlock( $content, false );
+			return $this->createListBlock( $domNode, $doc, false );
 		}
 
 		// Handle ordered lists.
 		if ( 'ol' === $tagName ) {
-			$content = $this->getOuterHtml( $domNode, $doc );
-			return $this->createListBlock( $content, true );
+			return $this->createListBlock( $domNode, $doc, true );
 		}
 
 		// Handle blockquotes.
@@ -305,24 +303,47 @@ final class GCB_Text_Transformer implements GCB_Transformer_Interface {
 	}
 
 	/**
-	 * Create a list block.
+	 * Create a list block with proper wp:list-item inner blocks.
 	 *
-	 * @param string $content List HTML content.
-	 * @param bool   $ordered Whether list is ordered.
+	 * WordPress 6.x requires each list item to be wrapped in wp:list-item blocks.
+	 *
+	 * @param DOMNode     $listNode DOM node of the list (ul/ol).
+	 * @param DOMDocument $doc      Parent document.
+	 * @param bool        $ordered  Whether list is ordered.
 	 * @return string List block markup.
 	 */
-	private function createListBlock( string $content, bool $ordered ): string {
+	private function createListBlock( DOMNode $listNode, DOMDocument $doc, bool $ordered ): string {
 		$attributes = $ordered ? [ 'ordered' => true ] : [];
 		$attrJson   = ! empty( $attributes )
 			? json_encode( $attributes, JSON_UNESCAPED_SLASHES ) . ' '
 			: '';
 
+		$listTag = $ordered ? 'ol' : 'ul';
+
+		// Build list items with wp:list-item blocks.
+		$itemsHtml = '';
+		foreach ( $listNode->childNodes as $child ) {
+			if ( XML_ELEMENT_NODE === $child->nodeType && 'li' === strtolower( $child->nodeName ) ) {
+				$itemContent = $this->getInnerHtml( $child, $doc );
+				$itemsHtml  .= sprintf(
+					"<!-- wp:list-item -->\n<li>%s</li>\n<!-- /wp:list-item -->\n",
+					$itemContent
+				);
+			}
+		}
+
+		if ( '' === $itemsHtml ) {
+			return '';
+		}
+
 		return sprintf(
 			"<!-- wp:list %s-->\n" .
-			"%s\n" .
+			"<%s class=\"wp-block-list\">%s</%s>\n" .
 			"<!-- /wp:list -->\n",
 			$attrJson,
-			$content
+			$listTag,
+			$itemsHtml,
+			$listTag
 		);
 	}
 

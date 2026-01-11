@@ -68,12 +68,51 @@
         {
           "fontFamily": "'Playfair Display', Georgia, serif",
           "name": "Playfair Display",
-          "slug": "playfair"
+          "slug": "playfair",
+          "fontFace": [
+            {
+              "fontFamily": "Playfair Display",
+              "fontWeight": "400",
+              "fontStyle": "normal",
+              "fontDisplay": "swap",
+              "src": ["url(https://fonts.gstatic.com/s/playfairdisplay/v37/nuFvD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKdFvXDXbtM.woff2) format('woff2')"]
+            },
+            {
+              "fontFamily": "Playfair Display",
+              "fontWeight": "700",
+              "fontStyle": "normal",
+              "fontDisplay": "swap",
+              "src": ["url(https://fonts.gstatic.com/s/playfairdisplay/v37/nuFvD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKd6unDXbtM.woff2) format('woff2')"]
+            },
+            {
+              "fontFamily": "Playfair Display",
+              "fontWeight": "900",
+              "fontStyle": "normal",
+              "fontDisplay": "swap",
+              "src": ["url(https://fonts.gstatic.com/s/playfairdisplay/v37/nuFvD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKcQunDXbtM.woff2) format('woff2')"]
+            }
+          ]
         },
         {
           "fontFamily": "'Space Mono', 'Courier New', monospace",
           "name": "Space Mono",
-          "slug": "mono"
+          "slug": "mono",
+          "fontFace": [
+            {
+              "fontFamily": "Space Mono",
+              "fontWeight": "400",
+              "fontStyle": "normal",
+              "fontDisplay": "swap",
+              "src": ["url(https://fonts.gstatic.com/s/spacemono/v13/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2) format('woff2')"]
+            },
+            {
+              "fontFamily": "Space Mono",
+              "fontWeight": "700",
+              "fontStyle": "normal",
+              "fontDisplay": "swap",
+              "src": ["url(https://fonts.gstatic.com/s/spacemono/v13/i7dMIFZifjKcF5UAWdDRaPpZYFKQHw.woff2) format('woff2')"]
+            }
+          ]
         }
       ],
       "fontSizes": [

@@ -39,10 +39,19 @@ if ( $search_results->have_posts() ) :
 			$search_results->the_post();
 			$post_id = get_the_ID();
 			?>
-			<li class="wp-block-post bento-item gcb-bento-card">
+			<li class="wp-block-post bento-item gcb-bento-card" style="border:2px solid var(--wp--preset--color--brutal-border);background:var(--wp--preset--color--void-black)">
 				<?php if ( has_post_thumbnail() ) : ?>
 					<a href="<?php the_permalink(); ?>" class="wp-block-post-featured-image">
-						<?php the_post_thumbnail( 'large' ); ?>
+						<?php
+						// Use medium_large (768px) for faster loading - cards are max 400px height
+						the_post_thumbnail(
+							'medium_large',
+							array(
+								'loading'  => 'lazy',
+								'decoding' => 'async',
+							)
+						);
+						?>
 					</a>
 				<?php endif; ?>
 
