@@ -9,15 +9,15 @@
 
 **Status:** ✅ **3,891 posts successfully migrated to Gutenberg blocks**
 
-### Migration Results
+### Migration Results (Final)
 
 ```
-📊 Migration Statistics
-   ✅ Posts Migrated: 3,891
+📊 Migration Statistics (After Re-migration Fix)
+   ✅ Posts Migrated: 3,891 (1,614 re-migrated with imageframe fix)
    ⏭️  Skipped: 0
    ❌ Failed: 0
    ⚠️  Warnings: 0
-   🔄 Shortcodes Converted: 109,784
+   🔄 Shortcodes Converted: 164,204 (109,784 + 54,420 re-migration)
 ```
 
 ### Block Validation Fixes Applied
@@ -29,6 +29,8 @@ All posts now editable in Gutenberg editor (no "Block contains unexpected or inv
 3. **Image Transformer**: Added `sizeSlug` attribute, `size-{slug}` class on figure, `wp-image-{id}` on img
 4. **Text Transformer**: Fixed list handling with `wp:list-item` inner blocks and `wp-block-list` class
 5. **Misc Transformer**: Added layout attribute to group blocks, fixed checklist list format
+6. **Parser Fix**: Removed `fusion_imageframe` from self-closing tags (it contains URL as inner content)
+7. **Image URL Extraction**: Added multiple methods to extract URLs from plain text content
 
 ### Additional Fixes
 
