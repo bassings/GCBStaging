@@ -168,7 +168,7 @@ class GCB_YouTube_Channel_Fetcher {
 			self::CHANNEL_ENDPOINT
 		);
 
-		$response = wp_remote_get( $api_url, array( 'timeout' => 10 ) );
+		$response = wp_remote_get( $api_url, array( 'timeout' => 5 ) );
 
 		if ( is_wp_error( $response ) ) {
 			error_log( 'GCB: YouTube API error - ' . $response->get_error_message() );
@@ -219,7 +219,7 @@ class GCB_YouTube_Channel_Fetcher {
 			self::PLAYLIST_ENDPOINT
 		);
 
-		$response = wp_remote_get( $api_url, array( 'timeout' => 10 ) );
+		$response = wp_remote_get( $api_url, array( 'timeout' => 5 ) );
 
 		if ( is_wp_error( $response ) ) {
 			error_log( 'GCB: YouTube API error - ' . $response->get_error_message() );
@@ -269,7 +269,7 @@ class GCB_YouTube_Channel_Fetcher {
 			self::VIDEOS_ENDPOINT
 		);
 
-		$response = wp_remote_get( $api_url, array( 'timeout' => 10 ) );
+		$response = wp_remote_get( $api_url, array( 'timeout' => 5 ) );
 
 		if ( is_wp_error( $response ) ) {
 			error_log( 'GCB: YouTube API error - ' . $response->get_error_message() );
@@ -459,7 +459,7 @@ class GCB_YouTube_Channel_Fetcher {
 
 			$api_url = add_query_arg( $args, self::PLAYLIST_ENDPOINT );
 
-			$response = wp_remote_get( $api_url, array( 'timeout' => 15 ) );
+			$response = wp_remote_get( $api_url, array( 'timeout' => 5 ) );
 
 			if ( is_wp_error( $response ) ) {
 				error_log( 'GCB: YouTube API error - ' . $response->get_error_message() );
