@@ -1185,8 +1185,8 @@ function gcb_video_archive_shortcode() {
 
 	require_once $fetcher_path;
 
-	// Get ALL videos from YouTube API (up to 200 videos with pagination)
-	$videos = GCB_YouTube_Channel_Fetcher::get_all_videos( 200 );
+	// Get videos from YouTube API (limited to 50 to avoid memory issues)
+	$videos = GCB_YouTube_Channel_Fetcher::get_all_videos( 50 );
 
 	if ( empty( $videos ) ) {
 		return '<p style="color: var(--wp--preset--color--brutal-grey); font-family: var(--wp--preset--font-family--mono);">No videos available at this time.</p>';
