@@ -135,22 +135,26 @@ class GCB_YouTube_Channel_Fetcher {
 	}
 
 	/**
-	 * Get YouTube API key from wp-config.php or WordPress option
+	 * Get YouTube API key from WordPress option or wp-config.php
 	 *
-	 * Checks wp-config.php first (preferred), then falls back to
-	 * WordPress option (gcb_youtube_api_key) for WordPress.com compatibility.
+	 * Checks WordPress option first (allows runtime updates without wp-config access),
+	 * then falls back to wp-config.php constant.
 	 *
 	 * @return string API key or empty string if not found.
 	 */
 	private static function get_api_key(): string {
-		// Priority 1: Check wp-config.php constant.
+		// Priority 1: Check WordPress option (allows updates on WordPress.com hosting).
+		$api_key = get_option( 'gcb_youtube_api_key', '' );
+		if ( ! empty( $api_key ) ) {
+			return $api_key;
+		}
+
+		// Priority 2: Fall back to wp-config.php constant.
 		if ( defined( 'GCB_YOUTUBE_API_KEY' ) && ! empty( GCB_YOUTUBE_API_KEY ) ) {
 			return GCB_YOUTUBE_API_KEY;
 		}
 
-		// Priority 2: Check WordPress option (for WordPress.com hosting).
-		$api_key = get_option( 'gcb_youtube_api_key', '' );
-		return $api_key;
+		return '';
 	}
 
 	/**
