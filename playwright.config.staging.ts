@@ -47,6 +47,7 @@ export default defineConfig({
     // Bypass headless browser detection on WP.com staging
     launchOptions: {
       args: [
+        '--headless=new', // New Chrome headless mode - undetectable
         '--disable-blink-features=AutomationControlled',
         '--disable-web-security',
       ],
