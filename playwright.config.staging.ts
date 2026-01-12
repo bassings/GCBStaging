@@ -96,14 +96,34 @@ export default defineConfig({
     {
       name: 'mobile',
       testMatch: /.*\.public\.spec\.ts|.*accessibility.*\.spec\.ts/,
-      use: { ...devices['iPhone 13'] },
+      use: {
+        ...devices['iPhone 13'],
+        // Merge headless bypass options with device preset
+        launchOptions: {
+          args: [
+            '--headless=new',
+            '--disable-blink-features=AutomationControlled',
+            '--disable-web-security',
+          ],
+        },
+      },
     },
 
     // Tablet viewport tests
     {
       name: 'tablet',
       testMatch: /.*\.public\.spec\.ts|.*accessibility.*\.spec\.ts/,
-      use: { ...devices['iPad (gen 7)'] },
+      use: {
+        ...devices['iPad (gen 7)'],
+        // Merge headless bypass options with device preset
+        launchOptions: {
+          args: [
+            '--headless=new',
+            '--disable-blink-features=AutomationControlled',
+            '--disable-web-security',
+          ],
+        },
+      },
     },
   ],
 

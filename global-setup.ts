@@ -115,8 +115,9 @@ async function globalSetup(config: FullConfig) {
 
   try {
     // Test 1: WordPress is accessible (404 is OK - means no posts exist yet)
+    // Use 'commit' instead of 'domcontentloaded' - some WordPress resources block DOM completion
     const response = await page.goto(baseURL, {
-      waitUntil: 'domcontentloaded',
+      waitUntil: 'commit',
       timeout: 30000,
     });
 
@@ -141,7 +142,7 @@ async function globalSetup(config: FullConfig) {
     console.log(`✅ WordPress accessible at ${baseURL} (Status: ${status})`);
 
     // Test 2: WordPress REST API is accessible
-    const apiResponse = await page.goto(`${baseURL}/wp-json/`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+    const apiResponse = await page.goto(`${baseURL}/wp-json/`, { waitUntil: 'commit', timeout: 30000 });
     if (!apiResponse || !apiResponse.ok()) {
       throw new Error(`❌ WordPress REST API not accessible`);
     }

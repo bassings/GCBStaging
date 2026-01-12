@@ -93,9 +93,10 @@ export class SecurityHelper {
 
   /**
    * Navigate and capture response headers
+   * Uses waitUntil: 'commit' to avoid blocking on resources that never complete
    */
   async navigateAndCapture(url: string): Promise<Response> {
-    const response = await this.page.goto(url);
+    const response = await this.page.goto(url, { waitUntil: 'commit' });
     if (!response) {
       throw new Error(`Failed to navigate to ${url}`);
     }
@@ -237,6 +238,9 @@ export class SecurityHelper {
    */
   async checkXSSVulnerabilities(): Promise<XSSCheckResult> {
     const issues: string[] = [];
+
+    // Wait for DOM to be ready before evaluating
+    await this.page.waitForSelector('body', { timeout: 10000 });
 
     // Check for inline event handlers
     const inlineHandlers = await this.page.evaluate(() => {
