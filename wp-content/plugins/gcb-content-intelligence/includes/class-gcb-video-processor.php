@@ -38,14 +38,20 @@ class GCB_Video_Processor {
 	 * @return void
 	 */
 	public static function register_post_meta(): void {
+		// Auth callback for protected meta fields - allow users who can edit posts
+		$auth_callback = function( $allowed, $meta_key, $post_id ) {
+			return current_user_can( 'edit_post', $post_id );
+		};
+
 		register_post_meta(
 			'post',
 			'_gcb_video_metadata',
 			array(
-				'show_in_rest' => true,
-				'single'       => true,
-				'type'         => 'string',
-				'description'  => 'Cached YouTube video metadata (JSON)',
+				'show_in_rest'  => true,
+				'single'        => true,
+				'type'          => 'string',
+				'description'   => 'Cached YouTube video metadata (JSON)',
+				'auth_callback' => $auth_callback,
 			)
 		);
 
@@ -53,10 +59,11 @@ class GCB_Video_Processor {
 			'post',
 			'_gcb_api_cache_time',
 			array(
-				'show_in_rest' => true,
-				'single'       => true,
-				'type'         => 'string',
-				'description'  => 'Timestamp when video metadata was cached',
+				'show_in_rest'  => true,
+				'single'        => true,
+				'type'          => 'string',
+				'description'   => 'Timestamp when video metadata was cached',
+				'auth_callback' => $auth_callback,
 			)
 		);
 	}

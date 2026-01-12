@@ -33,14 +33,20 @@ class GCB_Shortcode_Converter {
      * @return void
      */
     public static function register_post_meta(): void {
+        // Auth callback for protected meta fields - allow users who can edit posts
+        $auth_callback = function( $allowed, $meta_key, $post_id ) {
+            return current_user_can( 'edit_post', $post_id );
+        };
+
         register_post_meta(
             'post',
             '_gcb_shortcode_converted',
             array(
-                'show_in_rest' => true,
-                'single'       => true,
-                'type'         => 'string',
-                'description'  => 'Timestamp when Avada shortcodes were converted to blocks',
+                'show_in_rest'  => true,
+                'single'        => true,
+                'type'          => 'string',
+                'description'   => 'Timestamp when Avada shortcodes were converted to blocks',
+                'auth_callback' => $auth_callback,
             )
         );
 
@@ -48,10 +54,11 @@ class GCB_Shortcode_Converter {
             'post',
             '_gcb_original_content',
             array(
-                'show_in_rest' => false,
-                'single'       => true,
-                'type'         => 'string',
-                'description'  => 'Backup of original content before shortcode conversion',
+                'show_in_rest'  => false,
+                'single'        => true,
+                'type'          => 'string',
+                'description'   => 'Backup of original content before shortcode conversion',
+                'auth_callback' => $auth_callback,
             )
         );
     }

@@ -44,6 +44,15 @@ export default defineConfig({
     ignoreHTTPSErrors: true,
     navigationTimeout: 30000,
     actionTimeout: 15000,
+    // Bypass headless browser detection on WP.com staging
+    launchOptions: {
+      args: [
+        '--disable-blink-features=AutomationControlled',
+        '--disable-web-security',
+      ],
+    },
+    // Use real browser user agent
+    userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
   },
 
   projects: [

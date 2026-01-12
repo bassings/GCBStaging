@@ -42,15 +42,21 @@ class GCB_Content_Detector {
      * @return void
      */
     public static function register_post_meta(): void {
+        // Auth callback for protected meta fields - allow users who can edit posts
+        $auth_callback = function( $allowed, $meta_key, $post_id ) {
+            return current_user_can( 'edit_post', $post_id );
+        };
+
         // Video ID
         register_post_meta(
             'post',
             '_gcb_video_id',
             array(
-                'show_in_rest' => true,
-                'single'       => true,
-                'type'         => 'string',
-                'description'  => 'YouTube video ID extracted from content',
+                'show_in_rest'  => true,
+                'single'        => true,
+                'type'          => 'string',
+                'description'   => 'YouTube video ID extracted from content',
+                'auth_callback' => $auth_callback,
             )
         );
 
@@ -59,10 +65,11 @@ class GCB_Content_Detector {
             'post',
             '_gcb_content_format',
             array(
-                'show_in_rest' => true,
-                'single'       => true,
-                'type'         => 'string',
-                'description'  => 'Detected content format (video/standard/gallery)',
+                'show_in_rest'  => true,
+                'single'        => true,
+                'type'          => 'string',
+                'description'   => 'Detected content format (video/standard/gallery)',
+                'auth_callback' => $auth_callback,
             )
         );
 
@@ -71,10 +78,11 @@ class GCB_Content_Detector {
             'post',
             '_gcb_video_duration',
             array(
-                'show_in_rest' => true,
-                'single'       => true,
-                'type'         => 'string',
-                'description'  => 'Video duration in ISO 8601 format (e.g., PT12M45S)',
+                'show_in_rest'  => true,
+                'single'        => true,
+                'type'          => 'string',
+                'description'   => 'Video duration in ISO 8601 format (e.g., PT12M45S)',
+                'auth_callback' => $auth_callback,
             )
         );
 
@@ -82,10 +90,11 @@ class GCB_Content_Detector {
             'post',
             '_gcb_video_views',
             array(
-                'show_in_rest' => true,
-                'single'       => true,
-                'type'         => 'integer',
-                'description'  => 'YouTube video view count',
+                'show_in_rest'  => true,
+                'single'        => true,
+                'type'          => 'integer',
+                'description'   => 'YouTube video view count',
+                'auth_callback' => $auth_callback,
             )
         );
 
@@ -93,10 +102,11 @@ class GCB_Content_Detector {
             'post',
             '_gcb_video_upload_date',
             array(
-                'show_in_rest' => true,
-                'single'       => true,
-                'type'         => 'string',
-                'description'  => 'Video upload date in ISO 8601 format',
+                'show_in_rest'  => true,
+                'single'        => true,
+                'type'          => 'string',
+                'description'   => 'Video upload date in ISO 8601 format',
+                'auth_callback' => $auth_callback,
             )
         );
     }
