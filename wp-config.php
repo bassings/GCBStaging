@@ -99,7 +99,7 @@ define('WP_POST_REVISIONS', 3);  // Keep only 3 revisions per post
  * YouTube Data API v3 Key
  * Used for fetching channel videos and video metadata
  */
-define( 'GCB_YOUTUBE_API_KEY', 'AIzaSyDN1Bcu2C-YEPiJMP-kCATezfaE7cNKYK4' );
+define( 'GCB_YOUTUBE_API_KEY', 'AIzaSyCxnnrV9DvD7aTkqD4YqSe-Xxw0fQPUC08' );
 
 /* That's all, stop editing! Happy blogging. */
 
