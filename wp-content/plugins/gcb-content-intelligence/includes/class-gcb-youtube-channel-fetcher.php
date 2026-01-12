@@ -35,7 +35,7 @@ class GCB_YouTube_Channel_Fetcher {
 	 * Caching configuration
 	 */
 	private const TRANSIENT_KEY    = 'gcb_youtube_channel_videos';
-	private const CACHE_DURATION   = 15 * MINUTE_IN_SECONDS; // 15 minutes.
+	private const CACHE_DURATION   = HOUR_IN_SECONDS; // 1 hour (reduces API calls on staging).
 
 	/**
 	 * Cron hook name
