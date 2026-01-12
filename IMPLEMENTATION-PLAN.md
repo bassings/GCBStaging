@@ -5,6 +5,41 @@
 
 ---
 
+## Quality Gate Test Baseline (January 12, 2026)
+
+**Status:** Tests established but require production environment for accurate results
+
+### Test Results Summary
+
+| Test Suite | Passed | Failed | Flaky | Notes |
+|------------|--------|--------|-------|-------|
+| Performance | 3 | 13 | 0 | WordPress Studio WASM too slow |
+| Security | 14 | 7 | 1 | Real issue: sensitive files accessible |
+| Accessibility | 6 | 28 | 4 | Timeouts due to slow server |
+
+### Environment Limitation
+
+WordPress Studio (WASM/SQLite) with 3,891 posts is too slow for performance-sensitive tests:
+- FCP: ~5000ms (threshold: 1800ms) - **3x over threshold**
+- DOM Content Loaded: ~5000ms (threshold: 2000ms) - **2.5x over threshold**
+- Many tests timeout at 15 seconds waiting for page load
+
+**Recommendation:** Run quality gate tests on staging/production for accurate metrics.
+
+### Real Issues Identified
+
+**Security:**
+- `/.git/config` and `/wp-config.php` accessible (return HTTP 200)
+- Missing security headers (X-Frame-Options, X-Content-Type-Options, Referrer-Policy)
+- Note: Headers should be configured at web server level (nginx/Apache), not WordPress
+
+**Action Items:**
+1. Configure web server to block access to `.git/` and `wp-config.php`
+2. Add security headers in production web server config
+3. Consider relaxing thresholds for local dev or adding "production-only" test markers
+
+---
+
 ## 🎉 MILESTONE: Full Migration Complete (January 12, 2026)
 
 **Status:** ✅ **3,891 posts successfully migrated to Gutenberg blocks**
@@ -1109,16 +1144,7 @@ The GCB modernization project has successfully completed **Phase 1: Test Infrast
 - `4cdcaed8` - test(video): add 6 E2E tests for video metadata extraction
 - `c0307a63` - feat(video): hook Content Detector to extract video IDs on save
 
-### 3.1 Design Refinements
-**Priority:** MEDIUM (align with north-star prototype)
-
-- [ ] Grayscale image filter on all images (filter: grayscale(100%) contrast(1.3))
-- [ ] Custom brutalist scrollbar styling (acid lime accent)
-- [ ] No-transition enforcement (except mobile menu)
-- [ ] Footer with social icons (YouTube, Instagram, Twitter)
-- [ ] Update theme.json colors to match north star (Brutal Border #333, Brutal Grey #999)
-
-### 3.2 Video Rail Aspect Ratio Decision ✅ RESOLVED
+### 3.1 Video Rail Aspect Ratio Decision ✅ RESOLVED
 **Status:** ✅ DECISION MADE - December 31, 2025
 
 **Decision:** Keep 16:9 landscape aspect ratio (Option A)
@@ -1128,23 +1154,6 @@ The GCB modernization project has successfully completed **Phase 1: Test Infrast
 - Thumbnails display full content without cropping
 - No code changes required
 - Current implementation already tested and working
-
-### 3.3 FAQ Schema Auto-Generation
-**Status:** Not implemented
-**Priority:** LOW (SEO enhancement)
-
-**Specification (from CLAUDE.md):**
-- Scan post content for H2 headers containing `?`
-- Extract content following each question as the answer
-- Generate `FAQPage` schema JSON-LD
-- Inject into `<head>` alongside VideoObject/NewsArticle
-
-**Implementation Steps:**
-1. **RED:** Write failing test (`tests/e2e/faq-schema.public.spec.ts`)
-2. **GREEN:** Extend `class-gcb-schema-generator.php`
-   - Add `detect_faq_questions()` method
-   - Add `generate_faq_schema()` method
-3. **REFACTOR:** Cache FAQ detection in post meta
 
 ---
 
@@ -1530,9 +1539,6 @@ GCB Ecosystem
 ### Phase 3: Polish & Optimization 🔮 FUTURE
 - [ ] Performance optimization (lazy loading, image optimization)
 - [ ] SEO audit (Core Web Vitals, structured data validation)
-- [ ] Analytics integration (track video vs. text engagement)
-- [ ] FAQ Schema auto-generation
-- [ ] Grayscale image filters applied site-wide
 - [ ] Lighthouse accessibility score ≥ 95
 - [ ] axe-core automated accessibility testing integrated
 - [ ] Real device testing (iOS Safari, Android Chrome)
@@ -1613,6 +1619,6 @@ npx playwright test --project=setup
 
 ---
 
-**Last Updated:** December 31, 2025 (Late Night - WCAG 2.2 AA Compliance Complete!)
-**Plan Status:** Phase 2.5 COMPLETE ✅ - 100% WCAG 2.2 AA Compliant | 71 E2E Tests Passing (57 patterns + 14 accessibility)
-**Next Action:** Visual polish (grayscale filters, scrollbar styling) or FAQ schema implementation (optional)
+**Last Updated:** January 12, 2026
+**Plan Status:** Migration COMPLETE ✅ | Quality gate baselines established
+**Next Action:** Performance optimization (lazy loading, image optimization) or run tests on staging for accurate metrics

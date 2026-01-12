@@ -28,7 +28,7 @@ if ( empty( $videos ) ) {
 		<h2 style="font-family: var(--wp--preset--font-family--playfair); font-size: 2.5rem; font-weight: bold; color: var(--wp--preset--color--off-white);">
 			LATEST VIDEOS
 		</h2>
-		<a href="/video/" style="font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; text-transform: uppercase; color: var(--wp--preset--color--brutal-grey); text-decoration: none; min-height: 44px; display: flex; align-items: center;">
+		<a href="https://www.youtube.com/@gaycarboys/videos" target="_blank" rel="noopener noreferrer" style="font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; text-transform: uppercase; color: var(--wp--preset--color--brutal-grey); text-decoration: none; min-height: 44px; display: flex; align-items: center;">
 			View All →
 		</a>
 	</div>

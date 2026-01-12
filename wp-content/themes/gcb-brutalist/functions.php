@@ -14,6 +14,39 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Flush rewrite rules on theme activation
+ *
+ * Ensures custom rewrite rules (like /video/) are registered.
+ */
+function gcb_theme_activation() {
+	// Register the video archive rewrite rule first
+	gcb_register_video_archive();
+	// Then flush rewrite rules
+	flush_rewrite_rules();
+}
+add_action( 'after_switch_theme', 'gcb_theme_activation' );
+
+/**
+ * Manual rewrite flush for development
+ *
+ * Access /?gcb_flush_rules=1 to flush rewrite rules.
+ * Only works when logged in as admin or in test environment.
+ */
+function gcb_maybe_flush_rules() {
+	if ( isset( $_GET['gcb_flush_rules'] ) && '1' === $_GET['gcb_flush_rules'] ) {
+		// Only allow in admin or test environment
+		if ( is_admin() || current_user_can( 'manage_options' ) || defined( 'GCB_TEST_KEY' ) ) {
+			flush_rewrite_rules();
+			if ( ! is_admin() ) {
+				wp_safe_redirect( home_url( '/video/' ) );
+				exit;
+			}
+		}
+	}
+}
+add_action( 'init', 'gcb_maybe_flush_rules', 1 );
+
+/**
  * Video Rail Orientation Configuration
  *
  * Controls aspect ratio for video rail pattern.
@@ -1133,6 +1166,360 @@ class GCB_Nav_Walker extends Walker_Nav_Menu {
 		$output .= "</li>\n";
 	}
 }
+
+/**
+ * Shortcode: Video Archive Grid
+ *
+ * Displays all videos from the GCB YouTube channel in a grid layout.
+ * Used on the /video/ archive page.
+ *
+ * @return string HTML output for video archive grid.
+ */
+function gcb_video_archive_shortcode() {
+	// Load YouTube fetcher
+	$fetcher_path = get_template_directory() . '/../../plugins/gcb-content-intelligence/includes/class-gcb-youtube-channel-fetcher.php';
+
+	if ( ! file_exists( $fetcher_path ) ) {
+		return '<p style="color: var(--wp--preset--color--brutal-grey); font-family: var(--wp--preset--font-family--mono);">Video archive is currently unavailable.</p>';
+	}
+
+	require_once $fetcher_path;
+
+	// Get ALL videos from YouTube API (up to 200 videos with pagination)
+	$videos = GCB_YouTube_Channel_Fetcher::get_all_videos( 200 );
+
+	if ( empty( $videos ) ) {
+		return '<p style="color: var(--wp--preset--color--brutal-grey); font-family: var(--wp--preset--font-family--mono);">No videos available at this time.</p>';
+	}
+
+	ob_start();
+	?>
+	<style>
+		.gcb-video-archive {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+			gap: 1.5rem;
+		}
+
+		@media (min-width: 768px) {
+			.gcb-video-archive {
+				grid-template-columns: repeat(2, 1fr);
+			}
+		}
+
+		@media (min-width: 1024px) {
+			.gcb-video-archive {
+				grid-template-columns: repeat(3, 1fr);
+			}
+		}
+
+		@media (min-width: 1440px) {
+			.gcb-video-archive {
+				grid-template-columns: repeat(4, 1fr);
+			}
+		}
+
+		.gcb-video-archive__card {
+			border: 1px solid var(--wp--preset--color--brutal-border);
+			background: var(--wp--preset--color--void-black);
+			transition: none;
+		}
+
+		.gcb-video-archive__card:hover,
+		.gcb-video-archive__card:focus-within {
+			border-color: var(--wp--preset--color--acid-lime) !important;
+		}
+
+		.gcb-video-archive__card a {
+			display: block;
+			text-decoration: none;
+		}
+
+		.gcb-video-archive__card a:focus {
+			outline: 2px solid var(--wp--preset--color--acid-lime);
+			outline-offset: 2px;
+		}
+
+		.gcb-video-archive__aspect {
+			position: relative;
+			width: 100%;
+			padding-bottom: 56.25%; /* 16:9 aspect ratio */
+			overflow: hidden;
+		}
+
+		.gcb-video-archive__aspect img {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+
+		.gcb-video-archive__overlay {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: var(--wp--preset--color--void-black);
+			opacity: 0.3;
+		}
+
+		.gcb-video-archive__play {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.gcb-video-archive__play svg {
+			width: 64px;
+			height: 64px;
+			color: var(--wp--preset--color--acid-lime);
+			filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+		}
+
+		.gcb-video-archive__content {
+			padding: 1rem;
+		}
+
+		.gcb-video-archive__title {
+			font-family: var(--wp--preset--font-family--playfair);
+			font-size: 1.125rem;
+			font-weight: bold;
+			line-height: 1.3;
+			color: var(--wp--preset--color--off-white);
+			margin: 0 0 0.5rem 0;
+		}
+
+		.gcb-video-archive__meta {
+			font-family: var(--wp--preset--font-family--mono);
+			font-size: 0.75rem;
+			color: var(--wp--preset--color--brutal-grey);
+			text-transform: uppercase;
+			letter-spacing: 0.05em;
+			margin: 0;
+		}
+	</style>
+
+	<div class="gcb-video-archive">
+		<?php foreach ( $videos as $video ) :
+			$video_id    = $video['video_id'];
+			$title       = $video['title'];
+			$duration    = $video['duration'];
+			$view_count  = $video['view_count'];
+			$thumbnail   = $video['thumbnail'];
+			$youtube_url = "https://www.youtube.com/watch?v={$video_id}";
+
+			// Format duration (using the same helper from video-rail.php)
+			$formatted_duration = '';
+			if ( ! empty( $duration ) ) {
+				preg_match( '/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/', $duration, $matches );
+				$hours   = isset( $matches[1] ) ? intval( $matches[1] ) : 0;
+				$minutes = isset( $matches[2] ) ? intval( $matches[2] ) : 0;
+				$seconds = isset( $matches[3] ) ? intval( $matches[3] ) : 0;
+				if ( $hours > 0 ) {
+					$formatted_duration = sprintf( '%d:%02d:%02d', $hours, $minutes, $seconds );
+				} else {
+					$formatted_duration = sprintf( '%d:%02d', $minutes, $seconds );
+				}
+			}
+
+			// Format view count
+			$formatted_views = '';
+			if ( ! empty( $view_count ) ) {
+				$count = intval( $view_count );
+				if ( $count >= 1000000 ) {
+					$formatted_views = round( $count / 1000000, 1 ) . 'M';
+				} elseif ( $count >= 1000 ) {
+					$formatted_views = round( $count / 1000 ) . 'K';
+				} else {
+					$formatted_views = number_format( $count );
+				}
+			}
+			?>
+			<article class="gcb-video-archive__card video-archive-item">
+				<a href="<?php echo esc_url( $youtube_url ); ?>"
+				   target="_blank"
+				   rel="noopener noreferrer"
+				   aria-label="Watch <?php echo esc_attr( $title ); ?> on YouTube">
+
+					<div class="gcb-video-archive__aspect">
+						<?php if ( $thumbnail ) : ?>
+							<img src="<?php echo esc_url( $thumbnail ); ?>"
+							     alt="<?php echo esc_attr( $title ); ?>"
+							     loading="lazy"
+							     width="480"
+							     height="360" />
+						<?php endif; ?>
+						<div class="gcb-video-archive__overlay"></div>
+						<div class="gcb-video-archive__play">
+							<svg class="video-play-button" viewBox="0 0 100 100" fill="currentColor" role="img" aria-hidden="true">
+								<polygon points="30,20 30,80 80,50" />
+							</svg>
+						</div>
+					</div>
+
+					<div class="gcb-video-archive__content">
+						<h3 class="gcb-video-archive__title">
+							<?php echo esc_html( $title ); ?>
+						</h3>
+						<p class="gcb-video-archive__meta">
+							<?php if ( $formatted_duration ) : ?>
+								<?php echo esc_html( $formatted_duration ); ?>
+							<?php endif; ?>
+							<?php if ( $formatted_duration && $formatted_views ) : ?>
+								<span> • </span>
+							<?php endif; ?>
+							<?php if ( $formatted_views ) : ?>
+								<?php echo esc_html( $formatted_views ); ?> Views
+							<?php endif; ?>
+						</p>
+					</div>
+				</a>
+			</article>
+		<?php endforeach; ?>
+	</div>
+	<?php
+
+	return ob_get_clean();
+}
+add_shortcode( 'gcb_video_archive', 'gcb_video_archive_shortcode' );
+
+/**
+ * Register video archive page and rewrite rules
+ *
+ * Creates /video/ endpoint for the video archive page.
+ */
+function gcb_register_video_archive() {
+	// Add rewrite rule for /video/
+	add_rewrite_rule(
+		'^video/?$',
+		'index.php?gcb_video_archive=1',
+		'top'
+	);
+
+	// Register query var
+	add_filter( 'query_vars', function( $vars ) {
+		$vars[] = 'gcb_video_archive';
+		return $vars;
+	} );
+}
+add_action( 'init', 'gcb_register_video_archive' );
+
+/**
+ * Prevent canonical redirect for video archive
+ *
+ * WordPress tries to redirect /video/ to similar post slugs.
+ * This prevents that redirect for our custom endpoint.
+ */
+function gcb_prevent_video_archive_redirect( $redirect_url, $requested_url ) {
+	// Check if this is our video archive URL
+	$path = trim( wp_parse_url( $requested_url, PHP_URL_PATH ), '/' );
+	if ( 'video' === $path ) {
+		return false; // Prevent redirect
+	}
+	return $redirect_url;
+}
+add_filter( 'redirect_canonical', 'gcb_prevent_video_archive_redirect', 10, 2 );
+
+/**
+ * Render video archive page
+ *
+ * When /video/ is accessed, render the video archive page.
+ * Uses template_redirect to output directly for FSE compatibility.
+ */
+function gcb_render_video_archive() {
+	// Check both query var and direct URL match
+	$is_video_archive = get_query_var( 'gcb_video_archive' );
+
+	// Fallback: Direct URL check if rewrite rules aren't flushed
+	if ( ! $is_video_archive ) {
+		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : '';
+		$path = trim( wp_parse_url( $request_uri, PHP_URL_PATH ), '/' );
+		if ( 'video' === $path ) {
+			$is_video_archive = true;
+		}
+	}
+
+	if ( ! $is_video_archive ) {
+		return;
+	}
+
+	// Set proper headers
+	status_header( 200 );
+	header( 'Content-Type: text/html; charset=utf-8' );
+
+	// Get header and footer template parts
+	$header = '';
+	$footer = '';
+
+	// Use block_template_part() if available (WordPress 5.9+)
+	if ( function_exists( 'block_template_part' ) ) {
+		ob_start();
+		block_template_part( 'header' );
+		$header = ob_get_clean();
+
+		ob_start();
+		block_template_part( 'footer' );
+		$footer = ob_get_clean();
+	}
+
+	// Get the video archive content
+	$video_content = gcb_video_archive_shortcode();
+
+	// Output the full page
+	?>
+<!DOCTYPE html>
+<html <?php language_attributes(); ?>>
+<head>
+	<meta charset="<?php bloginfo( 'charset' ); ?>">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<?php wp_head(); ?>
+</head>
+<body <?php body_class( 'video-archive-page' ); ?>>
+<?php wp_body_open(); ?>
+
+<?php echo $header; ?>
+
+<main id="main-content" class="wp-block-group" style="margin-top:var(--wp--preset--spacing--50);padding-right:var(--wp--preset--spacing--30);padding-left:var(--wp--preset--spacing--30);padding-bottom:var(--wp--preset--spacing--60)">
+
+	<!-- Archive Header -->
+	<div class="wp-block-group" style="border-bottom-color:var(--wp--preset--color--acid-lime);border-bottom-width:2px;border-bottom-style:solid;margin-bottom:var(--wp--preset--spacing--50);padding-bottom:var(--wp--preset--spacing--30)">
+		<h1 class="wp-block-heading has-off-white-color has-text-color" style="font-family:var(--wp--preset--font-family--playfair);font-size:3rem;text-transform:uppercase;color:var(--wp--preset--color--off-white);">ALL VIDEOS</h1>
+		<p class="has-brutal-grey-color has-text-color" style="font-family:var(--wp--preset--font-family--system);font-size:1.125rem;margin-top:var(--wp--preset--spacing--20);color:var(--wp--preset--color--brutal-grey);">Watch the latest automotive content from Gay Car Boys on YouTube.</p>
+	</div>
+
+	<!-- Video Grid -->
+	<?php echo $video_content; ?>
+
+</main>
+
+<?php echo $footer; ?>
+
+<?php wp_footer(); ?>
+</body>
+</html>
+	<?php
+	exit;
+}
+add_action( 'template_redirect', 'gcb_render_video_archive' );
+
+/**
+ * Set page title for video archive
+ */
+function gcb_video_archive_title( $title ) {
+	if ( get_query_var( 'gcb_video_archive' ) ) {
+		return 'All Videos - Gay Car Boys';
+	}
+	return $title;
+}
+add_filter( 'pre_get_document_title', 'gcb_video_archive_title' );
 
 /**
  * Fallback function for primary menu

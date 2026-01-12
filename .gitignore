@@ -42,3 +42,10 @@ node_modules/
 .phpunit.result.cache
 vendor/
 backups/
+
+# Cache directories
+wp-content/boost-cache/
+wp-content/jetpack-waf/
+
+# Migration logs
+wp-content/migration_errors.log

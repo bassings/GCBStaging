@@ -1,4 +1,5 @@
 <?php
+define( 'WP_CACHE', true ); // Boost Cache Plugin
 /**
  * The base configuration for WordPress
  *

@@ -219,6 +219,11 @@ final class GCB_Text_Transformer implements GCB_Transformer_Interface {
 			return '';
 		}
 
+		// Handle tables: convert to proper wp:table block.
+		if ( 'table' === $tagName ) {
+			return $this->createTableBlock( $domNode, $doc );
+		}
+
 		// Default: wrap in paragraph.
 		$content = $this->getOuterHtml( $domNode, $doc );
 		return $this->createParagraphBlock( $content );
@@ -358,6 +363,96 @@ final class GCB_Text_Transformer implements GCB_Transformer_Interface {
 			"<!-- wp:quote -->\n" .
 			"<blockquote class=\"wp-block-quote\"><p>%s</p></blockquote>\n" .
 			"<!-- /wp:quote -->\n",
+			$content
+		);
+	}
+
+	/**
+	 * Create a proper Gutenberg table block from a DOM table element.
+	 *
+	 * @param DOMNode     $tableNode DOM node of the table.
+	 * @param DOMDocument $doc       Parent document.
+	 * @return string Table block markup.
+	 */
+	private function createTableBlock( DOMNode $tableNode, DOMDocument $doc ): string {
+		$thead = '';
+		$tbody = '';
+		$isFirstRow = true;
+
+		// Find tbody or direct tr children.
+		$tbodyNode = null;
+		foreach ( $tableNode->childNodes as $child ) {
+			if ( XML_ELEMENT_NODE === $child->nodeType && 'tbody' === strtolower( $child->nodeName ) ) {
+				$tbodyNode = $child;
+				break;
+			}
+		}
+
+		$rowsContainer = $tbodyNode ?? $tableNode;
+
+		foreach ( $rowsContainer->childNodes as $row ) {
+			if ( XML_ELEMENT_NODE !== $row->nodeType || 'tr' !== strtolower( $row->nodeName ) ) {
+				continue;
+			}
+
+			$cells = '';
+			foreach ( $row->childNodes as $cell ) {
+				if ( XML_ELEMENT_NODE !== $cell->nodeType ) {
+					continue;
+				}
+
+				$cellTag = strtolower( $cell->nodeName );
+				if ( 'td' !== $cellTag && 'th' !== $cellTag ) {
+					continue;
+				}
+
+				$cellContent = trim( $this->getInnerHtml( $cell, $doc ) );
+				// Clean up whitespace.
+				$cellContent = preg_replace( '/\s+/', ' ', $cellContent );
+
+				if ( $isFirstRow ) {
+					// First row becomes header with <th> tags.
+					$cells .= '<th>' . $cellContent . '</th>';
+				} else {
+					$cells .= '<td>' . $cellContent . '</td>';
+				}
+			}
+
+			if ( $isFirstRow ) {
+				$thead = '<tr>' . $cells . '</tr>';
+				$isFirstRow = false;
+			} else {
+				$tbody .= '<tr>' . $cells . '</tr>';
+			}
+		}
+
+		// Build the table block.
+		$tableHtml = '<figure class="wp-block-table"><table class="has-fixed-layout">';
+
+		if ( '' !== $thead ) {
+			$tableHtml .= '<thead>' . $thead . '</thead>';
+		}
+
+		if ( '' !== $tbody ) {
+			$tableHtml .= '<tbody>' . $tbody . '</tbody>';
+		}
+
+		$tableHtml .= '</table></figure>';
+
+		return "<!-- wp:table -->\n" . $tableHtml . "\n<!-- /wp:table -->\n";
+	}
+
+	/**
+	 * Create an HTML block for content that can't be in paragraphs.
+	 *
+	 * @param string $content HTML content.
+	 * @return string HTML block markup.
+	 */
+	private function createHtmlBlock( string $content ): string {
+		return sprintf(
+			"<!-- wp:html -->\n" .
+			"%s\n" .
+			"<!-- /wp:html -->\n",
 			$content
 		);
 	}

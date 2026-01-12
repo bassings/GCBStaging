@@ -43,9 +43,19 @@ class GCB_YouTube_Channel_Fetcher {
 	private const CRON_HOOK = 'gcb_refresh_youtube_videos';
 
 	/**
-	 * Maximum videos to fetch
+	 * Maximum videos to fetch for video rail
 	 */
 	private const MAX_RESULTS = 10;
+
+	/**
+	 * Maximum videos per API request (YouTube API limit is 50)
+	 */
+	private const MAX_RESULTS_PER_PAGE = 50;
+
+	/**
+	 * Transient key for all videos (archive page)
+	 */
+	private const TRANSIENT_KEY_ALL = 'gcb_youtube_all_videos';
 
 	/**
 	 * Register WordPress hooks
@@ -329,11 +339,173 @@ class GCB_YouTube_Channel_Fetcher {
 	}
 
 	/**
+	 * Get ALL channel videos (for archive page)
+	 *
+	 * Fetches all videos with pagination support.
+	 * Uses separate cache from the video rail (10 videos).
+	 *
+	 * @param int $max_videos Maximum videos to fetch (default 100, 0 = unlimited).
+	 * @return array Array of video data or empty array on failure.
+	 */
+	public static function get_all_videos( int $max_videos = 100 ): array {
+		// Step 1: Check transient cache for all videos.
+		$cached_videos = get_transient( self::TRANSIENT_KEY_ALL );
+
+		if ( false !== $cached_videos && is_array( $cached_videos ) ) {
+			// Return cached videos, limited to max if specified
+			if ( $max_videos > 0 && count( $cached_videos ) > $max_videos ) {
+				return array_slice( $cached_videos, 0, $max_videos );
+			}
+			return $cached_videos;
+		}
+
+		// Step 2: Cache miss - fetch all videos with pagination.
+		$videos = self::fetch_all_channel_videos( $max_videos );
+
+		// Step 3: Store in transient (cache for 1 hour like regular videos).
+		if ( ! empty( $videos ) ) {
+			set_transient( self::TRANSIENT_KEY_ALL, $videos, self::CACHE_DURATION );
+		}
+
+		return $videos;
+	}
+
+	/**
+	 * Fetch ALL videos from YouTube channel with pagination
+	 *
+	 * @param int $max_videos Maximum videos to fetch (0 = unlimited).
+	 * @return array Array of video objects.
+	 */
+	private static function fetch_all_channel_videos( int $max_videos = 100 ): array {
+		// Allow WordPress option to override test mode.
+		$force_real_api = get_option( 'gcb_force_real_api', false );
+
+		// Test mode: Return mock data (unless overridden).
+		if ( ! $force_real_api && defined( 'GCB_TEST_KEY' ) && ! empty( GCB_TEST_KEY ) ) {
+			$mock_videos = self::get_mock_videos();
+			// For testing, duplicate mock videos to simulate more content
+			if ( count( $mock_videos ) < $max_videos ) {
+				$extended = array();
+				$counter = 0;
+				while ( count( $extended ) < min( $max_videos, 50 ) && $counter < 5 ) {
+					foreach ( $mock_videos as $video ) {
+						$extended[] = $video;
+						if ( count( $extended ) >= min( $max_videos, 50 ) ) break;
+					}
+					$counter++;
+				}
+				return $extended;
+			}
+			return array_slice( $mock_videos, 0, $max_videos );
+		}
+
+		// Check API key.
+		$api_key = self::get_api_key();
+		if ( empty( $api_key ) ) {
+			error_log( 'GCB: YouTube API key not configured' );
+			return array();
+		}
+
+		// Step 1: Get channel's "uploads" playlist ID.
+		$uploads_playlist_id = self::get_uploads_playlist_id();
+
+		if ( empty( $uploads_playlist_id ) ) {
+			return array();
+		}
+
+		// Step 2: Fetch ALL playlist items with pagination.
+		$video_ids = self::fetch_all_playlist_items( $uploads_playlist_id, $max_videos );
+
+		if ( empty( $video_ids ) ) {
+			return array();
+		}
+
+		// Step 3: Fetch video details in batches (API limit is 50 per request).
+		$all_videos = array();
+		$chunks = array_chunk( $video_ids, 50 );
+
+		foreach ( $chunks as $chunk ) {
+			$videos = self::fetch_video_details( $chunk );
+			$all_videos = array_merge( $all_videos, $videos );
+		}
+
+		return $all_videos;
+	}
+
+	/**
+	 * Fetch ALL playlist items with pagination
+	 *
+	 * @param string $playlist_id Uploads playlist ID.
+	 * @param int    $max_videos  Maximum videos to fetch (0 = unlimited).
+	 * @return array Array of video IDs.
+	 */
+	private static function fetch_all_playlist_items( string $playlist_id, int $max_videos = 100 ): array {
+		$video_ids = array();
+		$page_token = '';
+		$pages_fetched = 0;
+		$max_pages = 10; // Safety limit to prevent infinite loops
+
+		do {
+			$args = array(
+				'part'       => 'contentDetails',
+				'playlistId' => $playlist_id,
+				'maxResults' => self::MAX_RESULTS_PER_PAGE,
+				'key'        => self::get_api_key(),
+			);
+
+			if ( ! empty( $page_token ) ) {
+				$args['pageToken'] = $page_token;
+			}
+
+			$api_url = add_query_arg( $args, self::PLAYLIST_ENDPOINT );
+
+			$response = wp_remote_get( $api_url, array( 'timeout' => 15 ) );
+
+			if ( is_wp_error( $response ) ) {
+				error_log( 'GCB: YouTube API error - ' . $response->get_error_message() );
+				break;
+			}
+
+			$body = wp_remote_retrieve_body( $response );
+			$data = json_decode( $body, true );
+
+			if ( json_last_error() !== JSON_ERROR_NONE ) {
+				error_log( 'GCB: YouTube API JSON parse error - ' . json_last_error_msg() );
+				break;
+			}
+
+			if ( empty( $data['items'] ) ) {
+				break;
+			}
+
+			foreach ( $data['items'] as $item ) {
+				$video_id = $item['contentDetails']['videoId'] ?? '';
+				if ( ! empty( $video_id ) ) {
+					$video_ids[] = $video_id;
+
+					// Check if we've reached the max
+					if ( $max_videos > 0 && count( $video_ids ) >= $max_videos ) {
+						return $video_ids;
+					}
+				}
+			}
+
+			// Get next page token
+			$page_token = $data['nextPageToken'] ?? '';
+			$pages_fetched++;
+
+		} while ( ! empty( $page_token ) && $pages_fetched < $max_pages );
+
+		return $video_ids;
+	}
+
+	/**
 	 * Clear scheduled refresh on deactivation
 	 */
 	public static function clear_scheduled_refresh(): void {
 		wp_clear_scheduled_hook( self::CRON_HOOK );
 		delete_transient( self::TRANSIENT_KEY );
+		delete_transient( self::TRANSIENT_KEY_ALL );
 	}
 
 	/**
@@ -361,6 +533,7 @@ class GCB_YouTube_Channel_Fetcher {
 	 */
 	public static function clear_cache(): void {
 		delete_transient( self::TRANSIENT_KEY );
+		delete_transient( self::TRANSIENT_KEY_ALL );
 	}
 }
 

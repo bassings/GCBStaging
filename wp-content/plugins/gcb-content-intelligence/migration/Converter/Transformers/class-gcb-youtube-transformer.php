@@ -50,11 +50,18 @@ final class GCB_YouTube_Transformer implements GCB_Transformer_Interface {
 	/**
 	 * Create a YouTube embed block.
 	 *
-	 * @param string $videoId YouTube video ID.
+	 * @param string $videoId YouTube video ID or full URL.
 	 * @return string Embed block markup.
 	 */
 	private function createYouTubeEmbed( string $videoId ): string {
-		$url = 'https://www.youtube.com/watch?v=' . $videoId;
+		// Check if $videoId is already a full URL
+		if ( preg_match( '/^https?:\/\//', $videoId ) ) {
+			// It's a full URL - use it directly
+			$url = $videoId;
+		} else {
+			// It's just a video ID - construct the URL
+			$url = 'https://www.youtube.com/watch?v=' . $videoId;
+		}
 
 		$attributes = [
 			'url'              => $url,
