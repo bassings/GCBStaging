@@ -19,12 +19,16 @@
 <a href="#main-content" class="skip-link">Skip to main content</a>
 
 <!-- Sticky Header with Mobile Menu -->
-<header class="site-header">
+<header class="site-header" role="banner" aria-label="Site Header">
 	<div class="header-wrapper">
-		<!-- Logo -->
+		<!-- Logo - H1 on homepage for WCAG 2.2 AA compliance -->
 		<div class="site-logo">
 			<a href="<?php echo esc_url(home_url('/')); ?>" aria-label="GCB Home">
-				<span class="logo-text">GCB</span>
+				<?php if ( is_front_page() ) : ?>
+					<h1 class="logo-text">GCB</h1>
+				<?php else : ?>
+					<span class="logo-text">GCB</span>
+				<?php endif; ?>
 			</a>
 		</div>
 
@@ -164,11 +168,19 @@
 		line-height: 1.2;
 	}
 
+	/* Logo text - applies to both h1 (homepage) and span (other pages) */
 	.logo-text {
 		font-family: 'Playfair Display', serif;
 		font-size: 2rem;
 		font-weight: 700;
 		letter-spacing: 0.05em;
+		margin: 0; /* Reset H1 margin */
+		line-height: inherit;
+	}
+
+	/* Ensure H1 inherits link color */
+	h1.logo-text {
+		color: inherit;
 	}
 
 	/* ===== DESKTOP NAVIGATION ===== */
