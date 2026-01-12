@@ -12,15 +12,18 @@ import { createAccessibilityHelper } from '../utils/accessibility.js';
  * - Quick checks for common issues
  */
 test.describe('Accessibility - axe-core WCAG 2.2 AA Audit', () => {
-  test.beforeEach(async ({ request }) => {
-    // Reset database for consistent state
-    await request.delete('/wp-json/gcb-testing/v1/reset', {
-      headers: { 'GCB-Test-Key': 'test-secret-key-local' },
-    });
+  test.beforeEach(async ({ request, baseURL }) => {
+    // Only reset database on localhost (not available on staging)
+    if (baseURL?.includes('localhost')) {
+      await request.delete('/wp-json/gcb-testing/v1/reset', {
+        headers: { 'GCB-Test-Key': 'test-secret-key-local' },
+      });
+    }
   });
 
   test('Homepage passes WCAG 2.2 AA audit', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'commit' });
+    await page.waitForSelector('body');
 
     const a11y = createAccessibilityHelper(page);
     await a11y.assertNoViolations({
@@ -32,7 +35,8 @@ test.describe('Accessibility - axe-core WCAG 2.2 AA Audit', () => {
   });
 
   test('Homepage quick accessibility checks pass', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'commit' });
+    await page.waitForSelector('body');
 
     const a11y = createAccessibilityHelper(page);
     const { passed, failed } = await a11y.quickChecks();
@@ -48,7 +52,8 @@ test.describe('Accessibility - axe-core WCAG 2.2 AA Audit', () => {
   });
 
   test('Navigation component passes accessibility audit', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'commit' });
+    await page.waitForSelector('body');
 
     const a11y = createAccessibilityHelper(page);
     const results = await a11y.auditComponent('header, nav');
@@ -72,7 +77,8 @@ test.describe('Accessibility - axe-core WCAG 2.2 AA Audit', () => {
   });
 
   test('Footer component passes accessibility audit', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'commit' });
+    await page.waitForSelector('body');
 
     const a11y = createAccessibilityHelper(page);
     const results = await a11y.auditComponent('footer');
@@ -89,7 +95,8 @@ test.describe('Accessibility - axe-core WCAG 2.2 AA Audit', () => {
 
   test('Mobile view passes accessibility audit', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'commit' });
+    await page.waitForSelector('body');
 
     const a11y = createAccessibilityHelper(page);
     await a11y.assertNoViolations({
@@ -99,7 +106,8 @@ test.describe('Accessibility - axe-core WCAG 2.2 AA Audit', () => {
   });
 
   test('All images have alt text', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'commit' });
+    await page.waitForSelector('body');
 
     const imagesWithoutAlt = await page.evaluate(() => {
       const images = document.querySelectorAll('img:not([alt])');
@@ -124,7 +132,8 @@ test.describe('Accessibility - axe-core WCAG 2.2 AA Audit', () => {
   });
 
   test('All buttons have accessible names', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'commit' });
+    await page.waitForSelector('body');
 
     const buttonsWithoutNames = await page.evaluate(() => {
       const buttons = document.querySelectorAll('button, [role="button"]');
@@ -163,7 +172,8 @@ test.describe('Accessibility - axe-core WCAG 2.2 AA Audit', () => {
   });
 
   test('All links have discernible text', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'commit' });
+    await page.waitForSelector('body');
 
     const emptyLinks = await page.evaluate(() => {
       const links = document.querySelectorAll('a');
@@ -199,7 +209,8 @@ test.describe('Accessibility - axe-core WCAG 2.2 AA Audit', () => {
 
   test('Touch targets meet minimum size (44x44px)', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'commit' });
+    await page.waitForSelector('body');
 
     const smallTargets = await page.evaluate(() => {
       const interactive = document.querySelectorAll(
@@ -240,7 +251,8 @@ test.describe('Accessibility - axe-core WCAG 2.2 AA Audit', () => {
   });
 
   test('Focus indicators are visible', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'commit' });
+    await page.waitForSelector('body');
 
     // Find first focusable element
     const firstFocusable = page.locator(
@@ -272,7 +284,8 @@ test.describe('Accessibility - axe-core WCAG 2.2 AA Audit', () => {
   });
 
   test('Color contrast meets WCAG AA standards', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'commit' });
+    await page.waitForSelector('body');
 
     const a11y = createAccessibilityHelper(page);
     const results = await a11y.audit();
@@ -299,7 +312,8 @@ test.describe('Accessibility - axe-core WCAG 2.2 AA Audit', () => {
   });
 
   test('Heading hierarchy is correct', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'commit' });
+    await page.waitForSelector('body');
 
     const headingIssues = await page.evaluate(() => {
       const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
