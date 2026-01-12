@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import {
   createPerformanceHelper,
   CORE_WEB_VITALS,
+  gotoWithChallengeHandling,
 } from '../utils/performance.js';
 
 /**
@@ -22,7 +23,7 @@ test.describe('Performance - Core Web Vitals', () => {
   });
 
   test('Homepage meets Core Web Vitals thresholds', async ({ page }) => {
-    await page.goto('/');
+    await gotoWithChallengeHandling(page, '/');
 
     const perf = createPerformanceHelper(page);
     const metrics = await perf.assertCoreWebVitals();
@@ -33,7 +34,7 @@ test.describe('Performance - Core Web Vitals', () => {
   });
 
   test('Homepage LCP is under 2.5 seconds', async ({ page }) => {
-    await page.goto('/');
+    await gotoWithChallengeHandling(page, '/');
 
     const perf = createPerformanceHelper(page);
     const metrics = await perf.measure();
@@ -45,7 +46,7 @@ test.describe('Performance - Core Web Vitals', () => {
   });
 
   test('Homepage has minimal layout shift (CLS < 0.1)', async ({ page }) => {
-    await page.goto('/');
+    await gotoWithChallengeHandling(page, '/');
 
     const perf = createPerformanceHelper(page);
     const metrics = await perf.measure();
@@ -57,7 +58,7 @@ test.describe('Performance - Core Web Vitals', () => {
   });
 
   test('Homepage TTFB is under 800ms', async ({ page }) => {
-    await page.goto('/');
+    await gotoWithChallengeHandling(page, '/');
 
     const perf = createPerformanceHelper(page);
     const metrics = await perf.measure();
@@ -72,7 +73,7 @@ test.describe('Performance - Core Web Vitals', () => {
     // Set mobile viewport
     await page.setViewportSize({ width: 375, height: 667 });
 
-    await page.goto('/');
+    await gotoWithChallengeHandling(page, '/');
 
     const perf = createPerformanceHelper(page);
     const metrics = await perf.measure();
@@ -84,7 +85,7 @@ test.describe('Performance - Core Web Vitals', () => {
   });
 
   test('Resource count is reasonable', async ({ page }) => {
-    await page.goto('/');
+    await gotoWithChallengeHandling(page, '/');
 
     const perf = createPerformanceHelper(page);
     const metrics = await perf.measure();
@@ -97,7 +98,7 @@ test.describe('Performance - Core Web Vitals', () => {
   });
 
   test('Total transfer size is reasonable', async ({ page }) => {
-    await page.goto('/');
+    await gotoWithChallengeHandling(page, '/');
 
     const perf = createPerformanceHelper(page);
     const metrics = await perf.measure();
@@ -112,7 +113,7 @@ test.describe('Performance - Core Web Vitals', () => {
   });
 
   test('DOM Content Loaded is under 2 seconds', async ({ page }) => {
-    await page.goto('/');
+    await gotoWithChallengeHandling(page, '/');
 
     const perf = createPerformanceHelper(page);
     const metrics = await perf.measure();

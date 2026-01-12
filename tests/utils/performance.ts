@@ -59,8 +59,14 @@ export class PerformanceHelper {
    * Collect performance metrics from page
    */
   async getMetrics(): Promise<PerformanceMetrics> {
-    // Wait for page to be fully loaded
-    await this.page.waitForLoadState('load');
+    // Try to wait for page load, but don't fail if it times out
+    // (WP.com CDN challenge pages don't fire load events properly)
+    try {
+      await this.page.waitForLoadState('load', { timeout: 5000 });
+    } catch {
+      // Page may already be loaded after challenge handling
+      // Just continue with metrics collection
+    }
 
     // Give time for LCP and CLS to settle
     await this.page.waitForTimeout(1000);
@@ -198,4 +204,136 @@ export class PerformanceHelper {
  */
 export function createPerformanceHelper(page: Page): PerformanceHelper {
   return new PerformanceHelper(page);
+}
+
+/**
+ * Wait for WP.com CDN bot challenge to resolve
+ *
+ * WP.com staging sites may show a "Checking your browser..." page
+ * before serving the actual content. This function waits for the
+ * challenge to complete (typically ~10 seconds) then refreshes
+ * the page for accurate performance measurement.
+ *
+ * @param page - Playwright page instance
+ * @param timeout - Maximum time to wait for challenge (default: 30s)
+ * @returns true if challenge was detected and resolved, false if no challenge
+ */
+export async function waitForCdnChallenge(
+  page: Page,
+  timeout: number = 30000
+): Promise<boolean> {
+  const title = await page.title();
+
+  // Check if we're on a challenge page
+  const isChallengePage =
+    title.toLowerCase().includes('checking') ||
+    title.toLowerCase().includes('just a moment') ||
+    title.toLowerCase().includes('please wait');
+
+  if (!isChallengePage) {
+    return false; // No challenge detected
+  }
+
+  console.log('⏳ WP.com CDN challenge detected, waiting for resolution...');
+
+  // Wait for title to change (challenge resolved)
+  await page.waitForFunction(
+    () => {
+      const t = document.title.toLowerCase();
+      return (
+        !t.includes('checking') &&
+        !t.includes('just a moment') &&
+        !t.includes('please wait')
+      );
+    },
+    { timeout }
+  );
+
+  console.log('✅ Challenge resolved, refreshing page for clean metrics...');
+
+  // Refresh to get clean performance metrics
+  // (the challenge page's metrics would be meaningless)
+  await page.reload({ waitUntil: 'load' });
+
+  return true;
+}
+
+/**
+ * Navigate to a page and handle any CDN challenges
+ *
+ * Use this instead of page.goto() for staging environments
+ * that may have bot protection.
+ *
+ * WP.com staging sites show a "Checking your browser..." challenge page
+ * that runs JS for ~10 seconds before redirecting to actual content.
+ * This function handles that challenge transparently.
+ */
+export async function gotoWithChallengeHandling(
+  page: Page,
+  url: string,
+  options?: { timeout?: number }
+): Promise<void> {
+  const challengeTimeout = options?.timeout || 60000;
+  const startTime = Date.now();
+
+  // Navigate - don't wait for any load state, just get the response
+  await page.goto(url, { waitUntil: 'commit', timeout: challengeTimeout });
+
+  // Small delay to let the page initialize enough to check title
+  await page.waitForTimeout(500);
+
+  // Poll for either challenge resolution or normal page load
+  // This avoids relying on DOM events which don't fire properly on challenge pages
+  const isChallengeTitle = (title: string): boolean => {
+    const t = title.toLowerCase();
+    return (
+      t.includes('checking') ||
+      t.includes('just a moment') ||
+      t.includes('please wait')
+    );
+  };
+
+  let title = '';
+  try {
+    title = await page.title();
+  } catch {
+    title = '';
+  }
+
+  if (isChallengeTitle(title)) {
+    console.log('⏳ WP.com CDN challenge detected, waiting for resolution...');
+
+    // Poll for title change instead of using waitForFunction
+    // This is more reliable when DOM events don't fire properly
+    while (Date.now() - startTime < challengeTimeout) {
+      await page.waitForTimeout(1000);
+      try {
+        title = await page.title();
+        if (!isChallengeTitle(title) && title.length > 0) {
+          console.log('✅ Challenge resolved');
+          break;
+        }
+      } catch {
+        // Page might be navigating, continue polling
+      }
+    }
+
+    if (isChallengeTitle(title)) {
+      throw new Error(`CDN challenge did not resolve within ${challengeTimeout}ms`);
+    }
+
+    // After challenge resolves, wait for page content to stabilize
+    // The challenge does a client-side redirect, so give it time to load
+    await page.waitForTimeout(3000);
+  }
+
+  // Wait for main content to be visible as a signal the page is ready
+  // This is more reliable than waitForLoadState after a challenge
+  try {
+    await page.waitForSelector('body', { timeout: 10000 });
+    // Additional wait for resources to settle
+    await page.waitForTimeout(1000);
+  } catch {
+    // Body should always exist, but if not, continue anyway
+  }
 }

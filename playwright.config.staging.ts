@@ -14,7 +14,7 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './tests/e2e',
-  timeout: 60000, // Increased for remote site
+  timeout: 90000, // Increased for WP.com CDN bot challenge (~45s) + page load
   expect: {
     timeout: 15000,
     toHaveScreenshot: {
@@ -42,8 +42,9 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
     ignoreHTTPSErrors: true,
-    navigationTimeout: 30000,
-    actionTimeout: 15000,
+    // Increased timeouts to handle WP.com CDN bot challenge (~10s) + page load
+    navigationTimeout: 60000,
+    actionTimeout: 30000,
     // Bypass headless browser detection on WP.com staging
     launchOptions: {
       args: [
