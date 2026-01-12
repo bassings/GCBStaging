@@ -50,9 +50,9 @@ if ( ! $hero_posts->have_posts() ) {
 			$grid_span    = $is_feature ? 'grid-column: span 2;' : 'grid-column: span 1;';
 			$heading_tag  = $is_feature ? 'h1' : 'h2';
 
-			// North Star: Opinion badge uses brutal-border (gray), feature uses acid-lime
-			$badge_border_color = $is_feature ? 'var(--wp--preset--color--acid-lime)' : 'var(--wp--preset--color--brutal-border)';
-			$badge_text_color   = $is_feature ? 'var(--wp--preset--color--acid-lime)' : 'var(--wp--preset--color--brutal-border)';
+			// North Star: Opinion badge uses brutal-grey (readable gray), feature uses acid-lime
+			$badge_border_color = $is_feature ? 'var(--wp--preset--color--acid-lime)' : 'var(--wp--preset--color--brutal-grey)';
+			$badge_text_color   = $is_feature ? 'var(--wp--preset--color--acid-lime)' : 'var(--wp--preset--color--brutal-grey)';
 			?>
 
 			<!-- Hero Card -->

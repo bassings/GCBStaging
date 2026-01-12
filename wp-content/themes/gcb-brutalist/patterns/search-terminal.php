@@ -166,7 +166,7 @@
 }
 
 .terminal-search-input::placeholder {
-	color: rgba(204, 255, 0, 0.5); /* 50% Acid Lime */
+	color: rgba(204, 255, 0, 0.7); /* 70% Acid Lime - improved contrast */
 }
 
 .terminal-search-input:focus {
