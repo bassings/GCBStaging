@@ -112,20 +112,19 @@
 		left: 0;
 		z-index: 1000;
 		padding: 0.75rem 1.5rem;
-		background-color: #CCFF00; /* Acid Lime */
-		color: #050505; /* Void Black */
-		font-family: 'Space Mono', monospace;
+		background-color: var(--wp--preset--color--acid-lime);
+		color: var(--wp--preset--color--void-black);
+		font-family: var(--wp--preset--font-family--mono);
 		font-size: 0.875rem;
 		font-weight: 700;
 		text-transform: uppercase;
 		text-decoration: none;
-		border: 2px solid #050505;
-		
+		border: 2px solid var(--wp--preset--color--void-black);
 	}
 
 	.skip-link:focus {
 		top: 0;
-		outline: 2px solid #CCFF00;
+		outline: 2px solid var(--wp--preset--color--acid-lime);
 		outline-offset: 2px;
 	}
 
@@ -134,18 +133,17 @@
 		position: sticky;
 		top: 0;
 		z-index: 100;
-		background-color: #050505; /* Void Black */
-		border-bottom: 2px solid #333333; /* Brutal Border */
-		
+		background-color: var(--wp--preset--color--void-black);
+		border-bottom: 2px solid var(--wp--preset--color--brutal-border);
 	}
 
 	/* Shadow on scroll (applied via JS) */
 	.site-header.scrolled {
-		box-shadow: 0 2px 0 #333333; /* Brutal Border shadow */
+		box-shadow: 0 2px 0 var(--wp--preset--color--brutal-border);
 	}
 
 	.header-wrapper {
-		max-width: 1280px;
+		max-width: 1200px;
 		margin: 0 auto;
 		padding: 1rem 1.5rem;
 		display: flex;
@@ -161,20 +159,20 @@
 
 	.site-logo a {
 		display: inline-block;
-		min-height: 44px; /* WCAG 2.5.8 touch target */
-		padding: 0.5rem 0; /* Ensure minimum touch target size */
+		min-height: 44px;
+		padding: 0.5rem 0;
 		text-decoration: none;
-		color: #FAFAFA; /* Off-White */
+		color: var(--wp--preset--color--off-white);
 		line-height: 1.2;
 	}
 
 	/* Logo text - applies to both h1 (homepage) and span (other pages) */
 	.logo-text {
-		font-family: 'Playfair Display', serif;
+		font-family: var(--wp--preset--font-family--playfair);
 		font-size: 2rem;
 		font-weight: 700;
 		letter-spacing: 0.05em;
-		margin: 0; /* Reset H1 margin */
+		margin: 0;
 		line-height: inherit;
 	}
 
@@ -185,7 +183,7 @@
 
 	/* ===== DESKTOP NAVIGATION ===== */
 	.main-nav {
-		display: none; /* Hidden on mobile, shown on desktop */
+		display: none;
 		gap: 2rem;
 	}
 
@@ -202,10 +200,10 @@
 	}
 
 	.nav-link {
-		font-family: 'Space Mono', monospace;
+		font-family: var(--wp--preset--font-family--mono);
 		font-size: 0.875rem;
 		font-weight: 400;
-		color: #FAFAFA; /* Off-White */
+		color: var(--wp--preset--color--off-white);
 		text-decoration: none;
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
@@ -214,40 +212,38 @@
 
 	.nav-link:hover,
 	.nav-link:focus {
-		color: #CCFF00; /* Acid Lime */
+		color: var(--wp--preset--color--acid-lime);
 		outline: none;
 	}
 
 	.nav-link:focus-visible {
-		outline: 2px solid #CCFF00; /* Acid Lime */
-		outline-offset: 4px;
+		outline: 2px solid var(--wp--preset--color--acid-lime);
+		outline-offset: 2px;
 	}
 
 	/* ===== TERMINAL SEARCH BUTTON ===== */
 	.search-toggle {
-		display: none; /* Hidden on mobile, shown on desktop */
+		display: none;
 		background: transparent;
-		border: 1px solid #333333; /* Brutal Border */
-		color: #FAFAFA; /* Off-White */
-		font-family: 'Space Mono', monospace;
+		border: 1px solid var(--wp--preset--color--brutal-border);
+		color: var(--wp--preset--color--off-white);
+		font-family: var(--wp--preset--font-family--mono);
 		font-size: 0.75rem;
 		text-transform: uppercase;
 		padding: 0.5rem 1rem;
 		cursor: pointer;
 		gap: 0.5rem;
 		align-items: center;
-
 		min-height: 44px;
 		min-width: 44px;
 	}
 
 	.search-toggle:hover {
-		border-color: #CCFF00; /* Acid Lime */
-		background-color: rgba(204, 255, 0, 0.1);
+		border-color: var(--wp--preset--color--acid-lime);
 	}
 
 	.search-toggle:focus-visible {
-		outline: 2px solid #CCFF00; /* Acid Lime */
+		outline: 2px solid var(--wp--preset--color--acid-lime);
 		outline-offset: 2px;
 	}
 
@@ -257,7 +253,7 @@
 
 	/* ===== MOBILE MENU TOGGLE ===== */
 	.menu-toggle {
-		display: flex; /* Shown on mobile, hidden on desktop */
+		display: flex;
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
@@ -280,7 +276,7 @@
 		display: block;
 		width: 100%;
 		height: 2px;
-		background-color: #FAFAFA; /* Off-White */
+		background-color: var(--wp--preset--color--off-white);
 		transition: all 0.3s ease;
 	}
 
@@ -316,7 +312,7 @@
 		left: 0;
 		right: 0;
 		bottom: 0;
-		background-color: rgba(5, 5, 5, 0.8); /* Void Black with transparency */
+		background-color: rgba(5, 5, 5, 0.8);
 		z-index: 90;
 		opacity: 0;
 		visibility: hidden;
@@ -335,8 +331,8 @@
 		left: 0;
 		bottom: 0;
 		width: 256px;
-		background-color: #050505; /* Void Black */
-		border-right: 2px solid #333333; /* Brutal Border */
+		background-color: var(--wp--preset--color--void-black);
+		border-right: 2px solid var(--wp--preset--color--brutal-border);
 		z-index: 95;
 		transform: translateX(-100%);
 		visibility: hidden;
@@ -359,20 +355,20 @@
 		align-items: center;
 		margin-bottom: 2rem;
 		padding-bottom: 1rem;
-		border-bottom: 1px solid #333333; /* Brutal Border */
+		border-bottom: 1px solid var(--wp--preset--color--brutal-border);
 	}
 
 	.mobile-menu-title {
-		font-family: 'Playfair Display', serif;
+		font-family: var(--wp--preset--font-family--playfair);
 		font-size: 1.5rem;
 		font-weight: 700;
-		color: #FAFAFA; /* Off-White */
+		color: var(--wp--preset--color--off-white);
 	}
 
 	.menu-close {
 		background: transparent;
 		border: none;
-		color: #FAFAFA; /* Off-White */
+		color: var(--wp--preset--color--off-white);
 		font-size: 2rem;
 		line-height: 1;
 		cursor: pointer;
@@ -385,7 +381,7 @@
 	}
 
 	.menu-close:hover {
-		color: #CCFF00; /* Acid Lime */
+		color: var(--wp--preset--color--acid-lime);
 	}
 
 	.close-icon {
@@ -406,20 +402,20 @@
 	}
 
 	.mobile-menu-list .menu-item {
-		border-bottom: 1px solid #333333; /* Brutal Border */
+		border-bottom: 1px solid var(--wp--preset--color--brutal-border);
 	}
 
 	.mobile-nav-link {
-		font-family: 'Space Mono', monospace;
+		font-family: var(--wp--preset--font-family--mono);
 		font-size: 1rem;
 		font-weight: 400;
-		color: #FAFAFA; /* Off-White */
+		color: var(--wp--preset--color--off-white);
 		text-decoration: none;
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
 		padding: 1rem;
 		border: 1px solid transparent;
-		border-bottom: 1px solid #333333; /* North Star: Brutal Border bottom on each link */
+		border-bottom: 1px solid var(--wp--preset--color--brutal-border);
 		min-height: 44px;
 		display: flex;
 		align-items: center;
@@ -427,28 +423,27 @@
 
 	.mobile-nav-link:hover,
 	.mobile-nav-link:focus {
-		color: #CCFF00; /* Acid Lime */
-		border-color: #333333; /* Brutal Border */
-		background-color: rgba(204, 255, 0, 0.05);
+		color: var(--wp--preset--color--acid-lime);
+		border-color: var(--wp--preset--color--brutal-border);
 		outline: none;
 	}
 
 	.mobile-nav-link:focus-visible {
-		outline: 2px solid #CCFF00; /* Acid Lime */
+		outline: 2px solid var(--wp--preset--color--acid-lime);
 		outline-offset: 2px;
 	}
 
-	/* ===== MOBILE SEARCH TOGGLE (North Star) ===== */
+	/* ===== MOBILE SEARCH TOGGLE ===== */
 	.mobile-search-toggle {
-		font-family: 'Space Mono', monospace;
+		font-family: var(--wp--preset--font-family--mono);
 		font-size: 0.875rem;
 		font-weight: 400;
-		color: #FAFAFA; /* Off-White */
+		color: var(--wp--preset--color--off-white);
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
 		padding: 0.75rem 1rem;
-		margin-top: 1.5rem; /* North Star: mt-6 spacing */
-		border: 1px solid #333333; /* Brutal Border */
+		margin-top: 1.5rem;
+		border: 1px solid var(--wp--preset--color--brutal-border);
 		background-color: transparent;
 		cursor: pointer;
 		display: flex;
@@ -460,17 +455,16 @@
 	}
 
 	.mobile-search-toggle:hover {
-		border-color: #CCFF00; /* Acid Lime */
-		background-color: rgba(204, 255, 0, 0.1);
+		border-color: var(--wp--preset--color--acid-lime);
 	}
 
 	.mobile-search-toggle:focus-visible {
-		outline: 2px solid #CCFF00; /* Acid Lime */
+		outline: 2px solid var(--wp--preset--color--acid-lime);
 		outline-offset: 2px;
 	}
 
 	.mobile-search-toggle .search-prompt {
-		color: #CCFF00; /* Acid Lime */
+		color: var(--wp--preset--color--acid-lime);
 		font-weight: 700;
 	}
 

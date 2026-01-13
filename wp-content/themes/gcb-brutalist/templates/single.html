@@ -159,10 +159,10 @@
 	text-align: left !important;
 }
 
-/* Alternating row striping - Subtle brutal-border background */
+/* Alternating row striping - Subtle contrast for readability */
 #main-content .wp-block-post-content table tbody tr:nth-child(even) td {
-	background: #0a0a0a !important;
-	background-color: #0a0a0a !important;
+	background: rgba(255, 255, 255, 0.02) !important;
+	background-color: rgba(255, 255, 255, 0.02) !important;
 }
 
 /* Override any inline text color styles */
@@ -251,7 +251,7 @@
 	position: relative !important;
 	width: 100% !important;
 	height: 100% !important;
-	background-color: #000 !important;
+	background-color: var(--wp--preset--color--void-black) !important;
 	background-position: center center !important;
 	background-size: cover !important;
 	cursor: pointer !important;
@@ -276,9 +276,8 @@
 	width: 68px !important;
 	height: 48px !important;
 	transform: translate(-50%, -50%) !important;
-	background-color: rgba(204, 255, 0, 0.9) !important;
+	background-color: var(--wp--preset--color--acid-lime) !important;
 	border-radius: 14% !important;
-	transition: background-color 0.1s cubic-bezier(0, 0, 0.2, 1) !important;
 	z-index: 1 !important;
 }
 
@@ -291,7 +290,7 @@
 	left: 50% !important;
 	width: 0 !important;
 	height: 0 !important;
-	border-left: 20px solid #000 !important;
+	border-left: 20px solid var(--wp--preset--color--void-black) !important;
 	border-top: 12px solid transparent !important;
 	border-bottom: 12px solid transparent !important;
 	transform: translate(-40%, -50%) !important;
@@ -320,7 +319,7 @@
 
 /* Fallback: If lite-youtube has no background, show dark background */
 #main-content .wp-block-post-content lite-youtube:not([style*="background-image"]) {
-	background-color: #0a0a0a !important;
+	background-color: var(--wp--preset--color--void-black) !important;
 }
 </style>
 

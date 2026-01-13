@@ -1,7 +1,68 @@
 # GCB Modernization Implementation Plan
 **Project:** Gay Car Boys (GCB) Editorial Brutalism Redesign
 **Status:** Avada to Gutenberg Migration - COMPLETE ✅
-**Last Updated:** January 12, 2026
+**Last Updated:** January 13, 2026
+
+---
+
+## Archive Posts Feature: Year-Based Navigation (January 13, 2026)
+
+**Status:** Implementation Complete - Tests Pending WordPress Studio Restart
+
+### Summary
+Added "Browse All Posts" navigation to the home page, allowing users to discover older posts organized by year with pagination.
+
+### Files Created/Modified
+
+| File | Action | Description |
+|------|--------|-------------|
+| `templates/date.html` | CREATED | Year archive template with year selector and 3-column grid |
+| `templates/index.html` | MODIFIED | Added "Browse All Posts" link section at bottom |
+| `functions.php` | MODIFIED | Added `gcb_year_selector` and `gcb_browse_all_link` shortcodes |
+| `tests/e2e/archive-posts.public.spec.ts` | CREATED | 25 E2E tests for archive navigation |
+
+### Features Implemented
+
+**Home Page "Browse All Posts" Link:**
+- Centered brutalist button at bottom of home page
+- Links to current year's archive (e.g., `/2026/`)
+- Acid-lime arrow indicator
+- 44px touch target for mobile accessibility
+- Hover/focus states with acid-lime border
+
+**Year Archive Page (`/YYYY/`):**
+- "ARCHIVE" header with acid-lime border
+- Year selector showing all years with published posts
+- Current year highlighted with acid-lime background
+- Responsive grid: 3 cols desktop, 2 tablet, 1 mobile
+- Full color images (no grayscale filter)
+- WordPress Query Loop with pagination
+- Brutalist styling consistent with design system
+
+**Shortcodes Added:**
+- `[gcb_year_selector]` - Horizontal row of year links for archive navigation
+- `[gcb_browse_all_link]` - Styled link to current year's archive
+
+### Design Specifications
+
+- Year buttons: 80px min-width, 44px min-height, mono font
+- Active year: Acid Lime (#CCFF00) background, Void Black text
+- Inactive years: Brutal Border (#333333), Off-White text
+- Grid cards: 2px Brutal Border, acid-lime hover
+- Pagination: Centered, 44px touch targets
+
+### Testing Notes
+
+E2E tests cover:
+- Home page link visibility (desktop/mobile)
+- Navigation to year archive
+- Year selector display and functionality
+- Grid layout responsive behavior
+- Pagination controls
+- Accessibility (focus indicators, touch targets, ARIA labels)
+- Design token compliance
+
+**Note:** WordPress Studio encountered database issues during testing. Tests should be re-run after environment restart.
 
 ---
 

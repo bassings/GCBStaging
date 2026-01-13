@@ -151,6 +151,22 @@ function gcb_responsive_video_css(): void {
 add_action( 'wp_enqueue_scripts', 'gcb_responsive_video_css' );
 
 /**
+ * Enqueue theme stylesheet
+ *
+ * FSE block themes don't automatically enqueue style.css.
+ * This ensures our custom pagination and other global styles are loaded.
+ */
+function gcb_enqueue_theme_styles(): void {
+	wp_enqueue_style(
+		'gcb-brutalist-style',
+		get_stylesheet_uri(),
+		array(),
+		wp_get_theme()->get( 'Version' )
+	);
+}
+add_action( 'wp_enqueue_scripts', 'gcb_enqueue_theme_styles' );
+
+/**
  * Google Fonts are now loaded via theme.json fontFace declarations.
  *
  * This provides better compatibility with WordPress.com hosting and avoids
@@ -465,11 +481,15 @@ function gcb_search_results_shortcode() {
 		$search_query = sanitize_text_field( wp_unslash( $_GET['s'] ) );
 	}
 
+	// Get current page for pagination (use custom parameter to avoid WordPress search issues)
+	$paged = isset( $_GET['search_page'] ) ? max( 1, intval( $_GET['search_page'] ) ) : 1;
+
 	// Build query args - search only in titles for more relevant results
 	$args = array(
 		'post_type'      => 'post',
 		'post_status'    => 'publish',
 		'posts_per_page' => 9,
+		'paged'          => $paged,
 		'orderby'        => 'date',
 		'order'          => 'DESC',
 	);
@@ -540,6 +560,56 @@ function gcb_search_results_shortcode() {
 				wp_reset_postdata();
 				?>
 			</ul>
+
+			<?php
+			// Pagination - built as single string to avoid wpautop adding <br /> tags
+			$total_pages = $search_results->max_num_pages;
+			if ( $total_pages > 1 ) :
+				$pagination_html = '<nav class="search-pagination" aria-label="Search results pagination">';
+
+				// Previous link
+				if ( $paged > 1 ) {
+					$pagination_html .= '<a href="' . esc_url( add_query_arg( 'search_page', $paged - 1 ) ) . '" class="prev">← Previous</a>';
+				}
+
+				// Page numbers with ellipsis (show max 7 pages: first, last, current, and 2 on each side)
+				$show_dots_start = false;
+				$show_dots_end   = false;
+
+				for ( $i = 1; $i <= $total_pages; $i++ ) {
+					// Always show first page, last page, current page, and 2 pages on each side of current
+					$show_page = ( $i === 1 || $i === $total_pages || ( $i >= $paged - 2 && $i <= $paged + 2 ) );
+
+					if ( $show_page ) {
+						if ( $i === $paged ) {
+							$pagination_html .= '<span class="current" aria-current="page">' . esc_html( $i ) . '</span>';
+						} else {
+							$pagination_html .= '<a href="' . esc_url( add_query_arg( 'search_page', $i ) ) . '">' . esc_html( $i ) . '</a>';
+						}
+						$show_dots_start = false;
+						$show_dots_end   = false;
+					} else {
+						// Show ellipsis
+						if ( $i < $paged && ! $show_dots_start ) {
+							$pagination_html .= '<span class="dots">…</span>';
+							$show_dots_start = true;
+						} elseif ( $i > $paged && ! $show_dots_end ) {
+							$pagination_html .= '<span class="dots">…</span>';
+							$show_dots_end = true;
+						}
+					}
+				}
+
+				// Next link
+				if ( $paged < $total_pages ) {
+					$pagination_html .= '<a href="' . esc_url( add_query_arg( 'search_page', $paged + 1 ) ) . '" class="next">Next →</a>';
+				}
+
+				$pagination_html .= '</nav>';
+				echo $pagination_html;
+			endif;
+			?>
+
 		</div>
 		<?php
 	else :
@@ -672,6 +742,179 @@ function gcb_category_posts_shortcode() {
 	return '';
 }
 add_shortcode( 'gcb_category_posts', 'gcb_category_posts_shortcode' );
+
+/**
+ * Year Selector Shortcode
+ *
+ * Displays a horizontal row of year buttons for archive navigation.
+ * Used on date archive pages to allow users to browse posts by year.
+ *
+ * Features:
+ * - Queries database for all years with published posts
+ * - Highlights current year with acid-lime background
+ * - Links to WordPress year archive URLs (/YYYY/)
+ * - WCAG 2.2 AA compliant (44px touch targets, focus indicators)
+ *
+ * Usage: [gcb_year_selector]
+ *
+ * @since 1.0.0
+ * @return string HTML output for year selector
+ */
+function gcb_year_selector_shortcode(): string {
+	global $wpdb;
+
+	// Query all years with published posts
+	$years = $wpdb->get_col(
+		"SELECT DISTINCT YEAR(post_date) AS year
+		FROM {$wpdb->posts}
+		WHERE post_status = 'publish'
+		AND post_type = 'post'
+		ORDER BY year DESC"
+	);
+
+	if ( empty( $years ) ) {
+		return '';
+	}
+
+	// Determine current year from archive context
+	$current_year = is_year() ? get_query_var( 'year' ) : (int) date( 'Y' );
+
+	$output = '<nav class="gcb-year-selector" aria-label="Browse posts by year">';
+	$output .= '<ul class="gcb-year-selector__list">';
+
+	foreach ( $years as $year ) {
+		$year      = (int) $year;
+		$is_active = ( $year === $current_year );
+		$class     = 'gcb-year-selector__item' . ( $is_active ? ' gcb-year-selector__item--active' : '' );
+		$aria      = $is_active ? ' aria-current="page"' : '';
+		$url       = get_year_link( $year );
+
+		$output .= sprintf(
+			'<li class="%s"><a href="%s"%s>%d</a></li>',
+			esc_attr( $class ),
+			esc_url( $url ),
+			$aria,
+			$year
+		);
+	}
+
+	$output .= '</ul>';
+	$output .= '</nav>';
+
+	return $output;
+}
+add_shortcode( 'gcb_year_selector', 'gcb_year_selector_shortcode' );
+
+/**
+ * Browse All Posts Link Shortcode
+ *
+ * Outputs a styled link to the current year's archive.
+ * Used on the home page to provide navigation to older posts.
+ *
+ * Usage: [gcb_browse_all_link]
+ *
+ * @since 1.0.0
+ * @return string HTML output for browse all posts link
+ */
+function gcb_browse_all_link_shortcode(): string {
+	global $wpdb;
+
+	// Get the most recent year with published posts
+	$latest_year = $wpdb->get_var(
+		"SELECT YEAR(post_date) AS year
+		FROM {$wpdb->posts}
+		WHERE post_status = 'publish'
+		AND post_type = 'post'
+		ORDER BY post_date DESC
+		LIMIT 1"
+	);
+
+	// Fallback to current year if no posts found
+	$target_year = $latest_year ? (int) $latest_year : (int) date( 'Y' );
+	$archive_url = get_year_link( $target_year );
+
+	return sprintf(
+		'<a href="%s" class="gcb-browse-all-link" style="display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0.75rem 2rem; font-family: var(--wp--preset--font-family--mono); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.1em; text-decoration: none; border: 2px solid var(--wp--preset--color--brutal-border); background: var(--wp--preset--color--void-black); color: var(--wp--preset--color--off-white); transition: none;">BROWSE ALL POSTS<span style="margin-left: 0.5rem; color: var(--wp--preset--color--acid-lime);">&rarr;</span></a>
+		<style>.gcb-browse-all-link:hover,.gcb-browse-all-link:focus{border-color: var(--wp--preset--color--acid-lime) !important;outline: 2px solid var(--wp--preset--color--acid-lime);outline-offset: 2px;}</style>',
+		esc_url( $archive_url )
+	);
+}
+add_shortcode( 'gcb_browse_all_link', 'gcb_browse_all_link_shortcode' );
+
+/**
+ * Set posts per page for year/date archives to 9
+ *
+ * Ensures a clean 3x3 grid layout on desktop.
+ * Applies to both main query and Query Loop blocks with inherit:true.
+ *
+ * @param WP_Query $query The WordPress query object.
+ */
+function gcb_date_archive_posts_per_page( $query ): void {
+	if ( is_admin() ) {
+		return;
+	}
+
+	// Set 9 posts per page for year, month, and day archives
+	if ( $query->is_date() ) {
+		$query->set( 'posts_per_page', 9 );
+	}
+}
+add_action( 'pre_get_posts', 'gcb_date_archive_posts_per_page' );
+
+/**
+ * Filter Query Loop block to use 9 posts per page on date archives
+ *
+ * The Query Loop block with inherit:true creates its own query.
+ * This filter modifies the query vars before the block renders.
+ *
+ * @param array    $query_args  The query arguments.
+ * @param WP_Block $block       The block instance.
+ * @return array Modified query arguments.
+ */
+function gcb_query_loop_date_archive_posts( array $query_args, WP_Block $block ): array {
+	// Only modify if we're on a date archive and the block inherits from query
+	if ( is_date() && ! empty( $block->context['query']['inherit'] ) ) {
+		$query_args['posts_per_page'] = 9;
+	}
+	return $query_args;
+}
+add_filter( 'query_loop_block_query_vars', 'gcb_query_loop_date_archive_posts', 10, 2 );
+
+/**
+ * Set 9 posts per page for category archives (3x3 grid)
+ *
+ * @param WP_Query $query The WordPress query object.
+ */
+function gcb_category_archive_posts_per_page( $query ): void {
+	if ( is_admin() ) {
+		return;
+	}
+
+	// Set 9 posts per page for category archives
+	if ( $query->is_category() && $query->is_main_query() ) {
+		$query->set( 'posts_per_page', 9 );
+	}
+}
+add_action( 'pre_get_posts', 'gcb_category_archive_posts_per_page' );
+
+/**
+ * Filter Query Loop block to use 9 posts per page on category archives
+ *
+ * The Query Loop block with inherit:true creates its own query.
+ * This filter modifies the query vars before the block renders.
+ *
+ * @param array    $query_args  The query arguments.
+ * @param WP_Block $block       The block instance.
+ * @return array Modified query arguments.
+ */
+function gcb_query_loop_category_archive_posts( array $query_args, WP_Block $block ): array {
+	// Only modify if we're on a category archive and the block inherits from query
+	if ( is_category() && ! empty( $block->context['query']['inherit'] ) ) {
+		$query_args['posts_per_page'] = 9;
+	}
+	return $query_args;
+}
+add_filter( 'query_loop_block_query_vars', 'gcb_query_loop_category_archive_posts', 10, 2 );
 
 /**
  * Force search results to order by date descending instead of relevance

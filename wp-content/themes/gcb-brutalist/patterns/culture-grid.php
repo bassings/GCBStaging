@@ -100,27 +100,27 @@ if ( ! $culture_grid_query->have_posts() ) {
 <style>
     /* Culture Grid Section */
     .culture-grid-section {
-        background-color: #050505; /* Void Black */
-        padding: 4rem 1rem;
+        background-color: var(--wp--preset--color--void-black);
+        padding: var(--wp--preset--spacing--60) var(--wp--preset--spacing--30);
     }
 
     .culture-grid-wrapper {
-        max-width: 1280px;
+        max-width: 1200px;
         margin: 0 auto;
     }
 
     /* Section Header */
     .culture-grid-header {
-        margin-bottom: 2rem;
-        padding-bottom: 1rem;
-        border-bottom: 1px solid #333333; /* Brutal Border */
+        margin-bottom: var(--wp--preset--spacing--40);
+        padding-bottom: var(--wp--preset--spacing--30);
+        border-bottom: 1px solid var(--wp--preset--color--brutal-border);
     }
 
     .culture-grid-title {
-        font-family: 'Playfair Display', serif;
+        font-family: var(--wp--preset--font-family--playfair);
         font-size: 2.5rem;
         font-weight: 700;
-        color: #FAFAFA; /* Off-White */
+        color: var(--wp--preset--color--off-white);
         margin: 0;
         letter-spacing: -0.02em;
     }
@@ -128,19 +128,19 @@ if ( ! $culture_grid_query->have_posts() ) {
     /* 4-Column Responsive Grid */
     .culture-grid-container {
         display: grid;
-        gap: 1.5rem;
+        gap: var(--wp--preset--spacing--30);
         /* Desktop: 4 columns */
         grid-template-columns: repeat(4, 1fr);
     }
 
-    /* Tablet: 2 columns (768px) */
-    @media (max-width: 1024px) and (min-width: 768px) {
+    /* Tablet: 2 columns */
+    @media (min-width: 768px) and (max-width: 1024px) {
         .culture-grid-container {
             grid-template-columns: repeat(2, 1fr);
         }
     }
 
-    /* Mobile: 1 column (< 768px) */
+    /* Mobile: 1 column */
     @media (max-width: 767px) {
         .culture-grid-container {
             grid-template-columns: 1fr;
@@ -153,16 +153,16 @@ if ( ! $culture_grid_query->have_posts() ) {
 
     /* Text-Only Card (NO Images) */
     .culture-card {
-        background-color: #050505; /* Void Black */
-        border: 1px solid #333333; /* Brutal Border */
-        padding: 1.5rem;
+        background-color: var(--wp--preset--color--void-black);
+        border: 1px solid var(--wp--preset--color--brutal-border);
+        padding: var(--wp--preset--spacing--30);
         min-height: 200px;
         display: flex;
         flex-direction: column;
     }
 
     .culture-card:hover {
-        border-color: #CCFF00; /* Acid Lime hover */
+        border-color: var(--wp--preset--color--acid-lime);
     }
 
     .culture-card-link {
@@ -175,10 +175,10 @@ if ( ! $culture_grid_query->have_posts() ) {
 
     /* Category Label (Acid Lime) */
     .culture-card-category {
-        font-family: 'Space Mono', 'JetBrains Mono', monospace;
+        font-family: var(--wp--preset--font-family--mono);
         font-size: 0.75rem;
         font-weight: 700;
-        color: #CCFF00; /* Acid Lime */
+        color: var(--wp--preset--color--acid-lime);
         letter-spacing: 0.1em;
         margin-bottom: 1rem;
         text-transform: uppercase;
@@ -186,10 +186,10 @@ if ( ! $culture_grid_query->have_posts() ) {
 
     /* Headline (Playfair Display, Large) */
     .culture-card-title {
-        font-family: 'Playfair Display', serif;
-        font-size: 1.5rem; /* text-2xl equivalent (24px) */
+        font-family: var(--wp--preset--font-family--playfair);
+        font-size: 1.5rem;
         font-weight: 700;
-        color: #FAFAFA; /* Off-White */
+        color: var(--wp--preset--color--off-white);
         line-height: 1.3;
         margin: 0 0 1rem 0;
         letter-spacing: -0.01em;
@@ -197,22 +197,22 @@ if ( ! $culture_grid_query->have_posts() ) {
 
     /* Excerpt (Mono Font, Brutal Grey) */
     .culture-card-excerpt {
-        font-family: 'Space Mono', 'JetBrains Mono', monospace;
+        font-family: var(--wp--preset--font-family--mono);
         font-size: 0.875rem;
-        color: #999999; /* Brutal Grey */
+        color: var(--wp--preset--color--brutal-grey);
         line-height: 1.6;
-        margin: 0 0 auto 0; /* Push date to bottom */
+        margin: 0 0 auto 0;
         flex-grow: 1;
     }
 
     /* Date Only (No Author) */
     .culture-card-meta {
-        font-family: 'Space Mono', 'JetBrains Mono', monospace;
+        font-family: var(--wp--preset--font-family--mono);
         font-size: 0.75rem;
-        color: #999999; /* Brutal Grey */
+        color: var(--wp--preset--color--brutal-grey);
         margin-top: 1rem;
         padding-top: 1rem;
-        border-top: 1px solid #333333; /* Subtle divider */
+        border-top: 1px solid var(--wp--preset--color--brutal-border);
     }
 
     .culture-card-meta time {
@@ -226,12 +226,12 @@ if ( ! $culture_grid_query->have_posts() ) {
 
     /* Accessibility: Focus States */
     .culture-card:focus-within {
-        outline: 2px solid #CCFF00; /* Acid Lime */
+        outline: 2px solid var(--wp--preset--color--acid-lime);
         outline-offset: 2px;
     }
 
     .culture-card-link:focus {
-        outline: none; /* Remove default, handled by parent */
+        outline: none;
     }
 </style>
 

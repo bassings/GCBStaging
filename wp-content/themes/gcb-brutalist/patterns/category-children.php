@@ -29,11 +29,11 @@ if ( empty( $child_categories ) || is_wp_error( $child_categories ) ) {
 ?>
 
 <!-- Child Categories Grid -->
-<div class="category-children-grid" style="margin-bottom: 4rem;">
+<div class="category-children-grid" style="margin-bottom: var(--wp--preset--spacing--60);">
 
 	<!-- Section Header -->
-	<div style="border-bottom: 2px solid var(--wp--preset--color--acid-lime); padding-bottom: 1.5rem; margin-bottom: 2rem;">
-		<h2 style="font-family: var(--wp--preset--font-family--playfair); font-size: 2rem; text-transform: uppercase; color: var(--wp--preset--color--off-white); margin: 0;">
+	<div style="border-bottom: 2px solid var(--wp--preset--color--brutal-border); padding-bottom: var(--wp--preset--spacing--30); margin-bottom: var(--wp--preset--spacing--40);">
+		<h2 style="font-family: var(--wp--preset--font-family--playfair); font-size: 2.5rem; text-transform: uppercase; color: var(--wp--preset--color--off-white); margin: 0;">
 			Browse by Brand
 		</h2>
 	</div>
@@ -66,7 +66,6 @@ if ( empty( $child_categories ) || is_wp_error( $child_categories ) ) {
 		.brand-card:hover,
 		.brand-card:focus {
 			border-color: var(--wp--preset--color--acid-lime) !important;
-			background-color: rgba(204, 255, 0, 0.05) !important;
 			outline: none;
 		}
 

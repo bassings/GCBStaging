@@ -97,7 +97,7 @@ if ( ! $grid_posts->have_posts() ) {
 
 					<!-- Excerpt (featured posts only) -->
 					<?php if ( $is_featured ) : ?>
-						<p style="font-family: var(--wp--preset--font-family--system); font-size: 1rem; line-height: 1.6; color: var(--wp--preset--color--off-white); margin: 0 0 1rem 0;">
+						<p style="font-family: var(--wp--preset--font-family--system-sans); font-size: 1rem; line-height: 1.6; color: var(--wp--preset--color--off-white); margin: 0 0 1rem 0;">
 							<?php echo esc_html( wp_trim_words( get_the_excerpt(), 20 ) ); ?>
 						</p>
 					<?php endif; ?>
@@ -149,7 +149,7 @@ if ( ! $grid_posts->have_posts() ) {
 	}
 
 	/* Desktop: Auto-fit with featured spanning 2 columns */
-	@media (min-width: 1025px) {
+	@media (min-width: 1024px) {
 		.gcb-bento-grid__container {
 			grid-template-columns: repeat(3, 1fr);
 		}

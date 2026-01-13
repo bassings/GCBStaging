@@ -372,3 +372,119 @@ ul.gcb-bento-grid__container.wp-block-post-template > li.wp-block-post {
 	min-height: 400px !important;
 	max-height: 400px !important;
 }
+
+/**
+ * Global Pagination Styling
+ * Consistent brutalist pagination across all archive pages
+ * Uses !important to override WordPress default styles
+ */
+
+/* Pagination container - centered with gap */
+.wp-block-query-pagination {
+	margin-top: var(--wp--preset--spacing--50) !important;
+	gap: 0.5rem !important;
+	justify-content: center !important;
+}
+
+/* WordPress page-numbers class - the actual pagination links */
+.wp-block-query-pagination .page-numbers,
+.wp-block-query-pagination-numbers .page-numbers,
+.wp-block-query-pagination-previous,
+.wp-block-query-pagination-next {
+	min-width: 44px !important;
+	min-height: 44px !important;
+	display: inline-flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	padding: 0.5rem 1rem !important;
+	border: 1px solid var(--wp--preset--color--brutal-border) !important;
+	background: var(--wp--preset--color--void-black) !important;
+	color: var(--wp--preset--color--off-white) !important;
+	font-family: var(--wp--preset--font-family--mono) !important;
+	font-size: 0.875rem !important;
+	text-decoration: none !important;
+	transition: none !important;
+}
+
+/* Dots/ellipsis - same styling */
+.wp-block-query-pagination .page-numbers.dots {
+	border-color: transparent !important;
+	background: transparent !important;
+}
+
+/* Hover states */
+.wp-block-query-pagination .page-numbers:hover,
+.wp-block-query-pagination-previous:hover,
+.wp-block-query-pagination-next:hover {
+	border-color: var(--wp--preset--color--acid-lime) !important;
+	color: var(--wp--preset--color--acid-lime) !important;
+}
+
+/* Focus states */
+.wp-block-query-pagination .page-numbers:focus,
+.wp-block-query-pagination-previous:focus,
+.wp-block-query-pagination-next:focus {
+	border-color: var(--wp--preset--color--acid-lime) !important;
+	outline: 2px solid var(--wp--preset--color--acid-lime) !important;
+	outline-offset: 2px !important;
+}
+
+/* Current page - acid lime background */
+.wp-block-query-pagination .page-numbers.current,
+.wp-block-query-pagination-numbers .current,
+.wp-block-query-pagination .page-numbers[aria-current="page"] {
+	background: var(--wp--preset--color--acid-lime) !important;
+	color: var(--wp--preset--color--void-black) !important;
+	border-color: var(--wp--preset--color--acid-lime) !important;
+	font-weight: 700 !important;
+}
+
+/* Search results pagination - same styling */
+.search-pagination {
+	display: flex !important;
+	justify-content: center !important;
+	gap: 0.5rem !important;
+	margin-top: var(--wp--preset--spacing--50) !important;
+	flex-wrap: wrap !important;
+}
+
+.search-pagination a,
+.search-pagination span {
+	min-width: 44px !important;
+	min-height: 44px !important;
+	display: inline-flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	padding: 0.5rem 1rem !important;
+	border: 1px solid var(--wp--preset--color--brutal-border) !important;
+	background: var(--wp--preset--color--void-black) !important;
+	color: var(--wp--preset--color--off-white) !important;
+	font-family: var(--wp--preset--font-family--mono) !important;
+	font-size: 0.875rem !important;
+	text-decoration: none !important;
+	transition: none !important;
+}
+
+/* Search pagination dots */
+.search-pagination .dots {
+	border-color: transparent !important;
+	background: transparent !important;
+}
+
+.search-pagination a:hover,
+.search-pagination a:focus {
+	border-color: var(--wp--preset--color--acid-lime) !important;
+	color: var(--wp--preset--color--acid-lime) !important;
+}
+
+.search-pagination a:focus-visible {
+	outline: 2px solid var(--wp--preset--color--acid-lime) !important;
+	outline-offset: 2px !important;
+}
+
+.search-pagination .current {
+	background: var(--wp--preset--color--acid-lime) !important;
+	color: var(--wp--preset--color--void-black) !important;
+	border-color: var(--wp--preset--color--acid-lime) !important;
+	font-weight: 700 !important;
+}

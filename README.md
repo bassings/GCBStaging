@@ -1,12 +1,30 @@
-## Gay Car Boys – Local WordPress Development
+# Gay Car Boys - Editorial Brutalism Redesign
 
-Local WordPress Studio environment for working on [`gaycarboys.com`](http://gaycarboys.com/) and running automated validation (lint, health checks, Playwright tests).
+WordPress block theme implementation for [gaycarboys.com](https://gaycarboys.com) featuring an "Editorial Brutalism" design system (High Fashion x Automotive x Queer Culture).
 
-This project uses **WordPress Studio** for local development, which runs PHP via WebAssembly (WASM) and uses SQLite for the database.
+**Status:** Migration Complete | 81+ E2E Tests Passing | WCAG 2.2 AA Compliant
+
+---
+
+## Project Overview
+
+This project modernizes the Gay Car Boys digital magazine from Avada/Fusion Builder to native WordPress Gutenberg blocks, eliminating jQuery dependencies and implementing a custom brutalist design system.
+
+### Key Achievements
+
+- **3,891 posts** successfully migrated to Gutenberg blocks
+- **164,204 shortcodes** converted to native blocks
+- **100% WCAG 2.2 Level AA** accessibility compliance
+- **5 custom patterns** fully implemented with TDD
+- **YouTube Channel API** integration for video content
+
+---
+
+## Development Environment
 
 ### Prerequisites
 
-- WordPress Studio installed and running
+- [WordPress Studio](https://developer.wordpress.com/studio/) installed and running
 - Node.js (LTS 18+) + npm
 - Composer (for PHP tooling)
 
@@ -21,110 +39,230 @@ npm install
 composer install
 ```
 
-3. **Verify the site is running:**
-
-```bash
-curl http://localhost:8881
-```
-
-### Environment Details
-
-- **Local URL:** `http://localhost:8881`
-- **Runtime:** PHP via WebAssembly (WASM)
-- **Database:** SQLite (stored in `wp-content/database/.ht.sqlite`)
-- **Production:** WordPress.com Managed Hosting (Atomic) running MariaDB/MySQL
-
-### Important: Syncing to Staging
-
-⚠️ **When syncing to the WordPress.com Atomic staging environment:**
-
-Always use **Studio Sync** and **UNCHECK the Database** to prevent overwriting remote content. Only sync files (themes, plugins, uploads).
-
-### Testing
-
-This project uses Playwright for end-to-end testing with a Test-Driven Development (TDD) approach.
-
-**Quick Start:**
-
-1. Ensure WordPress Studio is running at `http://localhost:8881`
-2. Activate the `gcb-test-utils` plugin in WordPress admin
-3. Set up authentication (one-time):
-
-```bash
-npx playwright test auth.setup.ts --project=setup
-```
-
-4. Run tests:
+3. **Run E2E tests:**
 
 ```bash
 npm test
 ```
 
-For detailed testing documentation, see [TESTING.md](./TESTING.md).
+### Environment Details
 
-**Available test commands:**
+| Environment | Database | PHP Runtime |
+|-------------|----------|-------------|
+| Local (WordPress Studio) | SQLite | WebAssembly (WASM) |
+| Staging (WP.com) | MySQL | Native PHP |
+| Production (WP.com Atomic) | MariaDB | Native PHP |
 
-- `npm test` – Run all Playwright tests
-- `npm run test:ui` – Run tests with Playwright UI
-- `npm run test:debug` – Run tests in debug mode
-- `npm run test:headed` – Run tests with visible browser
-- `npm run test:report` – Show test report
-- `npm run test:codegen` – Generate tests with Playwright codegen
+---
 
-### Development Workflow
+## Testing
 
-This project follows strict Test-Driven Development (TDD):
+This project uses **Playwright** for end-to-end testing with a strict **Test-Driven Development (TDD)** approach.
 
-1. **RED:** Write a Playwright test for the feature
+### Test Commands
+
+| Command | Description |
+|---------|-------------|
+| `npm test` | Run all Playwright tests |
+| `npm run test:ui` | Run tests with Playwright UI |
+| `npm run test:headed` | Run tests with visible browser |
+| `npm run debug` | Open Playwright Inspector |
+| `npm run debug:ui` | Interactive test runner with live preview |
+| `npm run test:perf` | Run performance tests (Core Web Vitals) |
+| `npm run test:a11y` | Run accessibility tests (WCAG 2.2 AA) |
+| `npm run test:security` | Run security header tests |
+| `npm run test:visual` | Run visual regression tests |
+
+### Test Coverage
+
+| Category | Tests | Status |
+|----------|-------|--------|
+| Pattern Tests | 67+ | Passing |
+| WCAG Compliance | 14 | Passing |
+| Performance | 8 | Environment-dependent |
+| Security | 11 | Environment-dependent |
+| Accessibility | 12 | Passing |
+
+### TDD Workflow
+
+1. **RED:** Write a Playwright test for the feature, confirm it fails
 2. **GREEN:** Write minimum code to make the test pass
-3. **REFACTOR:** Optimize while keeping tests green
+3. **REFACTOR:** Optimize code while keeping tests green
 
-See [CLAUDE.md](./CLAUDE.md) for full development guidelines and coding standards.
+---
 
-### Project Structure
+## Design System: Editorial Brutalism
 
-- **Themes:** `wp-content/themes/gcb-brutalist/` – Custom block theme with editorial brutalism design
-- **Plugins:** `wp-content/plugins/` – Includes custom plugins:
-  - `gcb-test-utils` – Database reset endpoint for E2E testing
-  - `gcb-content-intelligence` – Content classification and schema generation
-- **Tests:** `tests/e2e/` – Playwright end-to-end tests
-- **Documentation:**
-  - [TESTING.md](./TESTING.md) – Testing guide
-  - [CLAUDE.md](./CLAUDE.md) – Development guidelines and standards
-  - [IMPLEMENTATION-PLAN.md](./IMPLEMENTATION-PLAN.md) – Project progress and status
-  - [DESIGN-SYSTEM-REFERENCE.md](./DESIGN-SYSTEM-REFERENCE.md) – Design tokens and patterns
+### Color Palette "Neon Noir"
 
-### SQLite Compatibility Notes
+| Name | Hex | Usage | Contrast |
+|------|-----|-------|----------|
+| Void Black | `#050505` | Main Background | - |
+| Off-White | `#FAFAFA` | Body Text | 19.8:1 |
+| Acid Lime | `#CCFF00` | CTAs, Accents | 18.2:1 |
+| Brutal Border | `#333333` | Borders, Dividers | - |
+| Brutal Grey | `#999999` | Secondary Text | 8.6:1 (AAA) |
 
-The local environment uses SQLite. When writing code:
+### Typography
 
-- ✅ Use `WP_Query` or `$wpdb` methods (they abstract database differences)
-- ❌ Avoid raw SQL with MySQL-specific functions (e.g., `UNIX_TIMESTAMP`)
-- Always use WordPress APIs for database queries
+- **Headings:** Playfair Display (Serif)
+- **Body:** Inter or System Sans
+- **Meta/UI:** Space Mono or JetBrains Mono
 
-### Importing Content
+### UI Patterns
 
-For importing content from production, use WordPress Studio's sync feature or WordPress admin import tools.
+- Borders: 1px solid with high contrast
+- Images: `filter: grayscale(100%) contrast(1.3)`
+- Transitions: Instant state changes (`transition: none`)
+- Touch targets: 44px minimum (exceeds WCAG 24px requirement)
 
-⚠️ **Important:** When syncing from staging/production, always use **Studio Sync** and **UNCHECK the Database** to prevent overwriting remote content.
+---
 
-### Validation & Code Quality
+## Theme Patterns
 
-Install dependencies and run validation:
+### Implemented Patterns
 
-```bash
-npm install
-composer install
+| Pattern | Description | Tests |
+|---------|-------------|-------|
+| **Video Rail** | Horizontal scrolling YouTube thumbnails via API | 16 |
+| **Bento Grid** | Mixed layout grid with featured cards | 8 |
+| **Culture Grid** | 4-column text-only editorial cards | 10 |
+| **Navigation** | Sticky header + mobile slide-out menu | 16 |
+| **Footer** | 5 social icons with WCAG compliance | 8 |
+
+### Pattern Files
+
+```
+wp-content/themes/gcb-brutalist/
+├── patterns/
+│   ├── video-rail.php          # YouTube channel integration
+│   ├── bento-grid.php          # Featured stories grid
+│   ├── culture-grid.php        # Text-only editorial cards
+│   ├── header-navigation.php   # Sticky nav + mobile menu
+│   └── hero-section.php        # Feature/opinion cards (optional)
+├── templates/
+│   ├── index.html              # Homepage layout
+│   ├── single.html             # Article template
+│   ├── search.html             # Search results
+│   └── date.html               # Year archive
+└── parts/
+    ├── header.html
+    └── footer.html
 ```
 
-The project uses:
+---
 
-- **PHP:** WordPress Coding Standards (`phpcs.xml.dist`)
-- **TypeScript/JavaScript:** ESLint configuration
-- **E2E Testing:** Playwright with comprehensive test coverage
+## Plugins
 
-### Additional Resources
+### Custom Plugins
 
-- **Implementation Status:** See [IMPLEMENTATION-PLAN.md](./IMPLEMENTATION-PLAN.md) for current project status
-- **Design System:** See [DESIGN-SYSTEM-REFERENCE.md](./DESIGN-SYSTEM-REFERENCE.md) for design tokens, patterns, and accessibility guidelines
-- **Plugin Management:** See [PLUGIN-CLEANUP-README.md](./PLUGIN-CLEANUP-README.md) for plugin organization details
+| Plugin | Purpose |
+|--------|---------|
+| `gcb-content-intelligence` | Content classification, YouTube API, Schema.org |
+| `gcb-test-utils` | E2E testing utilities, database reset endpoint |
+
+### Content Intelligence Features
+
+- YouTube URL detection (3 regex patterns)
+- `content_format` taxonomy (video, standard, gallery)
+- YouTube Data API v3 integration with caching
+- Schema.org JSON-LD generation (VideoObject, NewsArticle)
+- Avada shortcode converter (fusion_* to Gutenberg blocks)
+
+---
+
+## Deployment
+
+### Syncing to Staging
+
+Use **WordPress Studio Sync** to deploy changes:
+
+1. Open WordPress Studio
+2. Select sync direction (Local → Staging)
+3. **UNCHECK Database** - only sync files (themes, plugins, uploads)
+4. Push changes
+
+### Manual Testing on Staging
+
+After syncing, always:
+
+1. Clear all caches (browser, WordPress, CDN)
+2. Test functionality matches local environment
+3. Check browser console for JavaScript errors
+4. Verify responsive behavior on mobile
+
+---
+
+## Project Structure
+
+```
+GCBStaging/
+├── wp-content/
+│   ├── themes/gcb-brutalist/    # Custom block theme
+│   ├── plugins/                  # Custom + third-party plugins
+│   └── mu-plugins/               # Must-use plugins
+├── tests/
+│   ├── e2e/                      # Playwright E2E tests
+│   ├── utils/                    # Test utilities
+│   └── visual-baselines/         # Visual regression baselines
+├── CLAUDE.md                     # AI assistant instructions
+├── IMPLEMENTATION-PLAN.md        # Project progress tracking
+├── DESIGN-SYSTEM-REFERENCE.md    # Design tokens documentation
+└── north-star-prototype.html     # Reference design
+```
+
+---
+
+## Documentation
+
+| Document | Purpose |
+|----------|---------|
+| [CLAUDE.md](./CLAUDE.md) | Development guidelines, TDD protocol, design tokens |
+| [IMPLEMENTATION-PLAN.md](./IMPLEMENTATION-PLAN.md) | Project progress, migration status, test results |
+| [DESIGN-SYSTEM-REFERENCE.md](./DESIGN-SYSTEM-REFERENCE.md) | Complete design system specification |
+| [TESTING.md](./TESTING.md) | Testing setup and commands |
+
+---
+
+## SQLite Compatibility
+
+The local environment uses SQLite via WordPress Studio. When writing code:
+
+- Use `WP_Query` or `$wpdb` methods (they abstract database differences)
+- Avoid raw SQL with MySQL-specific functions
+- Always use WordPress APIs for database queries
+
+---
+
+## Accessibility (WCAG 2.2 Level AA)
+
+All patterns meet or exceed WCAG 2.2 Level AA requirements:
+
+- **Skip Navigation:** "Skip to main content" link
+- **Keyboard Navigation:** Full Tab navigation, ESC to close modals
+- **Focus Indicators:** 2px Acid Lime outline on all interactive elements
+- **Color Contrast:** All text exceeds 4.5:1 (most achieve AAA 7:1+)
+- **Touch Targets:** 44px minimum on all interactive elements
+- **ARIA Support:** Labels, roles, states on all components
+- **Semantic HTML:** Proper landmarks, heading hierarchy
+
+---
+
+## Legacy Content Support
+
+The theme includes fallback systems for Fusion Builder content:
+
+- `[fusion_youtube]` → WordPress oEmbed
+- `[fusion_gallery]` → CSS grid layout with responsive columns
+- `[fusion_code]` → Base64 decode with brutalist table styling
+- `<lite-youtube>` → CSS/JS for custom YouTube elements
+
+---
+
+## License
+
+Private repository for Gay Car Boys Pty Ltd.
+
+---
+
+**Last Updated:** January 13, 2026

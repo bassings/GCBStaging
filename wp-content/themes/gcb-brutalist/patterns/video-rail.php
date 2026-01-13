@@ -24,7 +24,7 @@ if ( empty( $videos ) ) {
 <div class="wp-block-group gcb-video-rail" data-pattern="video-rail" style="margin-top:0;margin-bottom:var(--wp--preset--spacing--50);padding-top:var(--wp--preset--spacing--50);padding-bottom:var(--wp--preset--spacing--50)">
 
 	<!-- Section Header -->
-	<div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 2rem;">
+	<div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: var(--wp--preset--spacing--40);">
 		<h2 style="font-family: var(--wp--preset--font-family--playfair); font-size: 2.5rem; font-weight: bold; color: var(--wp--preset--color--off-white);">
 			LATEST VIDEOS
 		</h2>
@@ -106,7 +106,7 @@ if ( empty( $videos ) ) {
 	</style>
 
 	<!-- Video Rail Scroll Container -->
-	<div class="gcb-video-rail__container video-rail-scroll" style="display: flex; gap: 1rem; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding-bottom: 1rem;">
+	<div class="gcb-video-rail__container video-rail-scroll" style="display: flex; gap: var(--wp--preset--spacing--30); overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding-bottom: var(--wp--preset--spacing--30);">
 
 		<?php
 		foreach ( $videos as $video ) :
@@ -148,7 +148,7 @@ if ( empty( $videos ) ) {
 						</div>
 
 						<!-- Content Overlay at Bottom with Gradient (North Star Structure) -->
-						<div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 1rem; background: linear-gradient(to top, var(--wp--preset--color--void-black) 0%, transparent 100%);">
+						<div style="position: absolute; bottom: 0; left: 0; right: 0; padding: var(--wp--preset--spacing--30); background: linear-gradient(to top, var(--wp--preset--color--void-black) 0%, transparent 100%);">
 							<!-- Title -->
 							<h3 class="gcb-video-card__title video-title" style="font-family: var(--wp--preset--font-family--playfair); font-size: 1rem; line-height: 1.3; margin: 0 0 0.25rem 0; color: var(--wp--preset--color--off-white); font-weight: bold;">
 								<?php echo esc_html( wp_trim_words( $title, 8 ) ); ?>
@@ -177,7 +177,7 @@ if ( empty( $videos ) ) {
 	</div>
 
 	<!-- Scroll Hint (mobile only) -->
-	<p style="font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; color: var(--wp--preset--color--brutal-grey); margin-top: 1rem; text-align: center;">
+	<p style="font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; color: var(--wp--preset--color--brutal-grey); margin-top: var(--wp--preset--spacing--30); text-align: center;">
 		← Scroll horizontally to see more →
 	</p>
 
