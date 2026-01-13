@@ -32,7 +32,7 @@ Tags: full-site-editing, block-theme, brutalism, editorial, magazine
 }
 
 .screen-reader-text:focus {
-	background-color: var(--wp--preset--color--acid-lime);
+	background-color: var(--wp--preset--color--highlight);
 	clip: auto !important;
 	clip-path: none;
 	color: var(--wp--preset--color--void-black);
@@ -129,7 +129,7 @@ Tags: full-site-editing, block-theme, brutalism, editorial, magazine
 
 /* Focus states for accessibility */
 .gcb-post-title a:focus {
-	outline: 2px solid var(--wp--preset--color--acid-lime) !important;
+	outline: 2px solid var(--wp--preset--color--highlight) !important;
 	outline-offset: 2px;
 }
 
@@ -220,7 +220,7 @@ ul.gcb-bento-grid__container.wp-block-post-template > li.wp-block-post {
 
 /* Hover Effect: Acid Lime Border */
 .search-results-page .bento-item.gcb-bento-card:hover {
-	border-color: var(--wp--preset--color--acid-lime, #CCFF00) !important;
+	border-color: var(--wp--preset--color--highlight, #0084FF) !important;
 }
 
 /* Responsive Grid */
@@ -299,7 +299,7 @@ ul.gcb-bento-grid__container.wp-block-post-template > li.wp-block-post {
 /* Table headers */
 .wp-block-post-content table th {
 	background-color: var(--wp--preset--color--void-black) !important;
-	color: var(--wp--preset--color--acid-lime) !important;
+	color: var(--wp--preset--color--highlight) !important;
 	padding: 12px !important;
 	text-align: left !important;
 	border: 1px solid var(--wp--preset--color--brutal-border) !important;
@@ -342,15 +342,15 @@ ul.gcb-bento-grid__container.wp-block-post-template > li.wp-block-post {
 	background-color: var(--wp--preset--color--void-black) !important;
 }
 
-/* Hover effect on table rows (acid lime accent) */
+/* Hover effect on table rows (highlight accent) */
 .wp-block-post-content table tr:hover {
-	border-color: var(--wp--preset--color--acid-lime) !important;
+	border-color: var(--wp--preset--color--highlight) !important;
 }
 
 /* Focus states for accessibility */
 .wp-block-post-content table th:focus,
 .wp-block-post-content table td:focus {
-	outline: 2px solid var(--wp--preset--color--acid-lime) !important;
+	outline: 2px solid var(--wp--preset--color--highlight) !important;
 	outline-offset: 2px;
 }
 
@@ -416,26 +416,26 @@ ul.gcb-bento-grid__container.wp-block-post-template > li.wp-block-post {
 .wp-block-query-pagination .page-numbers:hover,
 .wp-block-query-pagination-previous:hover,
 .wp-block-query-pagination-next:hover {
-	border-color: var(--wp--preset--color--acid-lime) !important;
-	color: var(--wp--preset--color--acid-lime) !important;
+	border-color: var(--wp--preset--color--highlight) !important;
+	color: var(--wp--preset--color--highlight) !important;
 }
 
 /* Focus states */
 .wp-block-query-pagination .page-numbers:focus,
 .wp-block-query-pagination-previous:focus,
 .wp-block-query-pagination-next:focus {
-	border-color: var(--wp--preset--color--acid-lime) !important;
-	outline: 2px solid var(--wp--preset--color--acid-lime) !important;
+	border-color: var(--wp--preset--color--highlight) !important;
+	outline: 2px solid var(--wp--preset--color--highlight) !important;
 	outline-offset: 2px !important;
 }
 
-/* Current page - acid lime background */
+/* Current page - highlight background */
 .wp-block-query-pagination .page-numbers.current,
 .wp-block-query-pagination-numbers .current,
 .wp-block-query-pagination .page-numbers[aria-current="page"] {
-	background: var(--wp--preset--color--acid-lime) !important;
+	background: var(--wp--preset--color--highlight) !important;
 	color: var(--wp--preset--color--void-black) !important;
-	border-color: var(--wp--preset--color--acid-lime) !important;
+	border-color: var(--wp--preset--color--highlight) !important;
 	font-weight: 700 !important;
 }
 
@@ -473,18 +473,18 @@ ul.gcb-bento-grid__container.wp-block-post-template > li.wp-block-post {
 
 .search-pagination a:hover,
 .search-pagination a:focus {
-	border-color: var(--wp--preset--color--acid-lime) !important;
-	color: var(--wp--preset--color--acid-lime) !important;
+	border-color: var(--wp--preset--color--highlight) !important;
+	color: var(--wp--preset--color--highlight) !important;
 }
 
 .search-pagination a:focus-visible {
-	outline: 2px solid var(--wp--preset--color--acid-lime) !important;
+	outline: 2px solid var(--wp--preset--color--highlight) !important;
 	outline-offset: 2px !important;
 }
 
 .search-pagination .current {
-	background: var(--wp--preset--color--acid-lime) !important;
+	background: var(--wp--preset--color--highlight) !important;
 	color: var(--wp--preset--color--void-black) !important;
-	border-color: var(--wp--preset--color--acid-lime) !important;
+	border-color: var(--wp--preset--color--highlight) !important;
 	font-weight: 700 !important;
 }

@@ -671,7 +671,7 @@ function gcb_category_children_shortcode() {
 	$html = '<div class="category-children-grid" style="margin-bottom: 4rem;">';
 
 	// Section Header
-	$html .= '<div style="border-bottom: 2px solid var(--wp--preset--color--acid-lime); padding-bottom: 1.5rem; margin-bottom: 2rem;">';
+	$html .= '<div style="border-bottom: 2px solid var(--wp--preset--color--highlight); padding-bottom: 1.5rem; margin-bottom: 2rem;">';
 	$html .= '<h2 style="font-family: var(--wp--preset--font-family--playfair); font-size: 2rem; text-transform: uppercase; color: var(--wp--preset--color--off-white); margin: 0;">Browse by Brand</h2>';
 	$html .= '</div>';
 
@@ -696,8 +696,8 @@ function gcb_category_children_shortcode() {
 
 	// Inline styles
 	$html .= '<style>';
-	$html .= '.brand-card:hover, .brand-card:focus { border-color: var(--wp--preset--color--acid-lime) !important; background-color: rgba(204, 255, 0, 0.05) !important; outline: none; }';
-	$html .= '.brand-card:focus-visible { outline: 2px solid var(--wp--preset--color--acid-lime); outline-offset: 2px; }';
+	$html .= '.brand-card:hover, .brand-card:focus { border-color: var(--wp--preset--color--highlight) !important; background-color: rgba(204, 255, 0, 0.05) !important; outline: none; }';
+	$html .= '.brand-card:focus-visible { outline: 2px solid var(--wp--preset--color--highlight); outline-offset: 2px; }';
 	$html .= '@media (max-width: 768px) { .brands-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important; } }';
 	$html .= '@media (max-width: 480px) { .brands-grid { grid-template-columns: 1fr 1fr !important; } }';
 	$html .= '</style>';
@@ -751,7 +751,7 @@ add_shortcode( 'gcb_category_posts', 'gcb_category_posts_shortcode' );
  *
  * Features:
  * - Queries database for all years with published posts
- * - Highlights current year with acid-lime background
+ * - Highlights current year with highlight color background
  * - Links to WordPress year archive URLs (/YYYY/)
  * - WCAG 2.2 AA compliant (44px touch targets, focus indicators)
  *
@@ -834,8 +834,8 @@ function gcb_browse_all_link_shortcode(): string {
 	$archive_url = get_year_link( $target_year );
 
 	return sprintf(
-		'<a href="%s" class="gcb-browse-all-link" style="display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0.75rem 2rem; font-family: var(--wp--preset--font-family--mono); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.1em; text-decoration: none; border: 2px solid var(--wp--preset--color--brutal-border); background: var(--wp--preset--color--void-black); color: var(--wp--preset--color--off-white); transition: none;">BROWSE ALL POSTS<span style="margin-left: 0.5rem; color: var(--wp--preset--color--acid-lime);">&rarr;</span></a>
-		<style>.gcb-browse-all-link:hover,.gcb-browse-all-link:focus{border-color: var(--wp--preset--color--acid-lime) !important;outline: 2px solid var(--wp--preset--color--acid-lime);outline-offset: 2px;}</style>',
+		'<a href="%s" class="gcb-browse-all-link" style="display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0.75rem 2rem; font-family: var(--wp--preset--font-family--mono); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.1em; text-decoration: none; border: 2px solid var(--wp--preset--color--brutal-border); background: var(--wp--preset--color--void-black); color: var(--wp--preset--color--off-white); transition: none;">BROWSE ALL POSTS<span style="margin-left: 0.5rem; color: var(--wp--preset--color--highlight);">&rarr;</span></a>
+		<style>.gcb-browse-all-link:hover,.gcb-browse-all-link:focus{border-color: var(--wp--preset--color--highlight) !important;outline: 2px solid var(--wp--preset--color--highlight);outline-offset: 2px;}</style>',
 		esc_url( $archive_url )
 	);
 }
@@ -1470,7 +1470,7 @@ function gcb_video_archive_shortcode() {
 
 		.gcb-video-archive__card:hover,
 		.gcb-video-archive__card:focus-within {
-			border-color: var(--wp--preset--color--acid-lime) !important;
+			border-color: var(--wp--preset--color--highlight) !important;
 		}
 
 		.gcb-video-archive__card a {
@@ -1479,7 +1479,7 @@ function gcb_video_archive_shortcode() {
 		}
 
 		.gcb-video-archive__card a:focus {
-			outline: 2px solid var(--wp--preset--color--acid-lime);
+			outline: 2px solid var(--wp--preset--color--highlight);
 			outline-offset: 2px;
 		}
 
@@ -1523,7 +1523,7 @@ function gcb_video_archive_shortcode() {
 		.gcb-video-archive__play svg {
 			width: 64px;
 			height: 64px;
-			color: var(--wp--preset--color--acid-lime);
+			color: var(--wp--preset--color--highlight);
 			filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
 		}
 
@@ -1733,7 +1733,7 @@ function gcb_render_video_archive() {
 <main id="main-content" class="wp-block-group" style="margin-top:var(--wp--preset--spacing--50);padding-right:var(--wp--preset--spacing--30);padding-left:var(--wp--preset--spacing--30);padding-bottom:var(--wp--preset--spacing--60)">
 
 	<!-- Archive Header -->
-	<div class="wp-block-group" style="border-bottom-color:var(--wp--preset--color--acid-lime);border-bottom-width:2px;border-bottom-style:solid;margin-bottom:var(--wp--preset--spacing--50);padding-bottom:var(--wp--preset--spacing--30)">
+	<div class="wp-block-group" style="border-bottom-color:var(--wp--preset--color--highlight);border-bottom-width:2px;border-bottom-style:solid;margin-bottom:var(--wp--preset--spacing--50);padding-bottom:var(--wp--preset--spacing--30)">
 		<h1 class="wp-block-heading has-off-white-color has-text-color" style="font-family:var(--wp--preset--font-family--playfair);font-size:3rem;text-transform:uppercase;color:var(--wp--preset--color--off-white);">ALL VIDEOS</h1>
 		<p class="has-brutal-grey-color has-text-color" style="font-family:var(--wp--preset--font-family--system);font-size:1.125rem;margin-top:var(--wp--preset--spacing--20);color:var(--wp--preset--color--brutal-grey);">Watch the latest automotive content from Gay Car Boys on YouTube.</p>
 	</div>

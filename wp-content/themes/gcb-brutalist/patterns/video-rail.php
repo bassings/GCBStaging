@@ -43,10 +43,10 @@ if ( empty( $videos ) ) {
 		}
 		.gcb-video-rail__container::-webkit-scrollbar-thumb {
 			background: var(--wp--preset--color--brutal-border);
-			border: 1px solid var(--wp--preset--color--acid-lime);
+			border: 1px solid var(--wp--preset--color--highlight);
 		}
 		.gcb-video-rail__container::-webkit-scrollbar-thumb:hover {
-			background: var(--wp--preset--color--acid-lime);
+			background: var(--wp--preset--color--highlight);
 		}
 
 		/* Video card: responsive widths - scaled up to match bento card sizes */
@@ -101,7 +101,7 @@ if ( empty( $videos ) ) {
 
 		/* Video card hover effect */
 		.gcb-video-card:hover .gcb-video-card__border {
-			border-color: var(--wp--preset--color--acid-lime) !important;
+			border-color: var(--wp--preset--color--highlight) !important;
 		}
 	</style>
 
@@ -141,7 +141,7 @@ if ( empty( $videos ) ) {
 
 						<!-- Play Button Overlay (Center) -->
 						<div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
-							<svg class="video-play-button" style="color: var(--wp--preset--color--acid-lime); filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));" viewBox="0 0 100 100" fill="currentColor" role="img" aria-label="<?php echo esc_attr( sprintf( __( 'Play video: %s', 'gcb-brutalist' ), $title ) ); ?>">
+							<svg class="video-play-button" style="color: var(--wp--preset--color--highlight); filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));" viewBox="0 0 100 100" fill="currentColor" role="img" aria-label="<?php echo esc_attr( sprintf( __( 'Play video: %s', 'gcb-brutalist' ), $title ) ); ?>">
 								<title><?php echo esc_html( sprintf( __( 'Play video: %s', 'gcb-brutalist' ), $title ) ); ?></title>
 								<polygon points="30,20 30,80 80,50" />
 							</svg>

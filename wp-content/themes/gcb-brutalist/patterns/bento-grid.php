@@ -43,7 +43,7 @@ if ( ! $grid_posts->have_posts() ) {
 	<!-- /wp:separator -->
 
 	<!-- Bento Grid Container -->
-	<div class="gcb-bento-grid__container bento-grid-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; grid-auto-rows: minmax(200px, auto);">
+	<div class="gcb-bento-grid__container bento-grid-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; align-items: stretch;">
 
 		<?php
 		$index = 0;
@@ -65,7 +65,7 @@ if ( ! $grid_posts->have_posts() ) {
 			?>
 
 			<!-- Bento Grid Item -->
-			<div class="bento-item gcb-bento-card bento-item--standard <?php echo esc_attr( $size_class ); ?>" data-size="<?php echo $is_featured ? 'large' : 'standard'; ?>" style="<?php echo esc_attr( $grid_span ); ?> border: 2px solid var(--wp--preset--color--brutal-border); background: var(--wp--preset--color--void-black); overflow: hidden; display: flex; flex-direction: column;">
+			<div class="bento-item gcb-bento-card bento-item--standard <?php echo esc_attr( $size_class ); ?>" data-size="<?php echo $is_featured ? 'large' : 'standard'; ?>" style="<?php echo esc_attr( $grid_span ); ?> border: 2px solid var(--wp--preset--color--brutal-border); background: var(--wp--preset--color--void-black); overflow: hidden; display: flex; flex-direction: column; height: 100%;">
 
 				<!-- Thumbnail -->
 				<?php if ( $thumbnail ) : ?>
@@ -89,18 +89,16 @@ if ( ! $grid_posts->have_posts() ) {
 				<!-- Card Content -->
 				<div style="padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column;">
 					<!-- Title -->
-					<<?php echo $is_featured ? 'h2' : 'h3'; ?> class="gcb-bento-card__title" style="font-family: var(--wp--preset--font-family--playfair); font-size: <?php echo $is_featured ? '2rem' : '1.25rem'; ?>; line-height: 1.3; margin: 0 0 1rem 0; color: var(--wp--preset--color--off-white);">
+					<h3 class="gcb-bento-card__title" style="font-family: var(--wp--preset--font-family--playfair); font-size: 1.25rem; line-height: 1.3; margin: 0 0 0.75rem 0; color: var(--wp--preset--color--off-white);">
 						<a href="<?php echo esc_url( get_permalink() ); ?>" style="color: inherit; text-decoration: none;">
 							<?php echo esc_html( get_the_title() ); ?>
 						</a>
-					</<?php echo $is_featured ? 'h2' : 'h3'; ?>>
+					</h3>
 
-					<!-- Excerpt (featured posts only) -->
-					<?php if ( $is_featured ) : ?>
-						<p style="font-family: var(--wp--preset--font-family--system-sans); font-size: 1rem; line-height: 1.6; color: var(--wp--preset--color--off-white); margin: 0 0 1rem 0;">
-							<?php echo esc_html( wp_trim_words( get_the_excerpt(), 20 ) ); ?>
-						</p>
-					<?php endif; ?>
+					<!-- Excerpt (all cards) -->
+					<p class="gcb-bento-card__excerpt" style="font-family: var(--wp--preset--font-family--system-sans); font-size: 0.875rem; line-height: 1.5; color: var(--wp--preset--color--brutal-grey); margin: 0 0 0.75rem 0; flex-grow: 1;">
+						<?php echo esc_html( wp_trim_words( get_the_excerpt(), 15 ) ); ?>
+					</p>
 
 					<!-- Metadata -->
 					<div class="gcb-bento-card__meta" style="margin-top: auto; display: flex; gap: 0.75rem; align-items: center; font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; color: var(--wp--preset--color--brutal-grey);">
@@ -157,35 +155,21 @@ if ( ! $grid_posts->have_posts() ) {
 
 	/* Hover effect */
 	.bento-item:hover {
-		border-color: var(--wp--preset--color--acid-lime) !important;
+		border-color: var(--wp--preset--color--highlight) !important;
 	}
 
-	/* Bento Grid Image Heights - Optimized to reduce cropping */
-	.bento-item--featured .gcb-bento-card__image {
-		height: 280px; /* Mobile */
+	/* Bento Grid Image Heights - Uniform across all cards */
+	.gcb-bento-card__image {
+		height: 200px; /* Mobile */
 	}
 	@media (min-width: 768px) {
-		.bento-item--featured .gcb-bento-card__image {
-			height: 320px; /* Tablet */
+		.gcb-bento-card__image {
+			height: 220px; /* Tablet */
 		}
 	}
 	@media (min-width: 1024px) {
-		.bento-item--featured .gcb-bento-card__image {
-			height: 350px; /* Desktop - reduced from 400px */
-		}
-	}
-
-	.bento-item:not(.bento-item--featured) .gcb-bento-card__image {
-		height: 200px; /* Mobile - unchanged */
-	}
-	@media (min-width: 768px) {
-		.bento-item:not(.bento-item--featured) .gcb-bento-card__image {
-			height: 210px; /* Tablet */
-		}
-	}
-	@media (min-width: 1024px) {
-		.bento-item:not(.bento-item--featured) .gcb-bento-card__image {
-			height: 220px; /* Desktop - increased from 200px */
+		.gcb-bento-card__image {
+			height: 240px; /* Desktop - uniform for all cards */
 		}
 	}
 </style>

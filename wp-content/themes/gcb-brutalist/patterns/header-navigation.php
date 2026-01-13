@@ -112,7 +112,7 @@
 		left: 0;
 		z-index: 1000;
 		padding: 0.75rem 1.5rem;
-		background-color: var(--wp--preset--color--acid-lime);
+		background-color: var(--wp--preset--color--highlight);
 		color: var(--wp--preset--color--void-black);
 		font-family: var(--wp--preset--font-family--mono);
 		font-size: 0.875rem;
@@ -124,7 +124,7 @@
 
 	.skip-link:focus {
 		top: 0;
-		outline: 2px solid var(--wp--preset--color--acid-lime);
+		outline: 2px solid var(--wp--preset--color--highlight);
 		outline-offset: 2px;
 	}
 
@@ -212,12 +212,12 @@
 
 	.nav-link:hover,
 	.nav-link:focus {
-		color: var(--wp--preset--color--acid-lime);
+		color: var(--wp--preset--color--highlight);
 		outline: none;
 	}
 
 	.nav-link:focus-visible {
-		outline: 2px solid var(--wp--preset--color--acid-lime);
+		outline: 2px solid var(--wp--preset--color--highlight);
 		outline-offset: 2px;
 	}
 
@@ -239,11 +239,11 @@
 	}
 
 	.search-toggle:hover {
-		border-color: var(--wp--preset--color--acid-lime);
+		border-color: var(--wp--preset--color--highlight);
 	}
 
 	.search-toggle:focus-visible {
-		outline: 2px solid var(--wp--preset--color--acid-lime);
+		outline: 2px solid var(--wp--preset--color--highlight);
 		outline-offset: 2px;
 	}
 
@@ -381,7 +381,7 @@
 	}
 
 	.menu-close:hover {
-		color: var(--wp--preset--color--acid-lime);
+		color: var(--wp--preset--color--highlight);
 	}
 
 	.close-icon {
@@ -423,13 +423,13 @@
 
 	.mobile-nav-link:hover,
 	.mobile-nav-link:focus {
-		color: var(--wp--preset--color--acid-lime);
+		color: var(--wp--preset--color--highlight);
 		border-color: var(--wp--preset--color--brutal-border);
 		outline: none;
 	}
 
 	.mobile-nav-link:focus-visible {
-		outline: 2px solid var(--wp--preset--color--acid-lime);
+		outline: 2px solid var(--wp--preset--color--highlight);
 		outline-offset: 2px;
 	}
 
@@ -455,16 +455,16 @@
 	}
 
 	.mobile-search-toggle:hover {
-		border-color: var(--wp--preset--color--acid-lime);
+		border-color: var(--wp--preset--color--highlight);
 	}
 
 	.mobile-search-toggle:focus-visible {
-		outline: 2px solid var(--wp--preset--color--acid-lime);
+		outline: 2px solid var(--wp--preset--color--highlight);
 		outline-offset: 2px;
 	}
 
 	.mobile-search-toggle .search-prompt {
-		color: var(--wp--preset--color--acid-lime);
+		color: var(--wp--preset--color--highlight);
 		font-weight: 700;
 	}
 

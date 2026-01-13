@@ -120,11 +120,11 @@
 }
 
 .search-modal__close:hover {
-	color: var(--wp--preset--color--acid-lime, #CCFF00);
+	color: var(--wp--preset--color--highlight, #0084FF);
 }
 
 .search-modal__close:focus {
-	outline: 2px solid var(--wp--preset--color--acid-lime, #CCFF00);
+	outline: 2px solid var(--wp--preset--color--highlight, #0084FF);
 	outline-offset: 2px;
 }
 
@@ -149,7 +149,7 @@
 	font-family: var(--wp--preset--font-family--mono, 'Space Mono', monospace);
 	font-size: 1.5rem;
 	font-weight: 700;
-	color: var(--wp--preset--color--acid-lime, #CCFF00);
+	color: var(--wp--preset--color--highlight, #0084FF);
 	flex-shrink: 0;
 }
 
@@ -158,7 +158,7 @@
 	flex: 1;
 	background: transparent;
 	border: none;
-	color: var(--wp--preset--color--acid-lime, #CCFF00);
+	color: var(--wp--preset--color--highlight, #0084FF);
 	font-family: var(--wp--preset--font-family--mono, 'Space Mono', monospace);
 	font-size: 1.5rem;
 	outline: none;
@@ -166,11 +166,11 @@
 }
 
 .terminal-search-input::placeholder {
-	color: rgba(204, 255, 0, 0.7); /* 70% Acid Lime - improved contrast */
+	color: rgba(0, 132, 255, 0.7); /* 70% Acid Lime - improved contrast */
 }
 
 .terminal-search-input:focus {
-	outline: 2px solid var(--wp--preset--color--acid-lime, #CCFF00);
+	outline: 2px solid var(--wp--preset--color--highlight, #0084FF);
 	outline-offset: 4px;
 }
 
@@ -178,7 +178,7 @@
 .terminal-submit {
 	background: transparent;
 	border: 1px solid var(--wp--preset--color--brutal-border, #333333);
-	color: var(--wp--preset--color--acid-lime, #CCFF00);
+	color: var(--wp--preset--color--highlight, #0084FF);
 	font-size: 1.5rem;
 	padding: 0.5rem 1rem;
 	cursor: pointer;
@@ -188,12 +188,12 @@
 }
 
 .terminal-submit:hover {
-	background: rgba(204, 255, 0, 0.1);
-	border-color: var(--wp--preset--color--acid-lime, #CCFF00);
+	background: rgba(0, 132, 255, 0.1);
+	border-color: var(--wp--preset--color--highlight, #0084FF);
 }
 
 .terminal-submit:focus {
-	outline: 2px solid var(--wp--preset--color--acid-lime, #CCFF00);
+	outline: 2px solid var(--wp--preset--color--highlight, #0084FF);
 	outline-offset: 2px;
 }
 

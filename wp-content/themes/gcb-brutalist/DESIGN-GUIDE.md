@@ -33,7 +33,7 @@
 |------|-----|--------------|-------|----------------|
 | **Void Black** | `#050505` | `--wp--preset--color--void-black` | Main background (OLED Black) | - |
 | **Off-White** | `#FAFAFA` | `--wp--preset--color--off-white` | Body text, headings | 19.8:1 |
-| **Acid Lime** | `#CCFF00` | `--wp--preset--color--acid-lime` | Primary CTA, play buttons, accents, hover states | 18.2:1 |
+| **Highlight** | `#0084FF` | `--wp--preset--color--highlight` | Primary CTA, play buttons, accents, hover states | 5.6:1 |
 | **Brutal Border** | `#333333` | `--wp--preset--color--brutal-border` | Borders, dividers | - |
 | **Brutal Grey** | `#999999` | `--wp--preset--color--brutal-grey` | Secondary text, metadata | 8.6:1 (AAA) |
 
@@ -43,8 +43,8 @@
 - **Background:** Always Void Black
 - **Primary Text:** Off-White
 - **Metadata/Secondary:** Brutal Grey
-- **Interactive Accents:** Acid Lime
-- **Borders:** Brutal Border (default), Acid Lime (hover/focus)
+- **Interactive Accents:** Highlight
+- **Borders:** Brutal Border (default), Highlight (hover/focus)
 
 ---
 
@@ -151,7 +151,7 @@ header.site-header
 | Transform | uppercase |
 | Letter-spacing | 0.05em |
 | Color | Off-White |
-| Hover | Acid Lime |
+| Hover | Highlight |
 
 #### Mobile Menu
 | Property | Value |
@@ -205,7 +205,7 @@ header.site-header
 | Grid Span | 2 columns | 1 column |
 | Border | 2px solid Brutal Border | 2px solid Brutal Border |
 | Background | Void Black | Void Black |
-| Hover Border | Acid Lime | Acid Lime |
+| Hover Border | Highlight | Highlight |
 
 #### Card Image Heights
 | Breakpoint | Featured | Standard |
@@ -264,7 +264,7 @@ header.site-header
 | Overflow | scroll-snap-type: x mandatory |
 | Scrollbar Height | 6px |
 | Scrollbar Track | Void Black |
-| Scrollbar Thumb | Brutal Border with Acid Lime border |
+| Scrollbar Thumb | Brutal Border with Highlight border |
 
 #### Card Specifications
 | Breakpoint | Width | Aspect Ratio |
@@ -277,7 +277,7 @@ header.site-header
 | Property | Mobile | Desktop (640px+) |
 |----------|--------|------------------|
 | Size | 4rem (64px) | 5rem (80px) |
-| Color | Acid Lime | Acid Lime |
+| Color | Highlight | Highlight |
 | Shape | Triangle polygon |
 | Filter | drop-shadow(0 4px 8px rgba(0,0,0,0.5)) |
 
@@ -342,13 +342,13 @@ header.site-header
 | Border | 1px solid Brutal Border |
 | Padding | spacing-30 |
 | Min-height | 200px |
-| Hover Border | Acid Lime |
+| Hover Border | Highlight |
 | **NO IMAGES** | Images hidden |
 
 #### Card Typography
 | Element | Font | Size | Color |
 |---------|------|------|-------|
-| Category | Space Mono | 0.75rem | Acid Lime |
+| Category | Space Mono | 0.75rem | Highlight |
 | Title | Playfair | 1.5rem | Off-White |
 | Excerpt | Space Mono | 0.875rem | Brutal Grey |
 | Date | Space Mono | 0.75rem | Brutal Grey |
@@ -377,7 +377,7 @@ header.site-header
 | Font | Playfair Display, 2rem (should be 2.5rem) |
 | Color | Off-White |
 | Transform | uppercase |
-| Border-bottom | 2px solid Acid Lime |
+| Border-bottom | 2px solid Highlight |
 
 #### Grid Layout
 | Breakpoint | Columns |
@@ -392,7 +392,7 @@ header.site-header
 | Padding | 1.5rem 1rem |
 | Border | 2px solid Brutal Border |
 | Background | transparent |
-| Hover Border | Acid Lime |
+| Hover Border | Highlight |
 | Hover Background | rgba(204, 255, 0, 0.05) |
 
 #### Card Typography
@@ -448,7 +448,7 @@ header.site-header
 | Icon Size | 2rem |
 | Touch Target | 44px × 44px |
 | Color | Brutal Grey |
-| Hover | Acid Lime |
+| Hover | Highlight |
 
 #### Copyright
 | Property | Value |
@@ -466,10 +466,10 @@ header.site-header
 
 | Element | Effect |
 |---------|--------|
-| Cards | Border changes to Acid Lime |
-| Links | Color changes to Acid Lime |
-| Buttons | Border changes to Acid Lime |
-| Social Icons | Color changes to Acid Lime |
+| Cards | Border changes to Highlight |
+| Links | Color changes to Highlight |
+| Buttons | Border changes to Highlight |
+| Social Icons | Color changes to Highlight |
 
 **Important:** Hover effects should ONLY change borders/colors. No background color changes except where explicitly specified.
 
@@ -479,7 +479,7 @@ All interactive elements must have visible focus indicators:
 
 ```css
 :focus-visible {
-    outline: 2px solid var(--wp--preset--color--acid-lime);
+    outline: 2px solid var(--wp--preset--color--highlight);
     outline-offset: 2px;
 }
 ```
@@ -488,7 +488,7 @@ All interactive elements must have visible focus indicators:
 |----------|-------|
 | Outline Width | 2px |
 | Outline Style | solid |
-| Outline Color | Acid Lime |
+| Outline Color | Highlight |
 | Outline Offset | 2px |
 
 ### Transitions
@@ -551,7 +551,7 @@ All interactive elements must have visible focus indicators:
 All text combinations exceed WCAG AA requirements:
 - Off-White on Void Black: 19.8:1 (exceeds AAA)
 - Brutal Grey on Void Black: 8.6:1 (exceeds AAA)
-- Acid Lime on Void Black: 18.2:1 (exceeds AAA)
+- Highlight on Void Black: 18.2:1 (exceeds AAA)
 
 #### Touch Targets
 Minimum 44px × 44px for all interactive elements (exceeds 24px AA requirement)
@@ -583,7 +583,7 @@ Header includes skip link for keyboard users:
 ```css
 --wp--preset--color--void-black: #050505;
 --wp--preset--color--off-white: #FAFAFA;
---wp--preset--color--acid-lime: #CCFF00;
+--wp--preset--color--highlight: #0084FF;
 --wp--preset--color--brutal-border: #333333;
 --wp--preset--color--brutal-grey: #999999;
 ```
@@ -623,7 +623,7 @@ Header includes skip link for keyboard users:
 ### Card Pattern
 - Border: 1px-2px solid Brutal Border
 - Background: Void Black
-- Hover: Border → Acid Lime
+- Hover: Border → Highlight
 - Padding: 1.5rem (spacing-30)
 
 ### Metadata Pattern
@@ -634,6 +634,6 @@ Header includes skip link for keyboard users:
 
 ### Interactive Elements
 - Touch target: 44px minimum
-- Focus: 2px solid Acid Lime, 2px offset
-- Hover: Acid Lime border/color
+- Focus: 2px solid Highlight, 2px offset
+- Hover: Highlight border/color
 - Transitions: none (except mobile menu)

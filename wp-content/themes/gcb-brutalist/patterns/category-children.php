@@ -65,12 +65,12 @@ if ( empty( $child_categories ) || is_wp_error( $child_categories ) ) {
 	<style>
 		.brand-card:hover,
 		.brand-card:focus {
-			border-color: var(--wp--preset--color--acid-lime) !important;
+			border-color: var(--wp--preset--color--highlight) !important;
 			outline: none;
 		}
 
 		.brand-card:focus-visible {
-			outline: 2px solid var(--wp--preset--color--acid-lime);
+			outline: 2px solid var(--wp--preset--color--highlight);
 			outline-offset: 2px;
 		}
 

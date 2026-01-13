@@ -42,9 +42,9 @@
           "slug": "off-white"
         },
         {
-          "color": "#CCFF00",
-          "name": "Acid Lime",
-          "slug": "acid-lime"
+          "color": "#0084FF",
+          "name": "Electric Blue",
+          "slug": "highlight"
         },
         {
           "color": "#333333",
@@ -163,7 +163,7 @@
     "elements": {
       "link": {
         "color": {
-          "text": "var(--wp--preset--color--acid-lime)"
+          "text": "var(--wp--preset--color--highlight)"
         },
         ":hover": {
           "color": {
@@ -189,7 +189,7 @@
             },
             ":hover": {
               "color": {
-                "text": "var(--wp--preset--color--acid-lime)"
+                "text": "var(--wp--preset--color--highlight)"
               }
             }
           }

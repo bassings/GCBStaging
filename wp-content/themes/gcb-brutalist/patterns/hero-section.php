@@ -50,9 +50,9 @@ if ( ! $hero_posts->have_posts() ) {
 			$grid_span    = $is_feature ? 'grid-column: span 2;' : 'grid-column: span 1;';
 			$heading_tag  = $is_feature ? 'h1' : 'h2';
 
-			// North Star: Opinion badge uses brutal-grey (readable gray), feature uses acid-lime
-			$badge_border_color = $is_feature ? 'var(--wp--preset--color--acid-lime)' : 'var(--wp--preset--color--brutal-grey)';
-			$badge_text_color   = $is_feature ? 'var(--wp--preset--color--acid-lime)' : 'var(--wp--preset--color--brutal-grey)';
+			// North Star: Opinion badge uses brutal-grey (readable gray), feature uses highlight color
+			$badge_border_color = $is_feature ? 'var(--wp--preset--color--highlight)' : 'var(--wp--preset--color--brutal-grey)';
+			$badge_text_color   = $is_feature ? 'var(--wp--preset--color--highlight)' : 'var(--wp--preset--color--brutal-grey)';
 			?>
 
 			<!-- Hero Card -->
@@ -114,7 +114,7 @@ if ( ! $hero_posts->have_posts() ) {
 							<div style="width: 1px; height: 1rem; background-color: var(--wp--preset--color--brutal-grey);"></div>
 
 							<!-- Read Time (Feature only) -->
-							<span class="gcb-hero__read-time read-time" data-read-time="<?php echo esc_attr( $read_time ); ?>" style="color: var(--wp--preset--color--acid-lime);">
+							<span class="gcb-hero__read-time read-time" data-read-time="<?php echo esc_attr( $read_time ); ?>" style="color: var(--wp--preset--color--highlight);">
 								Read Time: <?php echo esc_html( $read_time ); ?> min
 							</span>
 						<?php endif; ?>
@@ -173,7 +173,7 @@ if ( ! $hero_posts->have_posts() ) {
 
 	/* North Star: Opinion Badge Hover Effect (gray → lime) */
 	.gcb-hero__opinion:hover .opinion-badge {
-		color: var(--wp--preset--color--acid-lime) !important;
+		color: var(--wp--preset--color--highlight) !important;
 	}
 
 	/* Responsive Card Heights - Optimized to reduce image cropping */
@@ -237,7 +237,7 @@ if ( ! $hero_posts->have_posts() ) {
 	/* Hover effect: Acid Lime border */
 	.gcb-hero__feature:hover,
 	.gcb-hero__opinion:hover {
-		border-color: var(--wp--preset--color--acid-lime);
+		border-color: var(--wp--preset--color--highlight);
 	}
 
 	/* Ensure link covers entire card for better UX */

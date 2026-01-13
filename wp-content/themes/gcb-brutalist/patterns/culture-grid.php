@@ -7,11 +7,11 @@
  *
  * Editorial Brutalism Pattern:
  * - Text-only cards for high information density (NO images)
- * - Category labels with acid lime color
+ * - Category labels with highlight color
  * - Playfair Display headlines (serif, large)
  * - Space Mono excerpts with Brutal Grey color
  * - Date only (no author on cards)
- * - Brutal Border with Acid Lime hover effect
+ * - Brutal Border with highlight color hover effect
  * - Responsive: 1 col mobile, 2 col tablet, 4 col desktop
  */
 
@@ -162,7 +162,7 @@ if ( ! $culture_grid_query->have_posts() ) {
     }
 
     .culture-card:hover {
-        border-color: var(--wp--preset--color--acid-lime);
+        border-color: var(--wp--preset--color--highlight);
     }
 
     .culture-card-link {
@@ -178,7 +178,7 @@ if ( ! $culture_grid_query->have_posts() ) {
         font-family: var(--wp--preset--font-family--mono);
         font-size: 0.75rem;
         font-weight: 700;
-        color: var(--wp--preset--color--acid-lime);
+        color: var(--wp--preset--color--highlight);
         letter-spacing: 0.1em;
         margin-bottom: 1rem;
         text-transform: uppercase;
@@ -226,7 +226,7 @@ if ( ! $culture_grid_query->have_posts() ) {
 
     /* Accessibility: Focus States */
     .culture-card:focus-within {
-        outline: 2px solid var(--wp--preset--color--acid-lime);
+        outline: 2px solid var(--wp--preset--color--highlight);
         outline-offset: 2px;
     }
 
