@@ -1,5 +1,86 @@
 <!-- wp:template-part {"slug":"header"} /-->
 
+<!-- wp:html -->
+<style>
+/* Category Grid - Force equal card heights */
+.gcb-category-grid .wp-block-post-template {
+	display: grid !important;
+	grid-template-columns: repeat(3, 1fr) !important;
+	grid-auto-rows: 1fr !important;
+	align-items: stretch !important;
+}
+
+@media (max-width: 1024px) {
+	.gcb-category-grid .wp-block-post-template {
+		grid-template-columns: repeat(2, 1fr) !important;
+	}
+}
+
+@media (max-width: 768px) {
+	.gcb-category-grid .wp-block-post-template {
+		grid-template-columns: 1fr !important;
+	}
+}
+
+/* Override WordPress margins on li elements */
+.gcb-category-grid .wp-block-post-template > li.wp-block-post {
+	display: grid !important;
+	grid-template-rows: 1fr !important;
+	grid-template-columns: 1fr !important;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+/* Force card to fill entire grid cell */
+.gcb-category-grid .gcb-post-card,
+.gcb-category-grid .gcb-post-card.is-layout-constrained,
+.gcb-category-grid .gcb-post-card.wp-block-group-is-layout-constrained {
+	height: 100% !important;
+	min-height: 100% !important;
+	max-height: none !important;
+	display: flex !important;
+	flex-direction: column !important;
+	box-sizing: border-box !important;
+	align-self: stretch !important;
+	justify-self: stretch !important;
+	transition: none;
+}
+
+.gcb-category-grid .gcb-post-card:hover {
+	border-color: var(--wp--preset--color--acid-lime) !important;
+}
+
+/* Featured Image - Fixed Height */
+.gcb-category-grid .wp-block-post-featured-image {
+	height: 200px !important;
+	min-height: 200px !important;
+	max-height: 200px !important;
+	background: var(--wp--preset--color--brutal-border);
+	display: block !important;
+	overflow: hidden !important;
+	flex-shrink: 0 !important;
+}
+
+.gcb-category-grid .wp-block-post-featured-image img {
+	filter: none !important;
+	width: 100% !important;
+	height: 200px !important;
+	object-fit: cover !important;
+}
+
+/* Post content grows to fill remaining space */
+.gcb-category-grid .gcb-post-card .wp-block-post-excerpt {
+	flex: 1 1 auto !important;
+}
+
+/* Post date stays at bottom */
+.gcb-category-grid .gcb-post-card .wp-block-post-date {
+	margin-top: auto !important;
+	flex-shrink: 0 !important;
+}
+</style>
+<!-- /wp:html -->
+
 <!-- wp:group {"tagName":"main","style":{"spacing":{"margin":{"top":"var:preset|spacing|50"},"padding":{"right":"var:preset|spacing|30","left":"var:preset|spacing|30"}}},"layout":{"type":"constrained"}} -->
 <main id="main-content" class="wp-block-group" style="margin-top:var(--wp--preset--spacing--50);padding-right:var(--wp--preset--spacing--30);padding-left:var(--wp--preset--spacing--30)">
 
@@ -21,8 +102,8 @@
 	<!-- wp:template-part {"slug":"category-posts"} /-->
 
 	<!-- Posts Query Loop -->
-	<!-- wp:query {"queryId":1,"query":{"perPage":9,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":true},"align":"wide"} -->
-	<div class="wp-block-query alignwide">
+	<!-- wp:query {"queryId":1,"query":{"perPage":9,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":true},"align":"wide","className":"gcb-category-grid"} -->
+	<div class="wp-block-query alignwide gcb-category-grid">
 
 		<!-- wp:post-template {"style":{"spacing":{"blockGap":"var:preset|spacing|40"}},"layout":{"type":"grid","columnCount":3}} -->
 			<!-- wp:group {"className":"gcb-post-card","style":{"border":{"width":"2px","style":"solid","color":"var:preset|color|brutal-border"},"spacing":{"padding":"var:preset|spacing|30"}},"layout":{"type":"constrained"}} -->
