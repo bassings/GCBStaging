@@ -20,11 +20,11 @@ $cache_key          = 'gcb_culture_grid_offset_' . date( 'Y-m-d-H' );
 $culture_grid_query = get_transient( $cache_key );
 
 if ( false === $culture_grid_query ) {
-	// Query for posts after the bento-grid (offset by 8 to avoid duplicates).
+	// Query for posts after the bento-grid (offset by 7 to avoid duplicates).
 	$culture_grid_args = array(
 		'post_type'      => 'post',
 		'posts_per_page' => 8,
-		'offset'         => 8, // Skip first 8 posts shown in bento-grid
+		'offset'         => 7, // Skip first 7 posts shown in bento-grid
 		'post_status'    => 'publish',
 		'orderby'        => 'date',
 		'order'          => 'DESC',
@@ -60,10 +60,10 @@ if ( ! $culture_grid_query->have_posts() ) {
                 $post_date = get_the_date('M j'); // North Star: Short format (Dec 27)
                 $post_excerpt = get_the_excerpt();
 
-                // Limit excerpt to ~15 words for brutalist aesthetic
+                // Limit excerpt to 55 words (covers ~70% of posts without truncation)
                 $excerpt_words = explode(' ', $post_excerpt);
-                $short_excerpt = implode(' ', array_slice($excerpt_words, 0, 15));
-                if (count($excerpt_words) > 15) {
+                $short_excerpt = implode(' ', array_slice($excerpt_words, 0, 55));
+                if (count($excerpt_words) > 55) {
                     $short_excerpt .= '...';
                 }
 
@@ -130,8 +130,8 @@ if ( ! $culture_grid_query->have_posts() ) {
     .culture-grid-container {
         display: grid;
         gap: var(--wp--preset--spacing--30);
-        /* Desktop: 4 columns */
-        grid-template-columns: repeat(4, 1fr);
+        /* Desktop: 4 columns - minmax ensures equal widths */
+        grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
     /* Tablet: 2 columns */
@@ -204,6 +204,8 @@ if ( ! $culture_grid_query->have_posts() ) {
         line-height: 1.6;
         margin: 0 0 auto 0;
         flex-grow: 1;
+        word-break: break-word;
+        overflow-wrap: break-word;
     }
 
     /* Date Only (No Author) */

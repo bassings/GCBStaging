@@ -66,7 +66,7 @@ Git Workflow:
 3. Commit all changes with descriptive message
 4. Continue to next task
 
-⚠️ CURRENT SITE STATUS (Updated: January 2, 2026)
+⚠️ CURRENT SITE STATUS (Updated: January 15, 2026)
 =================================================
 
 PHASE 4 COMPLETE: Design Consistency Fixes Deployed ✅
@@ -77,7 +77,21 @@ Test Results: 81+ E2E tests passing
 - All footer tests passing (8/8)
 - Bento-grid tests passing (6/8 new tests pass)
 
-Recent Updates (January 2, 2026):
+Recent Updates (January 15, 2026):
+✅ Bento Grid Hero Layout: Hero tile now spans full row (3 columns)
+   - Changed from span 2 to grid-column: 1 / -1 (full width)
+   - Hero image uses 16:9 aspect ratio (640px height on desktop)
+   - Hero shows full excerpt, standard cards show 55 words
+   - Reduced from 8 to 7 posts (hero + 6 standard cards)
+✅ Standardized Excerpt Lengths: All card excerpts now 55 words
+   - Based on analysis of 100 posts: 70% of excerpts fit without truncation
+   - Updated: bento-grid.php, culture-grid.php, search-results.php, hero-section.php, functions.php
+   - Culture grid offset updated from 8 to 7 (starts at article 8)
+✅ Culture Grid CSS Fix: Equal column widths enforced
+   - Changed grid-template-columns to repeat(4, minmax(0, 1fr))
+   - Added word-break: break-word to prevent long words stretching columns
+
+Previous Updates (January 2, 2026):
 ✅ CRITICAL FIX: Removed aspect-ratio CSS causing site-wide JavaScript failure
    - aspect-ratio: 16/9 property caused CSS syntax error in WordPress rendering
    - `/` character mangled during HTML generation, breaking JavaScript parser
@@ -432,6 +446,21 @@ Video Rail Pattern:
 - Query: Filters by taxonomy content_format = video
 - Accessibility: Keyboard navigation with arrow keys, ARIA labels on play buttons
 
+Bento Grid Pattern (Featured Stories):
+- 7 posts total: 1 hero (full row) + 6 standard cards
+- Hero card: Spans full width (grid-column: 1 / -1), 16:9 image ratio (640px desktop)
+- Hero excerpt: Full excerpt (no truncation)
+- Standard cards: 3-column grid on desktop, 240px image height, 55-word excerpts
+- Mobile-First Responsive:
+  - <768px: Single column, all cards full width
+  - 768-1024px: Two columns, hero spans full width
+  - >1024px: Three columns, hero spans full row
+- Image heights: Desktop 640px hero / 240px standard, Tablet 430px / 220px, Mobile 220px / 200px
+- Metadata: Date + "Article" badge
+- Border: 2px solid Brutal Border (#333), hover changes to Highlight
+- Query: Latest 7 posts
+- Accessibility: Focus states on all links, semantic HTML5
+
 Hero Section Pattern (Not Currently in Use):
 ⚠️ NOTE: This pattern exists in the codebase but is **not currently included in index.html**. Pattern retained for potential future use.
 - Two-column layout using 3-column CSS Grid (feature card spans 2 columns)
@@ -446,14 +475,15 @@ Hero Section Pattern (Not Currently in Use):
 - Query: Latest post or manually featured post via meta
 - Accessibility: Focus states on all links, semantic HTML5 (article elements)
 
-Culture Grid Pattern:
+Culture Grid Pattern (Latest Reviews & News):
 - Mobile-First Grid: 1 col mobile (<768px), 2 cols tablet (768-1024px), 4 cols desktop (>1024px)
 - Text-only cards (NO images) for high information density
 - Category label: Acid lime text (Technology, Safety, News, Lifestyle), uppercase mono
 - Playfair headline: text-2xl desktop, text-xl mobile (never smaller than 20px)
-- Mono font excerpt: Brutal Grey color, 15 words max, 16px minimum size
+- Mono font excerpt: Brutal Grey color, 55 words max, 16px minimum size
 - Date only (no author displayed on these cards)
 - Card padding: 24px (adequate touch target spacing)
 - Border: 1px solid Brutal Border (#333), hover/focus changes to Electric Blue
-- Query: Standard posts, exclude videos
+- Grid columns use minmax(0, 1fr) to ensure equal widths regardless of content
+- Query: Standard posts, offset by 7 (starts at article 8), exclude videos
 - Accessibility: Full keyboard navigation, focus indicators on all cards, semantic article tags

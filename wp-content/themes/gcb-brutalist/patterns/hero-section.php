@@ -90,7 +90,7 @@ if ( ! $hero_posts->have_posts() ) {
 					<!-- Excerpt (opinion card only) -->
 					<?php if ( ! $is_feature ) : ?>
 						<p class="gcb-hero__excerpt" style="font-family: var(--wp--preset--font-family--system-sans); font-size: 0.875rem; line-height: 1.6; color: var(--wp--preset--color--off-white); margin: 0 0 1rem 0;">
-							<?php echo esc_html( wp_trim_words( get_the_excerpt(), 15 ) ); ?>
+							<?php echo esc_html( wp_trim_words( get_the_excerpt(), 55 ) ); ?>
 						</p>
 					<?php endif; ?>
 

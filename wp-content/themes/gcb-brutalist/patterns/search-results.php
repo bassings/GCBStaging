@@ -75,7 +75,7 @@ if ( $search_results->have_posts() ) :
 
 					<!-- Excerpt -->
 					<p class="gcb-bento-card__excerpt" style="font-family: var(--wp--preset--font-family--system-sans); font-size: 0.875rem; line-height: 1.5; color: var(--wp--preset--color--brutal-grey); margin: 0 0 0.75rem 0; flex-grow: 1;">
-						<?php echo esc_html( wp_trim_words( get_the_excerpt(), 15 ) ); ?>
+						<?php echo esc_html( wp_trim_words( get_the_excerpt(), 55 ) ); ?>
 					</p>
 
 					<!-- Metadata -->

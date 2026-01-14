@@ -544,7 +544,7 @@ function gcb_build_search_results_html() {
 			$search_results->the_post();
 			$permalink = esc_url( get_permalink() );
 			$title     = esc_html( get_the_title() );
-			$excerpt   = esc_html( wp_trim_words( get_the_excerpt(), 20 ) );
+			$excerpt   = esc_html( wp_trim_words( get_the_excerpt(), 55 ) );
 			$date      = esc_html( get_the_date( 'M j, Y' ) );
 			$datetime  = esc_attr( get_the_date( 'c' ) );
 

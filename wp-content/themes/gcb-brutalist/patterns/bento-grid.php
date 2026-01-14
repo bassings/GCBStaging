@@ -16,7 +16,7 @@ if ( false === $grid_posts ) {
 	$grid_posts = new WP_Query(
 		array(
 			'post_type'      => 'post',
-			'posts_per_page' => 8,
+			'posts_per_page' => 7,
 			'orderby'        => 'date',
 			'order'          => 'DESC',
 		)
@@ -52,10 +52,10 @@ if ( ! $grid_posts->have_posts() ) {
 			$post_id = get_the_ID();
 
 			// Determine card size (featured vs standard)
-			// First item is featured (spans 2 columns on desktop)
+			// First item is featured (spans full row - 3 columns on desktop)
 			$is_featured = ( 0 === $index );
 			$size_class  = $is_featured ? 'bento-item--featured bento-item--large' : '';
-			$grid_span   = $is_featured ? 'grid-column: span 2;' : '';
+			$grid_span   = $is_featured ? 'grid-column: 1 / -1;' : '';
 
 			// Get thumbnail with dimensions for CLS prevention.
 			$thumbnail_id = get_post_thumbnail_id( $post_id );
@@ -95,9 +95,15 @@ if ( ! $grid_posts->have_posts() ) {
 						</a>
 					</h3>
 
-					<!-- Excerpt (all cards) -->
+					<!-- Excerpt -->
 					<p class="gcb-bento-card__excerpt" style="font-family: var(--wp--preset--font-family--system-sans); font-size: 0.875rem; line-height: 1.5; color: var(--wp--preset--color--brutal-grey); margin: 0 0 0.75rem 0; flex-grow: 1;">
-						<?php echo esc_html( wp_trim_words( get_the_excerpt(), 15 ) ); ?>
+						<?php
+						if ( $is_featured ) {
+							echo esc_html( get_the_excerpt() ); // Full excerpt for hero
+						} else {
+							echo esc_html( wp_trim_words( get_the_excerpt(), 55 ) ); // Standard cards
+						}
+						?>
 					</p>
 
 					<!-- Metadata -->
@@ -144,6 +150,9 @@ if ( ! $grid_posts->have_posts() ) {
 		.gcb-bento-grid__container {
 			grid-template-columns: repeat(2, 1fr) !important;
 		}
+		.bento-item--featured {
+			grid-column: 1 / -1 !important;
+		}
 	}
 
 	/* Desktop: Auto-fit with featured spanning 2 columns */
@@ -158,7 +167,7 @@ if ( ! $grid_posts->have_posts() ) {
 		border-color: var(--wp--preset--color--highlight) !important;
 	}
 
-	/* Bento Grid Image Heights - Uniform across all cards */
+	/* Bento Grid Image Heights - Standard cards */
 	.gcb-bento-card__image {
 		height: 200px; /* Mobile */
 	}
@@ -169,7 +178,22 @@ if ( ! $grid_posts->have_posts() ) {
 	}
 	@media (min-width: 1024px) {
 		.gcb-bento-card__image {
-			height: 240px; /* Desktop - uniform for all cards */
+			height: 240px; /* Desktop */
+		}
+	}
+
+	/* Hero/Featured Image - 16:9 aspect ratio */
+	.bento-item--featured .gcb-bento-card__image {
+		height: 220px; /* Mobile */
+	}
+	@media (min-width: 768px) {
+		.bento-item--featured .gcb-bento-card__image {
+			height: 430px; /* Tablet */
+		}
+	}
+	@media (min-width: 1024px) {
+		.bento-item--featured .gcb-bento-card__image {
+			height: 640px; /* Desktop - 16:9 ratio */
 		}
 	}
 </style>
