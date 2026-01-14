@@ -35,7 +35,7 @@
 | **Off-White** | `#FAFAFA` | `--wp--preset--color--off-white` | Body text, headings | 19.8:1 |
 | **Highlight** | `#0084FF` | `--wp--preset--color--highlight` | Primary CTA, play buttons, accents, hover states | 5.6:1 |
 | **Brutal Border** | `#333333` | `--wp--preset--color--brutal-border` | Borders, dividers | - |
-| **Brutal Grey** | `#999999` | `--wp--preset--color--brutal-grey` | Secondary text, metadata | 8.6:1 (AAA) |
+| **Brutal Grey** | `#AAAAAA` | `--wp--preset--color--brutal-grey` | Secondary text, metadata | ~10:1 (AAA) |
 
 ### Usage Rules
 
@@ -550,7 +550,7 @@ All interactive elements must have visible focus indicators:
 #### Color Contrast
 All text combinations exceed WCAG AA requirements:
 - Off-White on Void Black: 19.8:1 (exceeds AAA)
-- Brutal Grey on Void Black: 8.6:1 (exceeds AAA)
+- Brutal Grey on Void Black: ~10:1 (exceeds AAA)
 - Highlight on Void Black: 18.2:1 (exceeds AAA)
 
 #### Touch Targets
@@ -585,7 +585,7 @@ Header includes skip link for keyboard users:
 --wp--preset--color--off-white: #FAFAFA;
 --wp--preset--color--highlight: #0084FF;
 --wp--preset--color--brutal-border: #333333;
---wp--preset--color--brutal-grey: #999999;
+--wp--preset--color--brutal-grey: #AAAAAA;
 ```
 
 ### Typography

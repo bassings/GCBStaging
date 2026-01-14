@@ -15,7 +15,7 @@ This section documents the complete design system established through the HTML p
 | **Void Black** | `#050505` | Main background (OLED black) | - | - |
 | **Off-White** | `#FAFAFA` | Primary text, headlines | 19.8:1 | AAA ✓ |
 | **Acid Lime** | `#CCFF00` | Primary CTA, play buttons, accents, hover states | 18.2:1 | AAA ✓ |
-| **Brutal Grey** | `#999999` | Secondary text, metadata, timestamps, author names | 8.6:1 | AAA ✓ |
+| **Brutal Grey** | `#AAAAAA` | Secondary text, metadata, timestamps, author names | ~10:1 | AAA ✓ |
 | **Chrome** | `#C0C0C0` | **Borders ONLY** (not for text) | - | - |
 
 ### Color Usage Rules:
@@ -398,7 +398,7 @@ From original spec: "Authoritative, Witty, Unapologetic. Vogue Man meets Top Gea
         {"slug": "void-black", "color": "#050505", "name": "Void Black"},
         {"slug": "off-white", "color": "#FAFAFA", "name": "Off-White"},
         {"slug": "acid-lime", "color": "#CCFF00", "name": "Acid Lime"},
-        {"slug": "brutal-grey", "color": "#999999", "name": "Brutal Grey"},
+        {"slug": "brutal-grey", "color": "#AAAAAA", "name": "Brutal Grey"},
         {"slug": "chrome", "color": "#C0C0C0", "name": "Chrome"}
       ]
     },

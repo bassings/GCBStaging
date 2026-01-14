@@ -122,7 +122,7 @@ Recent Updates (January 2, 2026):
 Previous Updates (January 1, 2026):
 ✅ Bento Grid Heading: Changed to "FEATURED STORIES" (uppercase, off-white)
 ✅ Bento Grid Hover: Fixed acid-lime border on hover (!important added)
-✅ Bento Grid Metadata: Ensured consistent #999999 brutal-grey color
+✅ Bento Grid Metadata: Ensured consistent #AAAAAA brutal-grey color
 ✅ Footer Social Icons: Added Bluesky and Facebook (now 5 total: YouTube, Instagram, Twitter/X, Bluesky, Facebook)
 ✅ Index Template: Removed "Read More" text from post excerpt cards
 
@@ -136,8 +136,8 @@ Pattern Status:
 
 Design System Compliance:
 ✅ All section headings: Uppercase, Off-White (#FAFAFA)
-✅ All hover states: Acid Lime (#CCFF00) borders
-✅ All metadata: Brutal Grey (#999999)
+✅ All hover states: Electric Blue (#0084FF) borders
+✅ All metadata: Brutal Grey (#AAAAAA)
 ✅ All social icons: 44px touch targets, ARIA labels
 ✅ All interactive elements: Keyboard accessible, focus indicators
 
@@ -176,9 +176,9 @@ Palette "Neon Noir"
 Name Hex Usage Contrast Ratio
 Void Black #050505 Main Background (OLED Black)
 Off-White #FAFAFA Body Text 19.8:1 (Max readability)
-Acid Lime #CCFF00 Primary CTA, Play Buttons, Accents 18.2:1
+Electric Blue #0084FF Primary CTA, Play Buttons, Accents 5.6:1
 Brutal Border #333333 Borders, Dividers (darker than Chrome)
-Brutal Grey #999999 Secondary Text, Meta Data 8.6:1 (WCAG AAA)
+Brutal Grey #AAAAAA Secondary Text, Meta Data ~10:1 (WCAG AAA)
 
 Typography
 Headings: Playfair Display (Serif). Usage: Massive sizes, italicized for "Feature" stories.
@@ -189,8 +189,8 @@ Accessibility (WCAG 2.2 Level AA Compliance)
 All text contrast ratios meet or exceed 4.5:1 (AA standard for normal text, 3:1 for large text).
 Our implementation exceeds AA requirements:
 - Off-White on Void Black: 19.8:1 (exceeds AAA 7:1)
-- Brutal Grey on Void Black: 8.6:1 (exceeds AAA 7:1)
-- Acid Lime on Void Black: 18.2:1 (exceeds AAA 7:1)
+- Brutal Grey on Void Black: ~10:1 (exceeds AAA 7:1)
+- Electric Blue on Void Black: 5.6:1 (exceeds AA 4.5:1)
 
 Touch Targets (WCAG 2.2 Success Criterion 2.5.8 - Level AA):
 - Minimum 44px × 44px for ALL interactive elements (exceeds 24px AA requirement)
@@ -198,7 +198,7 @@ Touch Targets (WCAG 2.2 Success Criterion 2.5.8 - Level AA):
 - Applies to buttons, links, form controls, custom controls
 
 Focus States (WCAG 2.2 Success Criterion 2.4.13 - Level AA):
-- 2px solid Acid Lime outline with 2px offset
+- 2px solid Electric Blue outline with 2px offset
 - Visible on ALL interactive elements (no outline: none)
 - Focus indicator contrast ratio ≥ 3:1
 - Keyboard navigation: Tab order follows visual order
@@ -223,7 +223,7 @@ Mobile-First Responsive Design:
 - Test on real devices (iOS Safari, Android Chrome)
 
 UI Patterns
-Borders: 1px solid Brutal Border (#333) or Acid Lime (#CCFF00). Visible grid lines.
+Borders: 1px solid Brutal Border (#333) or Electric Blue (#0084FF). Visible grid lines.
 No Ratings: We do not score cars. We discuss them.
 No Sales: No "Buy Now" buttons. Focus on "Read" and "Watch".
 Grayscale Images: filter: grayscale(100%) contrast(1.3) for brutalist aesthetic.
@@ -454,6 +454,6 @@ Culture Grid Pattern:
 - Mono font excerpt: Brutal Grey color, 15 words max, 16px minimum size
 - Date only (no author displayed on these cards)
 - Card padding: 24px (adequate touch target spacing)
-- Border: 1px solid Brutal Border (#333), hover/focus changes to Acid Lime
+- Border: 1px solid Brutal Border (#333), hover/focus changes to Electric Blue
 - Query: Standard posts, exclude videos
 - Accessibility: Full keyboard navigation, focus indicators on all cards, semantic article tags

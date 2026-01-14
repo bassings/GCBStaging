@@ -361,7 +361,7 @@ test.describe('GCB Content Intelligence - Bento Grid Pattern', () => {
     expect(hoverBorderColor).toBe('rgb(204, 255, 0)');
   });
 
-  test('Bento Grid metadata uses brutal-grey color (#999999)', async ({ page, request }) => {
+  test('Bento Grid metadata uses brutal-grey color (#AAAAAA)', async ({ page, request }) => {
     // Reset database
     await request.delete('/wp-json/gcb-testing/v1/reset', {
       headers: { 'GCB-Test-Key': 'test-secret-key-local' }
@@ -390,7 +390,7 @@ test.describe('GCB Content Intelligence - Bento Grid Pattern', () => {
       return window.getComputedStyle(el).color;
     });
 
-    // RGB for #999999 is rgb(153, 153, 153)
-    expect(metadataColor).toBe('rgb(153, 153, 153)');
+    // RGB for #AAAAAA is rgb(170, 170, 170)
+    expect(metadataColor).toBe('rgb(170, 170, 170)');
   });
 });

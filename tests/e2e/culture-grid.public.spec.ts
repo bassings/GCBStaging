@@ -156,13 +156,13 @@ test.describe('Culture Grid Pattern - Public View', () => {
     // Should contain "mono" in font family name
     expect(fontFamily.toLowerCase()).toMatch(/mono|monospace/);
 
-    // Check color (should be Brutal Grey #999999)
+    // Check color (should be Brutal Grey #AAAAAA)
     const excerptColor = await excerpt.evaluate((el) => {
       return window.getComputedStyle(el).color;
     });
 
-    // Brutal Grey #999999 converts to rgb(153, 153, 153)
-    expect(excerptColor).toBe('rgb(153, 153, 153)');
+    // Brutal Grey #AAAAAA converts to rgb(170, 170, 170)
+    expect(excerptColor).toBe('rgb(170, 170, 170)');
   });
 
   test('Displays date only (no author on cards)', async ({ page }) => {
