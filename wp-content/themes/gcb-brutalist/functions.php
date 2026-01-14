@@ -473,8 +473,24 @@ function gcb_get_search_results_content(): string {
  *
  * Displays filtered search results in a bento-style grid.
  * Usage: [gcb_search_results]
+ *
+ * Note: We use a placeholder marker system to prevent wpautop from corrupting
+ * the HTML output. The shortcode returns a placeholder, wpautop runs, then we
+ * replace the placeholder with our clean HTML.
  */
 function gcb_search_results_shortcode() {
+	// Store the HTML in a global and return a placeholder to bypass wpautop
+	global $gcb_search_results_html;
+	$gcb_search_results_html = gcb_build_search_results_html();
+	return '<!--GCB_SEARCH_RESULTS_PLACEHOLDER-->';
+}
+
+/**
+ * Build the actual search results HTML
+ *
+ * @return string Clean HTML for search results grid
+ */
+function gcb_build_search_results_html() {
 	// Get the search query
 	$search_query = get_search_query();
 	if ( empty( $search_query ) && isset( $_GET['s'] ) ) {
@@ -517,112 +533,145 @@ function gcb_search_results_shortcode() {
 		remove_all_filters( 'posts_where' );
 	}
 
-	// Start output buffering
-	ob_start();
+	// Build HTML as string to prevent wpautop from adding <p> and <br> tags
+	$html = '';
 
 	if ( $search_results->have_posts() ) :
-		?>
-		<div class="wp-block-group alignwide search-results-grid">
-			<ul class="gcb-bento-grid__container wp-block-post-template">
-				<?php
-				while ( $search_results->have_posts() ) :
-					$search_results->the_post();
-					?>
-					<li class="wp-block-post bento-item gcb-bento-card" style="border:2px solid var(--wp--preset--color--brutal-border);background:var(--wp--preset--color--void-black)">
-						<?php if ( has_post_thumbnail() ) : ?>
-							<a href="<?php the_permalink(); ?>" class="wp-block-post-featured-image">
-								<?php
-								// Use medium_large (768px) for faster loading - cards are max 400px height
-								the_post_thumbnail(
-									'medium_large',
-									array(
-										'loading'  => 'lazy',
-										'decoding' => 'async',
-									)
-								);
-								?>
-							</a>
-						<?php endif; ?>
-						<div class="wp-block-group">
-							<h3 class="wp-block-post-title">
-								<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-							</h3>
-							<div class="search-card-meta wp-block-group">
-								<time class="wp-block-post-date" datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>">
-									<?php echo esc_html( strtoupper( get_the_date( 'M j, Y' ) ) ); ?>
-								</time>
-								<span class="post-type-badge" style="padding:2px 8px;border:1px solid var(--wp--preset--color--brutal-border);font-family:var(--wp--preset--font-family--mono);font-size:0.75rem;text-transform:uppercase;color:var(--wp--preset--color--brutal-grey);">ARTICLE</span>
-							</div>
-						</div>
-					</li>
-					<?php
-				endwhile;
-				wp_reset_postdata();
-				?>
-			</ul>
+		$html .= '<div class="wp-block-query alignwide gcb-search-grid">';
+		$html .= '<ul class="wp-block-post-template">';
 
-			<?php
-			// Pagination - built as single string to avoid wpautop adding <br /> tags
-			$total_pages = $search_results->max_num_pages;
-			if ( $total_pages > 1 ) :
-				$pagination_html = '<nav class="search-pagination" aria-label="Search results pagination">';
+		while ( $search_results->have_posts() ) :
+			$search_results->the_post();
+			$permalink = esc_url( get_permalink() );
+			$title     = esc_html( get_the_title() );
+			$excerpt   = esc_html( wp_trim_words( get_the_excerpt(), 20 ) );
+			$date      = esc_html( get_the_date( 'M j, Y' ) );
+			$datetime  = esc_attr( get_the_date( 'c' ) );
 
-				// Previous link
-				if ( $paged > 1 ) {
-					$pagination_html .= '<a href="' . esc_url( add_query_arg( 'search_page', $paged - 1 ) ) . '" class="prev">← Previous</a>';
-				}
+			// Get thumbnail HTML without wpautop interference
+			$thumbnail_html = '';
+			if ( has_post_thumbnail() ) {
+				$thumbnail_html = '<a href="' . $permalink . '" style="display:block;flex-shrink:0;">';
+				$thumbnail_html .= get_the_post_thumbnail(
+					get_the_ID(),
+					'medium_large',
+					array(
+						'loading'  => 'lazy',
+						'decoding' => 'async',
+						'style'    => 'width:100%;height:220px;object-fit:cover;display:block;border-bottom:2px solid var(--wp--preset--color--brutal-border);',
+					)
+				);
+				$thumbnail_html .= '</a>';
+			}
 
-				// Page numbers with ellipsis (show max 7 pages: first, last, current, and 2 on each side)
-				$show_dots_start = false;
-				$show_dots_end   = false;
+			$html .= '<li class="wp-block-post" style="margin:0;padding:0;">';
+			$html .= '<div class="gcb-post-card" style="border:2px solid var(--wp--preset--color--brutal-border);background:var(--wp--preset--color--void-black);overflow:hidden;display:flex;flex-direction:column;height:100%;">';
+			$html .= $thumbnail_html;
+			$html .= '<h3 class="wp-block-post-title" style="font-family:var(--wp--preset--font-family--playfair);font-size:1.25rem;line-height:1.3;margin:0 0 0.75rem 0;padding:1.5rem 1.5rem 0 1.5rem;color:var(--wp--preset--color--off-white);">';
+			$html .= '<a href="' . $permalink . '" style="color:inherit;text-decoration:none;">' . $title . '</a>';
+			$html .= '</h3>';
+			$html .= '<div class="wp-block-post-excerpt" style="flex:1 1 auto;font-family:var(--wp--preset--font-family--system-sans);font-size:0.875rem;line-height:1.5;color:var(--wp--preset--color--brutal-grey);margin:0;padding:0 1.5rem 0.75rem 1.5rem;">';
+			$html .= '<p style="margin:0;">' . $excerpt . '</p>';
+			$html .= '</div>';
+			$html .= '<time class="wp-block-post-date" datetime="' . $datetime . '" style="margin-top:auto;flex-shrink:0;padding:0 1.5rem 1.5rem 1.5rem;font-family:var(--wp--preset--font-family--mono);font-size:0.75rem;color:var(--wp--preset--color--brutal-grey);display:flex;align-items:center;gap:0.75rem;">';
+			$html .= $date;
+			$html .= '<span style="padding:2px 8px;border:1px solid var(--wp--preset--color--brutal-border);text-transform:uppercase;">Article</span>';
+			$html .= '</time>';
+			$html .= '</div>';
+			$html .= '</li>';
+		endwhile;
+		wp_reset_postdata();
 
-				for ( $i = 1; $i <= $total_pages; $i++ ) {
-					// Always show first page, last page, current page, and 2 pages on each side of current
-					$show_page = ( $i === 1 || $i === $total_pages || ( $i >= $paged - 2 && $i <= $paged + 2 ) );
+		$html .= '</ul>';
 
-					if ( $show_page ) {
-						if ( $i === $paged ) {
-							$pagination_html .= '<span class="current" aria-current="page">' . esc_html( $i ) . '</span>';
-						} else {
-							$pagination_html .= '<a href="' . esc_url( add_query_arg( 'search_page', $i ) ) . '">' . esc_html( $i ) . '</a>';
-						}
-						$show_dots_start = false;
-						$show_dots_end   = false;
+		// Pagination
+		$total_pages = $search_results->max_num_pages;
+		if ( $total_pages > 1 ) {
+			$html .= '<nav class="search-pagination" aria-label="Search results pagination">';
+
+			// Previous link
+			if ( $paged > 1 ) {
+				$html .= '<a href="' . esc_url( add_query_arg( 'search_page', $paged - 1 ) ) . '" class="prev">← Previous</a>';
+			}
+
+			// Page numbers with ellipsis
+			$show_dots_start = false;
+			$show_dots_end   = false;
+
+			for ( $i = 1; $i <= $total_pages; $i++ ) {
+				$show_page = ( $i === 1 || $i === $total_pages || ( $i >= $paged - 2 && $i <= $paged + 2 ) );
+
+				if ( $show_page ) {
+					if ( $i === $paged ) {
+						$html .= '<span class="current" aria-current="page">' . esc_html( $i ) . '</span>';
 					} else {
-						// Show ellipsis
-						if ( $i < $paged && ! $show_dots_start ) {
-							$pagination_html .= '<span class="dots">…</span>';
-							$show_dots_start = true;
-						} elseif ( $i > $paged && ! $show_dots_end ) {
-							$pagination_html .= '<span class="dots">…</span>';
-							$show_dots_end = true;
-						}
+						$html .= '<a href="' . esc_url( add_query_arg( 'search_page', $i ) ) . '">' . esc_html( $i ) . '</a>';
+					}
+					$show_dots_start = false;
+					$show_dots_end   = false;
+				} else {
+					if ( $i < $paged && ! $show_dots_start ) {
+						$html .= '<span class="dots">…</span>';
+						$show_dots_start = true;
+					} elseif ( $i > $paged && ! $show_dots_end ) {
+						$html .= '<span class="dots">…</span>';
+						$show_dots_end = true;
 					}
 				}
+			}
 
-				// Next link
-				if ( $paged < $total_pages ) {
-					$pagination_html .= '<a href="' . esc_url( add_query_arg( 'search_page', $paged + 1 ) ) . '" class="next">Next →</a>';
-				}
+			// Next link
+			if ( $paged < $total_pages ) {
+				$html .= '<a href="' . esc_url( add_query_arg( 'search_page', $paged + 1 ) ) . '" class="next">Next →</a>';
+			}
 
-				$pagination_html .= '</nav>';
-				echo $pagination_html;
-			endif;
-			?>
+			$html .= '</nav>';
+		}
 
-		</div>
-		<?php
+		$html .= '</div>';
 	else :
-		?>
-		<div class="wp-block-query-no-results">
-			<p class="search-no-results has-brutal-grey-color" style="padding:var(--wp--preset--spacing--50) 0;font-family:var(--wp--preset--font-family--mono);font-size:1.25rem;color:var(--wp--preset--color--brutal-grey);">No results found. Try a different search term.</p>
-		</div>
-		<?php
+		$html = '<div class="wp-block-query-no-results">';
+		$html .= '<p class="search-no-results has-brutal-grey-color" style="padding:var(--wp--preset--spacing--50) 0;font-family:var(--wp--preset--font-family--mono);font-size:1.25rem;color:var(--wp--preset--color--brutal-grey);">No results found. Try a different search term.</p>';
+		$html .= '</div>';
 	endif;
 
-	return ob_get_clean();
+	return $html;
 }
 add_shortcode( 'gcb_search_results', 'gcb_search_results_shortcode' );
+
+/**
+ * Replace search results placeholder with actual HTML in block output
+ *
+ * Block themes use render_block filter, not the_content, so we need to
+ * intercept the shortcode block output to inject our clean HTML.
+ *
+ * @param string $block_content The block content.
+ * @param array  $block         The block data.
+ * @return string Content with placeholder replaced by search results HTML.
+ */
+function gcb_inject_search_results_html( $block_content, $block ) {
+	global $gcb_search_results_html;
+
+	if ( strpos( $block_content, '<!--GCB_SEARCH_RESULTS_PLACEHOLDER-->' ) !== false && ! empty( $gcb_search_results_html ) ) {
+		// Clean up any <p> tags wpautop wrapped around our placeholder
+		$block_content = preg_replace(
+			'/<p>\s*<!--GCB_SEARCH_RESULTS_PLACEHOLDER-->\s*<\/p>/',
+			$gcb_search_results_html,
+			$block_content
+		);
+		// Also handle case without <p> tags
+		$block_content = str_replace(
+			'<!--GCB_SEARCH_RESULTS_PLACEHOLDER-->',
+			$gcb_search_results_html,
+			$block_content
+		);
+		// Clear the global to prevent reuse
+		$gcb_search_results_html = '';
+	}
+
+	return $block_content;
+}
+add_filter( 'render_block', 'gcb_inject_search_results_html', 99, 2 );
 
 /**
  * Shortcode: Category Children Grid

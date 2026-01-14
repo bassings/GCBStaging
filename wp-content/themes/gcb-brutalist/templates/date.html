@@ -52,22 +52,23 @@
 	outline-offset: 2px;
 }
 
-/* Archive Grid - Responsive Layout */
+/* Archive Grid - Bento Card Style (matches category page) */
 .gcb-archive-grid .wp-block-post-template {
 	display: grid !important;
-	grid-template-columns: repeat(3, 1fr);
-	gap: 2rem;
+	grid-template-columns: repeat(3, 1fr) !important;
+	gap: 2rem !important;
+	align-items: stretch !important;
 }
 
 @media (max-width: 1024px) {
 	.gcb-archive-grid .wp-block-post-template {
-		grid-template-columns: repeat(2, 1fr);
+		grid-template-columns: repeat(2, 1fr) !important;
 	}
 }
 
 @media (max-width: 768px) {
 	.gcb-archive-grid .wp-block-post-template {
-		grid-template-columns: 1fr;
+		grid-template-columns: 1fr !important;
 	}
 
 	.gcb-year-selector__list {
@@ -80,90 +81,119 @@
 	}
 }
 
-/* Post Card Styling - Force equal heights */
-.gcb-archive-grid .wp-block-post-template {
-	display: grid !important;
-	grid-template-columns: repeat(3, 1fr) !important;
-	grid-auto-rows: 1fr !important;
-	align-items: stretch !important;
-}
-
-/* Override WordPress layout classes that prevent stretching */
+/* Override WordPress margins on li elements */
 .gcb-archive-grid .wp-block-post-template > li.wp-block-post {
-	display: grid !important;
-	grid-template-rows: 1fr !important;
-	grid-template-columns: 1fr !important;
 	margin: 0 !important;
 	padding: 0 !important;
 }
 
-/* Force card to fill entire grid cell */
+/* Card container - Bento style (no internal padding, image edge-to-edge) */
 .gcb-archive-grid .gcb-post-card,
 .gcb-archive-grid .gcb-post-card.is-layout-constrained,
 .gcb-archive-grid .gcb-post-card.wp-block-group-is-layout-constrained {
 	height: 100% !important;
-	min-height: 100% !important;
-	max-height: none !important;
-	flex: 1 1 100% !important;
 	display: flex !important;
 	flex-direction: column !important;
-	transition: none;
 	box-sizing: border-box !important;
-	align-self: stretch !important;
-	justify-self: stretch !important;
-}
-
-/* Also target the direct child of li */
-.gcb-archive-grid .wp-block-post-template > li > .gcb-post-card,
-.gcb-archive-grid .wp-block-post-template > li > .wp-block-group {
-	height: 100% !important;
-	min-height: 100% !important;
-	align-self: stretch !important;
-	justify-self: stretch !important;
+	padding: 0 !important;
+	transition: none;
 }
 
 .gcb-archive-grid .gcb-post-card:hover {
 	border-color: var(--wp--preset--color--highlight) !important;
 }
 
-/* Featured Image Container - Fixed Height */
+/* Featured Image - Fixed Height with border-bottom */
 .gcb-archive-grid .wp-block-post-featured-image {
-	height: 200px !important;
-	min-height: 200px !important;
-	max-height: 200px !important;
+	height: 220px !important;
+	min-height: 220px !important;
+	max-height: 220px !important;
 	background: var(--wp--preset--color--brutal-border);
 	display: block !important;
 	overflow: hidden !important;
 	flex-shrink: 0 !important;
+	margin: 0 !important;
+	border-bottom: 2px solid var(--wp--preset--color--brutal-border) !important;
 }
 
-/* Featured Image - Full Color */
 .gcb-archive-grid .wp-block-post-featured-image img {
-	filter: none !important;
 	width: 100% !important;
-	height: 200px !important;
+	height: 100% !important;
 	object-fit: cover !important;
 }
 
-/* Hide empty featured image link when no image exists */
-.gcb-archive-grid .wp-block-post-featured-image a:empty {
-	display: none;
-}
-
-/* Post title - fixed styling */
+/* Title - Matches bento card */
 .gcb-archive-grid .gcb-post-card .wp-block-post-title {
-	flex-shrink: 0 !important;
+	font-family: var(--wp--preset--font-family--playfair) !important;
+	font-size: 1.25rem !important;
+	line-height: 1.3 !important;
+	margin: 0 0 0.75rem 0 !important;
+	padding: 1.5rem 1.5rem 0 1.5rem !important;
 }
 
-/* Post content grows to fill remaining space */
+.gcb-archive-grid .gcb-post-card .wp-block-post-title a {
+	color: var(--wp--preset--color--off-white) !important;
+	text-decoration: none !important;
+}
+
+.gcb-archive-grid .gcb-post-card .wp-block-post-title a:hover {
+	color: var(--wp--preset--color--electric-blue) !important;
+}
+
+/* Excerpt - Matches bento card */
 .gcb-archive-grid .gcb-post-card .wp-block-post-excerpt {
 	flex: 1 1 auto !important;
+	font-family: var(--wp--preset--font-family--system-sans) !important;
+	font-size: 0.875rem !important;
+	line-height: 1.5 !important;
+	color: var(--wp--preset--color--brutal-grey) !important;
+	margin: 0 !important;
+	padding: 0 1.5rem 0.75rem 1.5rem !important;
 }
 
-/* Post date stays at bottom */
+.gcb-archive-grid .gcb-post-card .wp-block-post-excerpt__excerpt {
+	margin: 0 !important;
+}
+
+/* Date row - Matches bento card metadata style */
 .gcb-archive-grid .gcb-post-card .wp-block-post-date {
 	margin-top: auto !important;
 	flex-shrink: 0 !important;
+	padding: 0 1.5rem 1.5rem 1.5rem !important;
+	font-family: var(--wp--preset--font-family--mono) !important;
+	font-size: 0.75rem !important;
+	color: var(--wp--preset--color--brutal-grey) !important;
+	display: flex !important;
+	align-items: center !important;
+	gap: 0.75rem !important;
+}
+
+/* Add ARTICLE badge after date using pseudo-element */
+.gcb-archive-grid .gcb-post-card .wp-block-post-date::after {
+	content: "Article";
+	padding: 2px 8px;
+	border: 1px solid var(--wp--preset--color--brutal-border);
+	text-transform: uppercase;
+	font-family: var(--wp--preset--font-family--mono);
+	font-size: 0.75rem;
+	color: var(--wp--preset--color--brutal-grey);
+}
+
+/* Responsive image heights */
+@media (max-width: 768px) {
+	.gcb-archive-grid .wp-block-post-featured-image {
+		height: 200px !important;
+		min-height: 200px !important;
+		max-height: 200px !important;
+	}
+}
+
+@media (min-width: 1024px) {
+	.gcb-archive-grid .wp-block-post-featured-image {
+		height: 240px !important;
+		min-height: 240px !important;
+		max-height: 240px !important;
+	}
 }
 
 /* Pagination Styling */
@@ -231,10 +261,10 @@
 	<div class="wp-block-query alignwide gcb-archive-grid">
 
 		<!-- wp:post-template {"style":{"spacing":{"blockGap":"var:preset|spacing|40"}},"layout":{"type":"grid","columnCount":3}} -->
-			<!-- wp:group {"className":"gcb-post-card","style":{"border":{"width":"2px","style":"solid","color":"var:preset|color|brutal-border"},"spacing":{"padding":"var:preset|spacing|30"}},"layout":{"type":"constrained"}} -->
-			<div class="wp-block-group gcb-post-card" style="border-color:var(--wp--preset--color--brutal-border);border-style:solid;border-width:2px;padding:var(--wp--preset--spacing--30)">
+			<!-- wp:group {"className":"gcb-post-card","style":{"border":{"width":"2px","style":"solid","color":"var:preset|color|brutal-border"}},"layout":{"type":"constrained"}} -->
+			<div class="wp-block-group gcb-post-card" style="border-color:var(--wp--preset--color--brutal-border);border-style:solid;border-width:2px">
 
-				<!-- wp:post-featured-image {"aspectRatio":"16/9","style":{"spacing":{"margin":{"bottom":"var:preset|spacing|20"}}}} /-->
+				<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"16/9","style":{"spacing":{"margin":{"bottom":"var:preset|spacing|20"}}}} /-->
 
 				<!-- wp:post-title {"isLink":true,"className":"gcb-post-title","style":{"typography":{"fontFamily":"var(--wp--preset--font-family--playfair)","fontSize":"1.5rem","lineHeight":"1.3"},"spacing":{"margin":{"bottom":"var:preset|spacing|20"}}}} /-->
 

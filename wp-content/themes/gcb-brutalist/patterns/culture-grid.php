@@ -16,14 +16,15 @@
  */
 
 // Cache key for transient (invalidates hourly).
-$cache_key          = 'gcb_culture_grid_' . date( 'Y-m-d-H' );
+$cache_key          = 'gcb_culture_grid_offset_' . date( 'Y-m-d-H' );
 $culture_grid_query = get_transient( $cache_key );
 
 if ( false === $culture_grid_query ) {
-	// Query for all posts.
+	// Query for posts after the bento-grid (offset by 8 to avoid duplicates).
 	$culture_grid_args = array(
 		'post_type'      => 'post',
 		'posts_per_page' => 8,
+		'offset'         => 8, // Skip first 8 posts shown in bento-grid
 		'post_status'    => 'publish',
 		'orderby'        => 'date',
 		'order'          => 'DESC',
