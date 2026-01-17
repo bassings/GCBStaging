@@ -1782,35 +1782,19 @@ function gcb_redirect_old_permalink_structure( $wp ): void {
 	// Split path into segments
 	$segments = explode( '/', $path );
 
-	// Old structure has exactly 2 segments: [post-slug, category-slug]
-	if ( count( $segments ) !== 2 ) {
-		return;
+	// Old structure has 2+ segments: [post-slug, category-slug, ...] or [post-slug, parent-cat, child-cat]
+	// New structure has 1 segment: [post-slug]
+	if ( count( $segments ) < 2 ) {
+		return; // Not the old permalink pattern
 	}
 
-	$post_slug     = sanitize_title( $segments[0] );
-	$category_slug = sanitize_title( $segments[1] );
+	// First segment is the post slug
+	$post_slug = sanitize_title( $segments[0] );
 
-	// Check if second segment looks like a category
-	// Quick check: categories usually have hyphens or common category words
-	$category_keywords = array( 'review', 'news', 'car', 'electric', 'brand', 'technology', 'safety', 'lifestyle' );
-	$likely_category = false;
-	foreach ( $category_keywords as $keyword ) {
-		if ( strpos( $category_slug, $keyword ) !== false ) {
-			$likely_category = true;
-			break;
-		}
-	}
+	// Remaining segments are category hierarchy (parent/child categories)
+	$category_segments = array_slice( $segments, 1 );
 
-	// If it doesn't look like a category, skip
-	if ( ! $likely_category ) {
-		// Still check if it's an actual category slug
-		$term = get_term_by( 'slug', $category_slug, 'category' );
-		if ( ! $term ) {
-			return;
-		}
-	}
-
-	// Direct database query to find post by slug (more reliable than get_page_by_path)
+	// Direct database query to find post by slug (works regardless of permalink structure)
 	global $wpdb;
 	$post_id = $wpdb->get_var(
 		$wpdb->prepare(
@@ -1824,14 +1808,24 @@ function gcb_redirect_old_permalink_structure( $wp ): void {
 		return;
 	}
 
-	// Verify the category slug matches one of the post's categories
+	// Get all categories for this post
 	$post_categories = wp_get_post_categories( $post_id, array( 'fields' => 'all' ) );
+	if ( empty( $post_categories ) ) {
+		return;
+	}
+
+	// Check if ANY of the category segments match the post's categories
+	// This handles both flat and hierarchical category structures
 	$is_valid_old_url = false;
 
-	foreach ( $post_categories as $cat ) {
-		if ( $cat->slug === $category_slug ) {
-			$is_valid_old_url = true;
-			break;
+	foreach ( $category_segments as $category_slug ) {
+		$category_slug = sanitize_title( $category_slug );
+
+		foreach ( $post_categories as $cat ) {
+			if ( $cat->slug === $category_slug ) {
+				$is_valid_old_url = true;
+				break 2; // Break out of both loops
+			}
 		}
 	}
 
