@@ -81,7 +81,14 @@ if ( ! $grid_posts->have_posts() ) {
 								sizes="<?php echo esc_attr( $sizes ); ?>"
 							<?php endif; ?>
 							style="width: 100%; height: 100%; object-fit: cover; display: block;<?php echo ( defined( 'GCB_IMAGE_MODE' ) && 'grayscale' === GCB_IMAGE_MODE ) ? ' filter: grayscale(100%) contrast(1.3);' : ''; ?>"
+							<?php if ( $is_featured ) : ?>
+							fetchpriority="high"
+							loading="eager"
+							decoding="sync"
+							<?php else : ?>
 							loading="lazy"
+							decoding="async"
+							<?php endif; ?>
 						/>
 					</a>
 				<?php endif; ?>

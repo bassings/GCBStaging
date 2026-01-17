@@ -166,6 +166,210 @@ function gcb_enqueue_theme_styles(): void {
 add_action( 'wp_enqueue_scripts', 'gcb_enqueue_theme_styles' );
 
 /**
+ * Add resource hints for critical external resources
+ *
+ * Pre-establishes connection to Google Fonts to reduce font loading latency.
+ * Uses WordPress native wp_resource_hints filter.
+ *
+ * @param array  $urls          URLs for resource hints.
+ * @param string $relation_type The relation type.
+ * @return array Modified URLs.
+ */
+function gcb_add_resource_hints( array $urls, string $relation_type ): array {
+	if ( 'preconnect' === $relation_type ) {
+		$urls[] = array(
+			'href'        => 'https://fonts.gstatic.com',
+			'crossorigin' => 'anonymous',
+		);
+	}
+	return $urls;
+}
+add_filter( 'wp_resource_hints', 'gcb_add_resource_hints', 10, 2 );
+
+/**
+ * Preload critical font files to prevent FOUT-induced CLS
+ *
+ * Preloads Playfair Display 700 (logo, headings) and Space Mono 400 (nav, metadata)
+ * which are critical for above-the-fold rendering.
+ */
+function gcb_preload_critical_fonts(): void {
+	if ( is_admin() ) {
+		return;
+	}
+	// Playfair Display 700 (logo, headings)
+	echo '<link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/playfairdisplay/v37/nuFvD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKd6unDXbtM.woff2" crossorigin="anonymous">' . "\n";
+	// Space Mono 400 (nav, metadata)
+	echo '<link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/spacemono/v13/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2" crossorigin="anonymous">' . "\n";
+}
+add_action( 'wp_head', 'gcb_preload_critical_fonts', 0 );
+
+/**
+ * Inline critical CSS for instant initial render
+ *
+ * Contains CSS variables, body base, skip-link, header, logo, and mobile menu toggle.
+ * This eliminates render-blocking CSS for above-the-fold content.
+ */
+function gcb_inline_critical_css(): void {
+	if ( is_admin() ) {
+		return;
+	}
+	?>
+	<style id="gcb-critical-css">
+	/* CSS Custom Properties (Design Tokens) */
+	:root {
+		--wp--preset--color--void-black: #050505;
+		--wp--preset--color--off-white: #FAFAFA;
+		--wp--preset--color--highlight: #0084FF;
+		--wp--preset--color--brutal-border: #333333;
+		--wp--preset--color--brutal-grey: #AAAAAA;
+		--wp--preset--font-family--playfair: 'Playfair Display', Georgia, serif;
+		--wp--preset--font-family--mono: 'Space Mono', 'Courier New', monospace;
+		--wp--preset--font-family--system-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+	}
+	body {
+		margin: 0;
+		background: var(--wp--preset--color--void-black);
+		color: var(--wp--preset--color--off-white);
+		font-family: var(--wp--preset--font-family--system-sans);
+		-webkit-font-smoothing: antialiased;
+	}
+	.skip-link {
+		position: absolute;
+		top: -40px;
+		left: 0;
+		z-index: 1000;
+		padding: 0.75rem 1.5rem;
+		background-color: var(--wp--preset--color--highlight);
+		color: var(--wp--preset--color--void-black);
+		font-family: var(--wp--preset--font-family--mono);
+		font-weight: 700;
+		text-transform: uppercase;
+		text-decoration: none;
+	}
+	.skip-link:focus { top: 0; }
+	.site-header {
+		position: sticky;
+		top: 0;
+		z-index: 100;
+		background-color: var(--wp--preset--color--void-black);
+		border-bottom: 2px solid var(--wp--preset--color--brutal-border);
+	}
+	.header-wrapper {
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 1rem 1.5rem;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+	.site-logo a {
+		display: inline-block;
+		min-height: 44px;
+		padding: 0.5rem 0;
+		text-decoration: none;
+		color: var(--wp--preset--color--off-white);
+	}
+	.logo-text {
+		font-family: var(--wp--preset--font-family--playfair);
+		font-size: 2rem;
+		font-weight: 700;
+		margin: 0;
+	}
+	.menu-toggle {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		background: transparent;
+		border: none;
+		padding: 0.75rem;
+		cursor: pointer;
+		min-height: 44px;
+		min-width: 44px;
+	}
+	.hamburger-icon {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		width: 24px;
+	}
+	.hamburger-icon .line {
+		display: block;
+		width: 100%;
+		height: 2px;
+		background-color: var(--wp--preset--color--off-white);
+	}
+	.main-nav { display: none; }
+	@media (min-width: 768px) {
+		.main-nav { display: flex; gap: 2rem; }
+		.menu-toggle { display: none; }
+	}
+	</style>
+	<?php
+}
+add_action( 'wp_head', 'gcb_inline_critical_css', 1 );
+
+/**
+ * Defer non-critical CSS loading
+ *
+ * Uses media="print" + onload swap technique to defer the main stylesheet.
+ * Critical CSS is already inlined via gcb_inline_critical_css().
+ *
+ * @param string $tag    The stylesheet tag.
+ * @param string $handle The stylesheet handle.
+ * @param string $href   The stylesheet URL.
+ * @return string Modified tag.
+ */
+function gcb_defer_non_critical_css( string $tag, string $handle, string $href ): string {
+	if ( 'gcb-brutalist-style' !== $handle || is_admin() ) {
+		return $tag;
+	}
+	// Use media="print" + onload swap
+	$tag = str_replace( "media='all'", "media='print' onload=\"this.media='all'\"", $tag );
+	// Noscript fallback for browsers without JavaScript
+	return $tag . '<noscript><link rel="stylesheet" href="' . esc_url( $href ) . '"></noscript>';
+}
+add_filter( 'style_loader_tag', 'gcb_defer_non_critical_css', 10, 3 );
+
+/**
+ * Preload LCP candidate image on homepage
+ *
+ * Preloads the hero post's featured image to improve LCP score.
+ * Only active on front page/home to avoid unnecessary preloads.
+ */
+function gcb_preload_lcp_image(): void {
+	if ( ! is_front_page() && ! is_home() ) {
+		return;
+	}
+	$hero_post = get_posts(
+		array(
+			'post_type'      => 'post',
+			'posts_per_page' => 1,
+			'orderby'        => 'date',
+			'order'          => 'DESC',
+		)
+	);
+	if ( empty( $hero_post ) ) {
+		return;
+	}
+	$thumbnail_id = get_post_thumbnail_id( $hero_post[0]->ID );
+	if ( ! $thumbnail_id ) {
+		return;
+	}
+	$image_src = wp_get_attachment_image_src( $thumbnail_id, 'large' );
+	if ( ! $image_src ) {
+		return;
+	}
+	$srcset = wp_get_attachment_image_srcset( $thumbnail_id, 'large' );
+	echo '<link rel="preload" as="image" href="' . esc_url( $image_src[0] ) . '"';
+	if ( $srcset ) {
+		echo ' imagesrcset="' . esc_attr( $srcset ) . '" imagesizes="(max-width: 768px) 100vw, 66vw"';
+	}
+	echo ' fetchpriority="high">' . "\n";
+}
+add_action( 'wp_head', 'gcb_preload_lcp_image', 2 );
+
+/**
  * Google Fonts are now loaded via theme.json fontFace declarations.
  *
  * This provides better compatibility with WordPress.com hosting and avoids
