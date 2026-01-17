@@ -107,31 +107,12 @@ Previous Updates (January 2, 2026):
    - Mobile responsive with horizontal scroll
    - 19.8:1 contrast ratio (exceeds WCAG AAA)
    - single.html template (lines 50-130)
-✅ Fusion Gallery Grid Fix: Proper width constraints and mobile optimization
-   - Fixed gallery overflow on desktop (was breaking out of article container)
-   - Fixed tiny images on mobile (were ~100px, now full-width ~300-400px)
-   - Added max-width: 100%, box-sizing: border-box, overflow: hidden to container
-   - Changed min-width from 150px to 0 (allows flex items to shrink properly)
-   - Mobile: Changed from 2-column to 1-column layout (100% width)
-   - Responsive: Desktop 4 cols → Tablet 3 cols → Mobile 1 col
-   - Key insight: min-width: 0 prevents flex items from overflowing container
-   - All styles use !important to override Fusion Builder inline styles
-   - single.html template (lines 132-527)
-✅ Lite YouTube Embed Fix: Added CSS/JS for Fusion Builder <lite-youtube> custom elements
-   - Diagnostic revealed Fusion uses lite-youtube instead of iframe
-   - CSS-only acid-lime play button (68px x 48px, brutalist style)
-   - JavaScript sets YouTube thumbnails if Fusion JS fails to load
-   - single.html template now handles lite-youtube rendering
-✅ Fusion Builder Compatibility: Added three-layer fallback system for legacy content
-   - Content filter (priority 8) handles regex replacement
-   - Shortcode registration provides fallbacks when plugin inactive
-   - Base64 decoding for fusion_code tables
-✅ Cross-Environment Debugging: Created mu-plugin diagnostic tool (wp-admin/?page=gcb-diagnostic)
-   - Checks Fusion Builder status, fallback functions, shortcode processing
-   - Tests actual post content live
-   - Shows WordPress environment and cache status
-✅ YouTube Embed Fallbacks: Ensures [fusion_youtube] works on all environments
-✅ Documentation: Added CRITICAL PROTOCOL section for multi-environment testing
+✅ Gutenberg Migration Complete: All content converted from Fusion Builder to Gutenberg blocks
+   - Removed Fusion Builder fallback functions from functions.php (~320 lines)
+   - Removed lite-youtube CSS/JS and Fusion gallery detection from single.html (~320 lines)
+   - Removed jQuery conditional loading (theme uses vanilla JS only)
+   - Table styling retained for general WordPress tables
+   - Video responsive CSS retained for WordPress embeds
 
 Previous Updates (January 1, 2026):
 ✅ Bento Grid Heading: Changed to "FEATURED STORIES" (uppercase, off-white)
@@ -270,56 +251,15 @@ theme.json
 /plugins
 /gcb-test-utils (REQUIRED: Handles DB reset)
 
-⚠️ CRITICAL PROTOCOL: MULTI-ENVIRONMENT TESTING & LEGACY CONTENT
+⚠️ CRITICAL PROTOCOL: MULTI-ENVIRONMENT TESTING
 Environment Differences:
 The site operates across three environments with different configurations:
-1. LOCAL (WordPress Studio): Full plugin access, WASM/SQLite, Fusion Builder active
+1. LOCAL (WordPress Studio): Full plugin access, WASM/SQLite
 2. STAGING (WP.com): Managed WordPress, limited plugins, may differ from local
 3. PRODUCTION: Final deployment environment
 
-Legacy Content Dependencies:
-Site contains historical content created with Fusion Builder plugin (2019-2024):
-- [fusion_youtube] shortcodes for YouTube embeds
-  ⚠️ NOTE: Fusion Builder uses <lite-youtube> custom elements (requires CSS/JS)
-  Renders as: <lite-youtube videoid="ID"></lite-youtube> (not <iframe>)
-  Fallback CSS/JS in single.html ensures thumbnails load if Fusion JS fails
-- [fusion_code] shortcodes for base64-encoded tables/HTML
-  ⚠️ NOTE: Often contains <table> elements with inline styles (light backgrounds)
-  Tables designed for light themes with white text become unreadable on dark theme
-  Fallback CSS in single.html forces brutalist styling (void-black bg, off-white text, acid-lime borders)
-  All inline styles overridden with !important declarations
-- [fusion_gallery] shortcodes for image galleries
-  ⚠️ NOTE: Requires CSS grid layout and column detection
-  Renders as: <div class="fusion-gallery"><div class="fusion-gallery-image">...</div></div>
-  Fallback CSS/JS in single.html detects columns and applies grid layout (2-6 columns)
-  Responsive: 4-6 cols desktop → 2 cols tablet → 1 col mobile
-- [fusion_builder_container] layout structures
-
-Fallback Strategy (functions.php:498-656):
-ALWAYS implement three-layer fallbacks for third-party plugin dependencies:
-1. Content Filter (priority 8): Regex replacement before WordPress shortcode processing
-2. Shortcode Registration: Register fallback handlers if plugin shortcodes don't exist
-3. Graceful Degradation: Decode base64 content, use WordPress oEmbed for URLs
-
-Example Pattern:
-```php
-// Layer 1: Content filter fallback
-function gcb_process_fusion_video_fallback( $content ) {
-    if ( class_exists('FusionBuilder') && shortcode_exists('fusion_youtube') ) {
-        return $content; // Plugin active, use it
-    }
-    // Regex replacement logic here
-}
-add_filter( 'the_content', 'gcb_process_fusion_video_fallback', 8 );
-
-// Layer 2: Shortcode registration fallback
-function gcb_register_fusion_fallback_shortcodes() {
-    if ( ! shortcode_exists( 'fusion_youtube' ) ) {
-        add_shortcode( 'fusion_youtube', 'gcb_fusion_youtube_shortcode_fallback' );
-    }
-}
-add_action( 'init', 'gcb_register_fusion_fallback_shortcodes', 999 );
-```
+Note: All content has been migrated to Gutenberg blocks (January 2026).
+Legacy Fusion Builder fallback code has been removed from the theme.
 
 Cross-Environment Testing Protocol:
 NEVER assume features work the same across environments. Test on BOTH local AND staging:
