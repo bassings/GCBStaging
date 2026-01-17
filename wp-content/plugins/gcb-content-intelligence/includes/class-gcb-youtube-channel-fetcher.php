@@ -35,7 +35,7 @@ class GCB_YouTube_Channel_Fetcher {
 	 * Caching configuration
 	 */
 	private const TRANSIENT_KEY    = 'gcb_youtube_channel_videos';
-	private const CACHE_DURATION   = HOUR_IN_SECONDS; // 1 hour (reduces API calls on staging).
+	private const CACHE_DURATION   = 6 * HOUR_IN_SECONDS; // 6 hours (reduces API quota usage).
 
 	/**
 	 * Cron hook name
@@ -319,11 +319,29 @@ class GCB_YouTube_Channel_Fetcher {
 	}
 
 	/**
-	 * Schedule hourly cron job
+	 * Schedule twice-daily cron job (every 12 hours)
 	 */
 	public static function schedule_refresh(): void {
-		if ( ! wp_next_scheduled( self::CRON_HOOK ) ) {
-			wp_schedule_event( time(), 'hourly', self::CRON_HOOK );
+		$timestamp = wp_next_scheduled( self::CRON_HOOK );
+
+		// If already scheduled, check if it's the correct schedule.
+		if ( $timestamp ) {
+			// Get the current schedule for this event.
+			$cron = _get_cron_array();
+			$schedule = '';
+			if ( isset( $cron[ $timestamp ][ self::CRON_HOOK ] ) ) {
+				$hook_data = $cron[ $timestamp ][ self::CRON_HOOK ];
+				$schedule = reset( $hook_data )['schedule'] ?? '';
+			}
+
+			// If not twicedaily, clear and reschedule.
+			if ( 'twicedaily' !== $schedule ) {
+				wp_clear_scheduled_hook( self::CRON_HOOK );
+				wp_schedule_event( time(), 'twicedaily', self::CRON_HOOK );
+			}
+		} else {
+			// Not scheduled, schedule it now.
+			wp_schedule_event( time(), 'twicedaily', self::CRON_HOOK );
 		}
 	}
 
@@ -366,7 +384,7 @@ class GCB_YouTube_Channel_Fetcher {
 		// Step 2: Cache miss - fetch all videos with pagination.
 		$videos = self::fetch_all_channel_videos( $max_videos );
 
-		// Step 3: Store in transient (cache for 1 hour like regular videos).
+		// Step 3: Store in transient (cache for 6 hours like regular videos).
 		if ( ! empty( $videos ) ) {
 			set_transient( self::TRANSIENT_KEY_ALL, $videos, self::CACHE_DURATION );
 		}
