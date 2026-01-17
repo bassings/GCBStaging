@@ -1749,70 +1749,100 @@ add_filter( 'redirect_canonical', 'gcb_prevent_video_archive_redirect', 10, 2 );
  * This handles the permalink structure migration without breaking existing links.
  * Uses 301 (permanent redirect) for SEO preservation.
  *
+ * IMPORTANT: This runs on 'parse_request' hook (before WordPress routing) to
+ * intercept old URLs before WordPress treats them as 404s.
+ *
  * @since 1.0.0
  */
-function gcb_redirect_old_permalink_structure(): void {
+function gcb_redirect_old_permalink_structure( $wp ): void {
 	// Only run on frontend for non-admin requests
-	if ( is_admin() || is_feed() || is_robots() || is_trackback() ) {
+	if ( is_admin() || defined( 'DOING_AJAX' ) || defined( 'DOING_CRON' ) ) {
 		return;
 	}
 
-	// Get the current request URI
-	$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
-	if ( empty( $request_uri ) ) {
+	// Get the current request path
+	$request_path = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '';
+	if ( empty( $request_path ) ) {
 		return;
 	}
 
-	// Parse the URL path (remove query string)
-	$path = wp_parse_url( $request_uri, PHP_URL_PATH );
+	// Parse the URL path (remove query string and sanitize)
+	$path = wp_parse_url( $request_path, PHP_URL_PATH );
 	$path = trim( $path, '/' );
 
-	// Skip if empty or already a WordPress core path
-	if ( empty( $path ) || in_array( $path, array( 'wp-admin', 'wp-login.php', 'wp-json' ), true ) ) {
+	// Skip if empty or core WordPress path
+	if ( empty( $path ) ||
+	     strpos( $path, 'wp-admin' ) === 0 ||
+	     strpos( $path, 'wp-json' ) === 0 ||
+	     strpos( $path, 'wp-login.php' ) === 0 ||
+	     strpos( $path, 'wp-content' ) === 0 ) {
 		return;
 	}
 
-	// Pattern to match old permalink structure: /post-slug/category-slug/
-	// Split the path into segments
+	// Split path into segments
 	$segments = explode( '/', $path );
 
-	// Old structure has 2 segments: [post-slug, category-slug]
-	// New structure has 1 segment: [post-slug]
+	// Old structure has exactly 2 segments: [post-slug, category-slug]
 	if ( count( $segments ) !== 2 ) {
-		return; // Not the old permalink pattern
-	}
-
-	$post_slug     = $segments[0];
-	$category_slug = $segments[1];
-
-	// Try to find the post by slug
-	$post = get_page_by_path( $post_slug, OBJECT, 'post' );
-
-	// If post doesn't exist, let WordPress handle the 404
-	if ( ! $post ) {
 		return;
 	}
 
-	// Verify this URL actually matches the old permalink structure
-	// by checking if the second segment is a category assigned to this post
-	$post_categories = get_the_category( $post->ID );
-	$is_old_structure = false;
+	$post_slug     = sanitize_title( $segments[0] );
+	$category_slug = sanitize_title( $segments[1] );
+
+	// Check if second segment looks like a category
+	// Quick check: categories usually have hyphens or common category words
+	$category_keywords = array( 'review', 'news', 'car', 'electric', 'brand', 'technology', 'safety', 'lifestyle' );
+	$likely_category = false;
+	foreach ( $category_keywords as $keyword ) {
+		if ( strpos( $category_slug, $keyword ) !== false ) {
+			$likely_category = true;
+			break;
+		}
+	}
+
+	// If it doesn't look like a category, skip
+	if ( ! $likely_category ) {
+		// Still check if it's an actual category slug
+		$term = get_term_by( 'slug', $category_slug, 'category' );
+		if ( ! $term ) {
+			return;
+		}
+	}
+
+	// Direct database query to find post by slug (more reliable than get_page_by_path)
+	global $wpdb;
+	$post_id = $wpdb->get_var(
+		$wpdb->prepare(
+			"SELECT ID FROM {$wpdb->posts} WHERE post_name = %s AND post_type = 'post' AND post_status = 'publish' LIMIT 1",
+			$post_slug
+		)
+	);
+
+	// If post doesn't exist, return (let WordPress handle 404)
+	if ( ! $post_id ) {
+		return;
+	}
+
+	// Verify the category slug matches one of the post's categories
+	$post_categories = wp_get_post_categories( $post_id, array( 'fields' => 'all' ) );
+	$is_valid_old_url = false;
 
 	foreach ( $post_categories as $cat ) {
 		if ( $cat->slug === $category_slug ) {
-			$is_old_structure = true;
+			$is_valid_old_url = true;
 			break;
 		}
 	}
 
 	// If this matches the old structure, redirect to new structure
-	if ( $is_old_structure ) {
+	if ( $is_valid_old_url ) {
 		$new_url = home_url( '/' . $post_slug . '/' );
 
 		// Preserve query string if present
-		$query_string = isset( $_SERVER['QUERY_STRING'] ) ? sanitize_text_field( wp_unslash( $_SERVER['QUERY_STRING'] ) ) : '';
+		$query_string = isset( $_SERVER['QUERY_STRING'] ) ? wp_unslash( $_SERVER['QUERY_STRING'] ) : '';
 		if ( ! empty( $query_string ) ) {
-			$new_url .= '?' . $query_string;
+			$new_url .= '?' . sanitize_text_field( $query_string );
 		}
 
 		// 301 permanent redirect for SEO
@@ -1820,7 +1850,7 @@ function gcb_redirect_old_permalink_structure(): void {
 		exit;
 	}
 }
-add_action( 'template_redirect', 'gcb_redirect_old_permalink_structure', 1 );
+add_action( 'parse_request', 'gcb_redirect_old_permalink_structure', 1 );
 
 /**
  * Render video archive page
