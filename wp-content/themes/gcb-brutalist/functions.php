@@ -1741,6 +1741,88 @@ function gcb_prevent_video_archive_redirect( $redirect_url, $requested_url ) {
 add_filter( 'redirect_canonical', 'gcb_prevent_video_archive_redirect', 10, 2 );
 
 /**
+ * Redirect old permalink structure to new structure
+ *
+ * OLD: /%postname%/%category%/ (e.g., /my-post/car-reviews/)
+ * NEW: /%postname%/ (e.g., /my-post/)
+ *
+ * This handles the permalink structure migration without breaking existing links.
+ * Uses 301 (permanent redirect) for SEO preservation.
+ *
+ * @since 1.0.0
+ */
+function gcb_redirect_old_permalink_structure(): void {
+	// Only run on frontend for non-admin requests
+	if ( is_admin() || is_feed() || is_robots() || is_trackback() ) {
+		return;
+	}
+
+	// Get the current request URI
+	$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
+	if ( empty( $request_uri ) ) {
+		return;
+	}
+
+	// Parse the URL path (remove query string)
+	$path = wp_parse_url( $request_uri, PHP_URL_PATH );
+	$path = trim( $path, '/' );
+
+	// Skip if empty or already a WordPress core path
+	if ( empty( $path ) || in_array( $path, array( 'wp-admin', 'wp-login.php', 'wp-json' ), true ) ) {
+		return;
+	}
+
+	// Pattern to match old permalink structure: /post-slug/category-slug/
+	// Split the path into segments
+	$segments = explode( '/', $path );
+
+	// Old structure has 2 segments: [post-slug, category-slug]
+	// New structure has 1 segment: [post-slug]
+	if ( count( $segments ) !== 2 ) {
+		return; // Not the old permalink pattern
+	}
+
+	$post_slug     = $segments[0];
+	$category_slug = $segments[1];
+
+	// Try to find the post by slug
+	$post = get_page_by_path( $post_slug, OBJECT, 'post' );
+
+	// If post doesn't exist, let WordPress handle the 404
+	if ( ! $post ) {
+		return;
+	}
+
+	// Verify this URL actually matches the old permalink structure
+	// by checking if the second segment is a category assigned to this post
+	$post_categories = get_the_category( $post->ID );
+	$is_old_structure = false;
+
+	foreach ( $post_categories as $cat ) {
+		if ( $cat->slug === $category_slug ) {
+			$is_old_structure = true;
+			break;
+		}
+	}
+
+	// If this matches the old structure, redirect to new structure
+	if ( $is_old_structure ) {
+		$new_url = home_url( '/' . $post_slug . '/' );
+
+		// Preserve query string if present
+		$query_string = isset( $_SERVER['QUERY_STRING'] ) ? sanitize_text_field( wp_unslash( $_SERVER['QUERY_STRING'] ) ) : '';
+		if ( ! empty( $query_string ) ) {
+			$new_url .= '?' . $query_string;
+		}
+
+		// 301 permanent redirect for SEO
+		wp_safe_redirect( $new_url, 301 );
+		exit;
+	}
+}
+add_action( 'template_redirect', 'gcb_redirect_old_permalink_structure', 1 );
+
+/**
  * Render video archive page
  *
  * When /video/ is accessed, render the video archive page.
