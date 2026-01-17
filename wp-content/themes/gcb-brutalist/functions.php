@@ -413,6 +413,147 @@ function gcb_add_content_format_body_classes( array $classes ): array {
 add_filter( 'body_class', 'gcb_add_content_format_body_classes' );
 
 /**
+ * Convert Spectra Image Galleries to email-safe HTML for newsletters
+ *
+ * Jetpack Newsletter doesn't support JavaScript-based galleries (Isotope, Swiper, etc.).
+ * This filter converts Spectra galleries to simple HTML tables for email compatibility.
+ * Only runs when content is being sent to email subscribers.
+ *
+ * @param string $content Post content being sent to email subscribers.
+ * @return string Modified content with email-safe galleries.
+ */
+function gcb_convert_spectra_gallery_for_email( string $content ): string {
+	// Only run this for email/RSS context
+	if ( ! is_feed() && ! ( defined( 'JETPACK_NEWSLETTER_EMAIL' ) && JETPACK_NEWSLETTER_EMAIL ) ) {
+		return $content;
+	}
+
+	// Check if content has Spectra Image Gallery blocks
+	if ( ! has_block( 'uagb/image-gallery', $content ) ) {
+		return $content;
+	}
+
+	// Parse blocks from content
+	$blocks = parse_blocks( $content );
+
+	// Process blocks recursively to convert galleries
+	$processed_blocks = gcb_process_blocks_for_email( $blocks );
+
+	// Serialize blocks back to content
+	return serialize_blocks( $processed_blocks );
+}
+add_filter( 'the_content_feed', 'gcb_convert_spectra_gallery_for_email', 10, 1 );
+add_filter( 'jetpack_newsletter_post_content', 'gcb_convert_spectra_gallery_for_email', 10, 1 );
+
+/**
+ * Recursively process blocks to convert Spectra galleries
+ *
+ * Walks through block tree and converts uagb/image-gallery blocks to email-safe HTML.
+ *
+ * @param array $blocks Array of parsed blocks.
+ * @return array Processed blocks.
+ */
+function gcb_process_blocks_for_email( array $blocks ): array {
+	$processed = array();
+
+	foreach ( $blocks as $block ) {
+		// If this is a Spectra Image Gallery, convert it
+		if ( 'uagb/image-gallery' === $block['blockName'] ) {
+			$processed[] = gcb_convert_spectra_to_email_table( $block );
+		} else {
+			// Process inner blocks recursively
+			if ( ! empty( $block['innerBlocks'] ) ) {
+				$block['innerBlocks'] = gcb_process_blocks_for_email( $block['innerBlocks'] );
+			}
+			$processed[] = $block;
+		}
+	}
+
+	return $processed;
+}
+
+/**
+ * Convert Spectra gallery block to email-safe HTML table
+ *
+ * Email clients don't support JavaScript, CSS Grid, or Flexbox reliably.
+ * This converts the gallery to a 2-column HTML table with inline styles.
+ *
+ * @param array $block Spectra gallery block data.
+ * @return array HTML block with email-safe gallery.
+ */
+function gcb_convert_spectra_to_email_table( array $block ): array {
+	$attrs         = $block['attrs'] ?? array();
+	$media_gallery = $attrs['mediaGallery'] ?? array();
+
+	if ( empty( $media_gallery ) ) {
+		return $block; // Return original if no images
+	}
+
+	// Build email-safe HTML table (works in all email clients including Outlook)
+	$html = '<table role="presentation" cellspacing="0" cellpadding="10" border="0" width="100%" style="border-collapse: collapse; max-width: 600px; margin: 0 auto;">';
+	$html .= '<tr>';
+
+	// Use 2-column layout for email (mobile-friendly)
+	$columns = 2;
+	$count   = 0;
+
+	foreach ( $media_gallery as $image ) {
+		// Start new row after every $columns images
+		if ( $count > 0 && 0 === $count % $columns ) {
+			$html .= '</tr><tr>';
+		}
+
+		// Get image URL and alt text (use medium size for faster email loading)
+		$image_url = '';
+		if ( ! empty( $image['sizes']['medium']['url'] ) ) {
+			$image_url = $image['sizes']['medium']['url'];
+		} elseif ( ! empty( $image['url'] ) ) {
+			$image_url = $image['url'];
+		}
+
+		$alt_text = $image['alt'] ?? '';
+		$caption  = $image['caption'] ?? '';
+
+		if ( empty( $image_url ) ) {
+			$count++;
+			continue;
+		}
+
+		// Email-safe table cell with inline styles
+		$html .= '<td align="center" valign="top" style="padding: 10px;">';
+		$html .= '<img src="' . esc_url( $image_url ) . '" alt="' . esc_attr( $alt_text ) . '" width="280" style="max-width: 100%; height: auto; display: block; border: 1px solid #333333;">';
+
+		// Add caption if it exists (brutalist theme styling)
+		if ( ! empty( $caption ) ) {
+			$html .= '<p style="margin: 8px 0 0; font-size: 14px; color: #AAAAAA; font-family: \'Space Mono\', \'Courier New\', monospace;">' . wp_kses_post( $caption ) . '</p>';
+		}
+
+		$html .= '</td>';
+		$count++;
+	}
+
+	// Fill remaining cells in the last row to prevent layout issues
+	$remaining = $columns - ( $count % $columns );
+	if ( $remaining < $columns ) {
+		for ( $i = 0; $i < $remaining; $i++ ) {
+			$html .= '<td style="padding: 10px;"></td>';
+		}
+	}
+
+	$html .= '</tr>';
+	$html .= '</table>';
+
+	// Return as HTML block (core/html) which email clients handle well
+	return array(
+		'blockName'    => 'core/html',
+		'attrs'        => array(),
+		'innerBlocks'  => array(),
+		'innerHTML'    => $html,
+		'innerContent' => array( $html ),
+	);
+}
+
+/**
  * Register Video Rail block pattern
  *
  * Registers the PHP-generated video rail pattern for use in templates.
