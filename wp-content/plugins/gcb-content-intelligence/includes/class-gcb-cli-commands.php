@@ -462,6 +462,296 @@ class GCB_CLI_Commands {
 	}
 
 	/**
+	 * Audit brand categorization accuracy across all posts.
+	 *
+	 * Identifies posts where detected brands in content don't match assigned brand categories.
+	 *
+	 * ## OPTIONS
+	 *
+	 * [--dry-run]
+	 * : Preview audit without saving report file.
+	 *
+	 * [--limit=<number>]
+	 * : Maximum number of posts to audit. Default: all.
+	 *
+	 * [--output=<file>]
+	 * : Output file for markdown report. Default: categorization-audit-report.md
+	 *
+	 * [--post-type=<type>]
+	 * : Post type to audit. Default: post.
+	 *
+	 * [--status=<status>]
+	 * : Post status to audit. Default: publish.
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     # Audit first 100 posts (dry run)
+	 *     $ wp gcb audit-brands --dry-run --limit=100
+	 *
+	 *     # Full audit with custom output file
+	 *     $ wp gcb audit-brands --output=brand-report.md
+	 *
+	 *     # Audit all posts including drafts
+	 *     $ wp gcb audit-brands --status=any
+	 *
+	 * @param array $args       Positional arguments.
+	 * @param array $assoc_args Associative arguments.
+	 * @return void
+	 */
+	public function audit_brands( array $args, array $assoc_args ): void {
+		$dry_run   = isset( $assoc_args['dry-run'] );
+		$limit     = isset( $assoc_args['limit'] ) ? intval( $assoc_args['limit'] ) : -1;
+		$output    = $assoc_args['output'] ?? 'categorization-audit-report.md';
+		$post_type = $assoc_args['post-type'] ?? 'post';
+		$status    = $assoc_args['status'] ?? 'publish';
+
+		// Load brand audit classes.
+		$this->load_brand_audit_classes();
+
+		WP_CLI::log( '🔍 Starting brand categorization audit...' );
+		WP_CLI::log( '' );
+
+		if ( $dry_run ) {
+			WP_CLI::warning( '🔍 DRY RUN MODE - No report file will be saved' );
+			WP_CLI::log( '' );
+		}
+
+		// Query posts.
+		$query_args = array(
+			'post_type'      => $post_type,
+			'post_status'    => $status,
+			'posts_per_page' => $limit > 0 ? $limit : -1,
+			'fields'         => 'all',
+		);
+
+		$query       = new WP_Query( $query_args );
+		$total_posts = $query->found_posts;
+
+		WP_CLI::log( "📊 Found {$total_posts} posts to audit" );
+		WP_CLI::log( "   Post Type: {$post_type}" );
+		WP_CLI::log( "   Status: {$status}" );
+		WP_CLI::log( '' );
+
+		// Audit results storage.
+		$stats = array(
+			'total'           => 0,
+			'with_brands'     => 0,
+			'wrong_brand'     => 0,
+			'missing_brand'   => 0,
+			'extra_brand'     => 0,
+			'comparison_posts' => 0,
+		);
+
+		$mismatches = array(
+			'wrong_brand'   => array(),
+			'missing_brand' => array(),
+			'extra_brand'   => array(),
+			'comparison'    => array(),
+		);
+
+		// Process posts with progress bar.
+		$progress = \WP_CLI\Utils\make_progress_bar( 'Auditing posts', $total_posts );
+
+		foreach ( $query->posts as $post ) {
+			$stats['total']++;
+
+			// Audit this post.
+			$result = GCB_Brand_Auditor::audit_post( $post );
+
+			// Track posts with brand categories.
+			if ( ! empty( $result['assigned_brands'] ) ) {
+				$stats['with_brands']++;
+			}
+
+			// Track comparison posts.
+			if ( $result['is_comparison'] ) {
+				$stats['comparison_posts']++;
+				$mismatches['comparison'][] = $result;
+			}
+
+			// Track mismatches.
+			if ( GCB_Brand_Auditor::has_mismatches( $result ) ) {
+				if ( ! empty( $result['mismatches']['wrong_brand'] ) ) {
+					$stats['wrong_brand']++;
+					$mismatches['wrong_brand'][] = $result;
+				}
+
+				if ( ! empty( $result['mismatches']['missing_brand'] ) ) {
+					$stats['missing_brand']++;
+					$mismatches['missing_brand'][] = $result;
+				}
+
+				if ( ! empty( $result['mismatches']['extra_brand'] ) ) {
+					$stats['extra_brand']++;
+					$mismatches['extra_brand'][] = $result;
+				}
+			}
+
+			$progress->tick();
+		}
+
+		$progress->finish();
+
+		// Generate markdown report.
+		$report = $this->generate_brand_audit_report( $stats, $mismatches );
+
+		// Display results.
+		WP_CLI::log( '' );
+		WP_CLI::success( '✅ Audit complete!' );
+		WP_CLI::log( '' );
+		WP_CLI::log( '📈 Results:' );
+		WP_CLI::log( "   Total posts: {$stats['total']}" );
+		WP_CLI::log( "   Posts with brand categories: {$stats['with_brands']}" );
+		WP_CLI::log( "   ❌ Wrong brand category: {$stats['wrong_brand']}" );
+		WP_CLI::log( "   ⚠️  Missing brand category: {$stats['missing_brand']}" );
+		WP_CLI::log( "   ℹ️  Extra brand category: {$stats['extra_brand']}" );
+		WP_CLI::log( "   🔄 Comparison posts: {$stats['comparison_posts']}" );
+
+		if ( ! $dry_run ) {
+			// Save report to file.
+			$output_path = ABSPATH . $output;
+			file_put_contents( $output_path, $report );
+			WP_CLI::log( '' );
+			WP_CLI::success( "Report saved to: {$output}" );
+		} else {
+			WP_CLI::log( '' );
+			WP_CLI::log( '📄 Report preview (first 2000 characters):' );
+			WP_CLI::log( '─────────────────────────────────' );
+			WP_CLI::log( substr( $report, 0, 2000 ) . '...' );
+			WP_CLI::log( '─────────────────────────────────' );
+		}
+	}
+
+	/**
+	 * Generate markdown report from audit results.
+	 *
+	 * @param array $stats      Statistics summary.
+	 * @param array $mismatches Mismatches by type.
+	 * @return string Markdown report content.
+	 */
+	private function generate_brand_audit_report( array $stats, array $mismatches ): string {
+		$report = "# Brand Categorization Accuracy Audit Report\n\n";
+		$report .= "Generated: " . current_time( 'Y-m-d H:i:s' ) . "\n\n";
+
+		// Executive summary.
+		$report .= "## Executive Summary\n\n";
+		$report .= "- **Posts Analyzed**: {$stats['total']}\n";
+		$report .= "- **Posts with Brand Categories**: {$stats['with_brands']}\n";
+		$report .= "- **Wrong Brand Category** (Critical): {$stats['wrong_brand']}\n";
+		$report .= "- **Missing Brand Category** (Medium): {$stats['missing_brand']}\n";
+		$report .= "- **Extra Brand Category** (Low): {$stats['extra_brand']}\n";
+		$report .= "- **Comparison Posts**: {$stats['comparison_posts']}\n\n";
+
+		// Wrong brand section (critical).
+		$report .= "## 1. Wrong Brand Category (Critical)\n\n";
+		$report .= "Posts with brand categories that don't match detected content.\n\n";
+
+		if ( empty( $mismatches['wrong_brand'] ) ) {
+			$report .= "✅ No critical mismatches found!\n\n";
+		} else {
+			$report .= "| Post ID | Title | Detected Brands | Wrong Category | Fix |\n";
+			$report .= "|---------|-------|----------------|----------------|-----|\n";
+
+			foreach ( $mismatches['wrong_brand'] as $result ) {
+				$post_id        = $result['post_id'];
+				$title          = esc_html( substr( $result['post_title'], 0, 50 ) );
+				$detected       = implode( ', ', array_keys( $result['detected_brands'] ) );
+				$wrong_cats     = implode( ', ', array_keys( $result['assigned_brands'] ) );
+				$recommendations = GCB_Brand_Auditor::generate_recommendations( $result );
+				$fix            = implode( '; ', $recommendations );
+
+				$report .= "| {$post_id} | {$title} | {$detected} | {$wrong_cats} | {$fix} |\n";
+			}
+
+			$report .= "\n";
+		}
+
+		// Missing brand section (medium).
+		$report .= "## 2. Missing Brand Category (Medium)\n\n";
+		$report .= "Posts mentioning brands without corresponding brand categories.\n\n";
+
+		if ( empty( $mismatches['missing_brand'] ) ) {
+			$report .= "✅ No missing brand categories!\n\n";
+		} else {
+			$report .= "| Post ID | Title | Detected Brand | Confidence | Current Categories | Fix |\n";
+			$report .= "|---------|-------|----------------|-----------|-------------------|-----|\n";
+
+			foreach ( $mismatches['missing_brand'] as $result ) {
+				$post_id     = $result['post_id'];
+				$title       = esc_html( substr( $result['post_title'], 0, 50 ) );
+				$missing     = $result['mismatches']['missing_brand'];
+				$current     = implode( ', ', array_keys( $result['assigned_brands'] ) );
+
+				foreach ( $missing as $miss ) {
+					$brand      = $miss['brand'];
+					$confidence = round( $miss['confidence'] * 100 ) . '%';
+					$fix        = 'Add ' . GCB_Brand_Dictionary::get_category_from_brand( $brand );
+
+					$report .= "| {$post_id} | {$title} | {$brand} | {$confidence} | {$current} | {$fix} |\n";
+				}
+			}
+
+			$report .= "\n";
+		}
+
+		// Extra brand section (low priority).
+		$report .= "## 3. Extra Brand Category (Low Priority)\n\n";
+		$report .= "Posts with brand categories but brand not detected in content.\n\n";
+
+		if ( empty( $mismatches['extra_brand'] ) ) {
+			$report .= "✅ No extra brand categories!\n\n";
+		} else {
+			$report .= "| Post ID | Title | Extra Category | Fix |\n";
+			$report .= "|---------|-------|---------------|-----|\n";
+
+			foreach ( $mismatches['extra_brand'] as $result ) {
+				$post_id    = $result['post_id'];
+				$title      = esc_html( substr( $result['post_title'], 0, 50 ) );
+				$extra_cats = implode( ', ', array_keys( $result['assigned_brands'] ) );
+				$fix        = 'Review categories (brand not mentioned)';
+
+				$report .= "| {$post_id} | {$title} | {$extra_cats} | {$fix} |\n";
+			}
+
+			$report .= "\n";
+		}
+
+		// Comparison posts section.
+		$report .= "## 4. Comparison Posts (Review Needed)\n\n";
+		$report .= "Posts that appear to compare multiple brands.\n\n";
+
+		if ( empty( $mismatches['comparison'] ) ) {
+			$report .= "No comparison posts detected.\n\n";
+		} else {
+			$report .= "| Post ID | Title | Brands Mentioned | Categories |\n";
+			$report .= "|---------|-------|-----------------|------------|\n";
+
+			foreach ( $mismatches['comparison'] as $result ) {
+				$post_id   = $result['post_id'];
+				$title     = esc_html( substr( $result['post_title'], 0, 50 ) );
+				$brands    = implode( ', ', array_keys( $result['detected_brands'] ) );
+				$categories = implode( ', ', array_keys( $result['assigned_brands'] ) );
+
+				$report .= "| {$post_id} | {$title} | {$brands} | {$categories} |\n";
+			}
+
+			$report .= "\n";
+		}
+
+		return $report;
+	}
+
+	/**
+	 * Load brand audit classes.
+	 *
+	 * @return void
+	 */
+	private function load_brand_audit_classes(): void {
+		require_once GCB_CI_DIR . 'includes/class-gcb-brand-dictionary.php';
+		require_once GCB_CI_DIR . 'includes/class-gcb-brand-auditor.php';
+	}
+
+	/**
 	 * Load migration classes.
 	 *
 	 * @return void
