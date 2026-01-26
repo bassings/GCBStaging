@@ -1,7 +1,131 @@
 # GCB Modernization Implementation Plan
 **Project:** Gay Car Boys (GCB) Editorial Brutalism Redesign
 **Status:** Avada to Gutenberg Migration - COMPLETE ✅
-**Last Updated:** January 13, 2026
+**Last Updated:** January 26, 2026
+
+---
+
+## LCP Optimization: Reduce 4689ms to Under 2500ms (January 26, 2026)
+
+**Status:** Implementation Complete - Testing Pending
+
+### Problem Summary
+Chrome User Experience Report (CrUX) data showed origin-wide LCP at 4689ms on mobile - nearly 2x the 2500ms "good" threshold. Single post pages were identified as the primary contributor due to:
+1. No featured image preload optimization
+2. Heavy YouTube iframe embeds loading immediately (~800KB+ per video)
+3. Missing preconnect hints for critical CDNs
+
+### Files Created/Modified
+
+| File | Action | Description |
+|------|--------|-------------|
+| `functions.php` | MODIFIED | Added preconnect hints, single post LCP preload, lite-youtube conversion |
+| `style.css` | MODIFIED | Added lite-youtube facade CSS styling |
+| `assets/js/lite-youtube-embed.js` | CREATED | Custom element for lightweight YouTube embeds |
+| `tests/e2e/performance.public.spec.ts` | MODIFIED | Added 6 LCP optimization tests |
+
+### Optimizations Implemented
+
+#### 1. Preconnect Hints for Critical CDNs (Impact: 200-500ms)
+Added preconnect resource hints to `gcb_add_resource_hints()`:
+- `https://i.ytimg.com` - YouTube thumbnail CDN
+- `https://www.youtube-nocookie.com` - YouTube embed domain
+- `https://i0.wp.com` - WP.com image CDN (production only)
+
+**Risk:** Low | **Effort:** Low
+
+#### 2. Single Post LCP Preload (Impact: 300-800ms)
+Created `gcb_preload_single_post_lcp_image()` function:
+- Preloads featured image on `is_singular('post')` pages
+- Adds `fetchpriority="high"` attribute
+- Includes responsive srcset and sizes attributes
+- Added `gcb_optimize_first_content_image()` to mark first content image as high priority
+
+**Risk:** Low | **Effort:** Low
+
+#### 3. Lite-YouTube Facade Pattern (Impact: 500-1500ms)
+Implemented lightweight YouTube embed system:
+- Created `lite-youtube` custom element (Web Component)
+- Only loads thumbnail image until user clicks play
+- Replaces ~800KB+ iframe with ~50KB thumbnail
+- Added `gcb_convert_youtube_to_lite_embed()` render_block filter
+- Brutalist play button styling (Electric Blue with no transitions)
+- Full keyboard accessibility (Tab, Enter, Space key support)
+
+**Features:**
+- Automatic conversion of `core/embed` YouTube blocks
+- Supports multiple YouTube URL formats (watch, youtu.be, embed)
+- ARIA labels for screen reader support
+- Focus indicators (2px Electric Blue outline)
+- Deferred script loading (non-blocking)
+
+**Risk:** Medium | **Effort:** Medium
+
+### Expected Results
+
+| Optimization | Estimated Savings |
+|--------------|-------------------|
+| Preconnect hints | 200-500ms |
+| Single post LCP optimization | 300-800ms |
+| Lite-YouTube facade | 500-1500ms |
+| **Total** | **1000-2800ms** |
+
+**Target:** Reduce LCP from 4689ms to under 2500ms (need ~2200ms improvement)
+
+### E2E Tests Added (6 tests)
+
+1. **Preconnect hints are present for critical CDNs** - Validates resource hints in HTML head
+2. **Single post has featured image preload** - Checks for preload link with fetchpriority="high"
+3. **Single post LCP is under 2.5 seconds** - Core Web Vitals compliance
+4. **Lite-YouTube facade loads instead of iframe** - Verifies custom element usage
+5. **YouTube iframe loads only after clicking play** - Confirms lazy loading behavior
+6. **Lite-YouTube facade has proper accessibility attributes** - WCAG 2.2 AA compliance
+
+### Testing Notes
+
+**Local Testing:**
+Tests require test posts with specific slugs:
+- `/single-post-test/` - Post with featured image for LCP tests
+- `/video-embed-test/` - Post with embedded YouTube video for facade tests
+
+**Production Validation:**
+CrUX data updates every 28 days. Monitor after deployment to confirm LCP improvement in real-world conditions.
+
+### Design System Compliance
+
+All implementations follow Editorial Brutalism standards:
+- **Colors:** Electric Blue (#0084FF) play buttons, Void Black (#050505) backgrounds
+- **Typography:** Consistent with existing patterns
+- **Transitions:** `transition: none !important` (brutalist aesthetic)
+- **Accessibility:** WCAG 2.2 Level AA compliant
+  - 44px touch targets
+  - Keyboard navigation support
+  - Focus indicators (2px solid Electric Blue)
+  - ARIA labels for screen readers
+
+### Architecture Notes
+
+**Lite-YouTube Implementation:**
+- Uses Web Components API (Custom Elements)
+- Progressive enhancement: Falls back to link if JS disabled
+- No external dependencies (vanilla JavaScript)
+- Compatible with all modern browsers (Chrome, Firefox, Safari, Edge)
+
+**WordPress Integration:**
+- Uses `render_block` filter for automatic conversion
+- Only processes `core/embed` blocks with `providerNameSlug: 'youtube'`
+- Preserves WordPress wrapper classes for consistent styling
+- Script loading via `wp_enqueue_scripts` with defer strategy
+
+### Next Steps
+
+1. Create test posts for E2E tests (if not already present)
+2. Run `npm run test:perf` to validate implementations
+3. Deploy to staging environment
+4. Clear all caches (browser, WordPress, CDN)
+5. Test on real devices (mobile, tablet, desktop)
+6. Monitor Lighthouse scores for LCP improvements
+7. Wait 28 days for CrUX data update to reflect changes in production
 
 ---
 
