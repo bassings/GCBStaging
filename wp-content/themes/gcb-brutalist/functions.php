@@ -596,6 +596,42 @@ function gcb_extract_youtube_id( string $url ): ?string {
 }
 
 /**
+ * Legacy Fusion YouTube shortcode handler
+ *
+ * Now that Fusion Builder is deactivated for performance, this provides a
+ * lightweight replacement that converts legacy [fusion_youtube] shortcodes
+ * to lite-youtube facades.
+ *
+ * @param array $atts Shortcode attributes.
+ * @return string HTML output (lite-youtube element).
+ */
+function gcb_legacy_fusion_youtube_handler( array $atts ): string {
+	$atts = shortcode_atts(
+		array(
+			'id'     => '',
+			'width'  => '1200',
+			'height' => '675',
+		),
+		$atts,
+		'fusion_youtube'
+	);
+
+	$video_id = sanitize_text_field( $atts['id'] );
+
+	if ( empty( $video_id ) ) {
+		return '<p style="color: #CCFF00; border: 2px solid #CCFF00; padding: 1rem; background: #050505; font-family: monospace;">⚠️ YouTube video ID missing</p>';
+	}
+
+	// Render as lite-youtube facade (lightweight, loads iframe only on click)
+	return sprintf(
+		'<div class="legacy-youtube-wrapper" style="max-width: %spx; margin: 2rem auto;"><lite-youtube videoid="%s" title="YouTube video" params="rel=0&modestbranding=1"></lite-youtube></div>',
+		absint( $atts['width'] ),
+		esc_attr( $video_id )
+	);
+}
+add_shortcode( 'fusion_youtube', 'gcb_legacy_fusion_youtube_handler' );
+
+/**
  * Google Fonts are now loaded via theme.json fontFace declarations.
  *
  * This provides better compatibility with WordPress.com hosting and avoids
