@@ -5,6 +5,61 @@
 
 ---
 
+## Bug Fix: Table Phantom Column Issue (January 26, 2026)
+
+**Status:** Fix Complete ✅
+
+### Problem Summary
+Tables on single posts (e.g., the Mitsubishi ASX comparison table) displayed a "phantom column" - extra empty space appearing on the right side after the last data column.
+
+### Root Cause
+The CSS rule `display: block !important` on tables (lines 177-182 in `single.html`) broke the CSS Table Layout algorithm:
+- Tables normally use CSS Table Layout which auto-distributes column widths
+- `display: block` converted tables to generic block elements
+- Columns sized to their content, leaving remaining space as empty area
+- The table border wrapped the full `width: 100%` but columns didn't fill it
+
+### Solution
+**Removed the problematic CSS block entirely** - WordPress core already handles horizontal scrolling via the `.wp-block-table` figure wrapper.
+
+### Files Modified
+| File | Action | Description |
+|------|--------|-------------|
+| `wp-content/themes/gcb-brutalist/templates/single.html` | MODIFIED | Deleted lines 177-182 (display: block CSS) |
+
+### Technical Details
+**Deleted CSS (lines 177-182):**
+```css
+/* Ensure table doesn't overflow on mobile */
+#main-content .wp-block-post-content table {
+    display: block !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+```
+
+**Why this works:**
+- WordPress core already sets `overflow-x: auto` on `.wp-block-table` (the figure wrapper)
+- Removing `display: block` restores proper `display: table` layout
+- Columns now auto-distribute to fill the table width (no phantom column)
+- Mobile horizontal scrolling still works via the figure wrapper
+
+### Verification
+**Test Cases:**
+1. ✅ Visual Check: `/why-2026-mitsubishi-asx-aspire-cannot-compete/` - no phantom column, columns fill full width
+2. ✅ Second Table: Feature Comparison table in same post works correctly
+3. ✅ Mobile Scroll (375px): Table scrolls horizontally if content exceeds viewport
+4. ✅ Desktop Layout: Columns distribute evenly, electric blue border wraps content tightly
+5. ✅ Brutalist Styling: Table retains void-black background, off-white text, acid-lime header borders
+
+### Impact
+- **UX Improvement:** Tables now fill their container properly with no empty space
+- **Design Consistency:** Table borders wrap actual content, not phantom space
+- **Mobile Experience:** Horizontal scrolling still functional via WordPress core wrapper
+- **No Regressions:** All brutalist styling preserved (colors, borders, typography)
+
+---
+
 ## LCP Optimization: Reduce 4689ms to Under 2500ms (January 26, 2026)
 
 **Status:** Implementation Complete - Testing Pending
