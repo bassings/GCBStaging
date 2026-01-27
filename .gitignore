@@ -50,3 +50,6 @@ wp-content/jetpack-waf/
 # Migration logs
 wp-content/migration_errors.log
 wp-config.php
+# Database files (root)
+.ht.sqlite
+.ht.sqlite-*
