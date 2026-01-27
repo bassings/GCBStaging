@@ -1,6 +1,6 @@
 # GCB Content Intelligence Plugin
 
-**Version:** 1.0.0
+**Version:** 1.1.0
 **Requires PHP:** 8.3+
 **WordPress:** 6.7+
 
@@ -11,7 +11,8 @@ Automated content intelligence plugin for GayCarBoys.com that:
 - **Detects video content** (YouTube embeds) automatically
 - **Classifies posts** using hidden `content_format` taxonomy (video/standard/gallery)
 - **Generates schema.org JSON-LD** (VideoObject for videos, NewsArticle for text posts)
-- **Converts legacy Avada shortcodes** `[fusion_youtube]` to WordPress core blocks
+- **Migrates Fusion Builder content** to Gutenberg blocks with automatic metadata cleanup
+- **Converts classic HTML posts** to Gutenberg compatible blocks
 - **Fetches video metadata** from YouTube Data API v3 (duration, views, upload date)
 
 ## Features
@@ -219,7 +220,101 @@ If not set, plugin will still detect videos but won't fetch metadata.
 - **Graceful degradation:** If API fails, video ID still saved
 - **Batch processing:** Supports bulk content detection via WP-CLI
 
+## WP-CLI Commands
+
+The plugin provides several WP-CLI commands for batch operations:
+
+### Migrate Fusion Builder Posts
+
+Convert Fusion Builder shortcodes to Gutenberg blocks:
+
+```bash
+# Dry run to preview migration
+wp gcb migrate-posts --dry-run --limit=10
+
+# Migrate all posts
+wp gcb migrate-posts
+
+# Migrate single post
+wp gcb migrate-posts --post-id=1234
+
+# Custom batch size
+wp gcb migrate-posts --batch-size=25
+```
+
+Options:
+- `--dry-run`: Preview without saving changes
+- `--limit=<number>`: Maximum posts to migrate
+- `--batch-size=<size>`: Posts per batch (default: 50)
+- `--post-id=<id>`: Migrate single post
+- `--post-type=<type>`: Post type (default: post)
+- `--status=<status>`: Post status (default: publish)
+
+### Clean Fusion Metadata
+
+Remove legacy Fusion Builder metadata from posts:
+
+```bash
+# Preview metadata cleanup
+wp gcb cleanup-fusion-metadata --dry-run
+
+# Clean all published posts
+wp gcb cleanup-fusion-metadata
+
+# Clean first 100 posts
+wp gcb cleanup-fusion-metadata --limit=100
+```
+
+Removes:
+- `_fusion`
+- `_fusion_google_fonts`
+- `_fusion_is_global`
+- `fusion_builder_status`
+- `_avada_*` (all Avada metadata)
+- `pyre_*` (all Pyre metadata)
+
+### Convert Classic HTML Posts
+
+Wrap classic HTML content in Gutenberg Classic block:
+
+```bash
+# Preview conversion
+wp gcb convert-classic-html --dry-run --limit=10
+
+# Convert all classic HTML posts
+wp gcb convert-classic-html
+```
+
+Options:
+- `--dry-run`: Preview without saving
+- `--limit=<number>`: Maximum posts to convert
+- `--post-type=<type>`: Post type (default: post)
+- `--status=<status>`: Post status (default: publish)
+
+### Classify Posts
+
+Automatically classify posts by content format:
+
+```bash
+# Classify all published posts
+wp gcb classify-all
+
+# Classify including drafts
+wp gcb classify-all --status=any
+
+# Custom batch size
+wp gcb classify-all --batch-size=50
+```
+
 ## Changelog
+
+### 1.1.0 (2026-01-27)
+
+- Added Fusion Builder to Gutenberg migration with automatic metadata cleanup
+- Added classic HTML to Gutenberg block conversion
+- Added standalone metadata cleanup command
+- Improved migration service with dry-run support
+- Enhanced WP-CLI commands with progress bars and detailed reporting
 
 ### 1.0.0 (2025-01-01)
 

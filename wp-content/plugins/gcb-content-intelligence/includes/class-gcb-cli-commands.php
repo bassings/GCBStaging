@@ -261,8 +261,14 @@ class GCB_CLI_Commands {
 			update_post_meta( $post_id, '_gcb_original_avada_content', $result->originalContent );
 			update_post_meta( $post_id, '_gcb_migrated_at', current_time( 'mysql' ) );
 
+			// Clean up Fusion metadata.
+			$cleanup_result = $service->cleanupFusionMetadata( $post_id, false );
+
 			WP_CLI::success( "Post {$post_id} migrated successfully!" );
 			WP_CLI::log( "   Shortcodes converted: {$result->stats['shortcodes_converted']}" );
+			if ( $cleanup_result['deleted'] > 0 ) {
+				WP_CLI::log( "   Fusion metadata cleaned: {$cleanup_result['deleted']} keys removed" );
+			}
 		}
 	}
 
@@ -403,6 +409,9 @@ class GCB_CLI_Commands {
 						// Store backup.
 						update_post_meta( $post_id, '_gcb_original_avada_content', $result->originalContent );
 						update_post_meta( $post_id, '_gcb_migrated_at', current_time( 'mysql' ) );
+
+						// Clean up Fusion metadata.
+						$service->cleanupFusionMetadata( $post_id, false );
 
 						$stats['migrated']++;
 						$stats['shortcodes_total'] += $result->stats['shortcodes_converted'] ?? 0;
@@ -749,6 +758,258 @@ class GCB_CLI_Commands {
 	private function load_brand_audit_classes(): void {
 		require_once GCB_CI_DIR . 'includes/class-gcb-brand-dictionary.php';
 		require_once GCB_CI_DIR . 'includes/class-gcb-brand-auditor.php';
+	}
+
+	/**
+	 * Clean up Fusion Builder metadata from all posts.
+	 *
+	 * Removes legacy Fusion Builder metadata (_fusion, _fusion_google_fonts, etc.)
+	 * from posts that no longer need it.
+	 *
+	 * ## OPTIONS
+	 *
+	 * [--dry-run]
+	 * : Preview cleanup without deleting metadata.
+	 *
+	 * [--post-type=<type>]
+	 * : Post type to clean. Default: post.
+	 *
+	 * [--status=<status>]
+	 * : Post status to clean. Default: publish.
+	 *
+	 * [--limit=<number>]
+	 * : Maximum number of posts to process. Default: all.
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     # Preview metadata cleanup
+	 *     $ wp gcb cleanup-fusion-metadata --dry-run
+	 *
+	 *     # Clean all published posts
+	 *     $ wp gcb cleanup-fusion-metadata
+	 *
+	 *     # Clean first 100 posts
+	 *     $ wp gcb cleanup-fusion-metadata --limit=100
+	 *
+	 * @param array $args       Positional arguments.
+	 * @param array $assoc_args Associative arguments.
+	 * @return void
+	 */
+	public function cleanup_fusion_metadata( array $args, array $assoc_args ): void {
+		$dry_run   = isset( $assoc_args['dry-run'] );
+		$post_type = $assoc_args['post-type'] ?? 'post';
+		$status    = $assoc_args['status'] ?? 'publish';
+		$limit     = isset( $assoc_args['limit'] ) ? intval( $assoc_args['limit'] ) : -1;
+
+		$this->load_migration_classes();
+		$service = new GCB_Migration_Service();
+
+		WP_CLI::log( '🧹 Starting Fusion metadata cleanup...' );
+		WP_CLI::log( '' );
+
+		if ( $dry_run ) {
+			WP_CLI::warning( '🔍 DRY RUN MODE - No changes will be saved' );
+			WP_CLI::log( '' );
+		}
+
+		// Find posts with fusion metadata.
+		global $wpdb;
+		$query = "
+			SELECT DISTINCT p.ID
+			FROM {$wpdb->posts} p
+			INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
+			WHERE pm.meta_key LIKE '%fusion%'
+			AND p.post_type = %s
+			AND p.post_status = %s
+		";
+
+		if ( $limit > 0 ) {
+			$query .= " LIMIT %d";
+			$post_ids = $wpdb->get_col( $wpdb->prepare( $query, $post_type, $status, $limit ) );
+		} else {
+			$post_ids = $wpdb->get_col( $wpdb->prepare( $query, $post_type, $status ) );
+		}
+
+		$total = count( $post_ids );
+		WP_CLI::log( "📊 Found {$total} posts with Fusion metadata" );
+		WP_CLI::log( '' );
+
+		if ( 0 === $total ) {
+			WP_CLI::success( 'No posts with Fusion metadata found!' );
+			return;
+		}
+
+		$stats = [
+			'cleaned'      => 0,
+			'meta_deleted' => 0,
+		];
+
+		$progress = \WP_CLI\Utils\make_progress_bar( 'Cleaning metadata', $total );
+
+		foreach ( $post_ids as $post_id ) {
+			$cleanup_result = $service->cleanupFusionMetadata( $post_id, $dry_run );
+
+			if ( $cleanup_result['deleted'] > 0 ) {
+				$stats['cleaned']++;
+				$stats['meta_deleted'] += $cleanup_result['deleted'];
+			}
+
+			$progress->tick();
+		}
+
+		$progress->finish();
+
+		WP_CLI::log( '' );
+		if ( $dry_run ) {
+			WP_CLI::success( '🔍 Dry run complete!' );
+		} else {
+			WP_CLI::success( '✅ Cleanup complete!' );
+		}
+
+		WP_CLI::log( '' );
+		WP_CLI::log( '📈 Results:' );
+		WP_CLI::log( "   Posts cleaned: {$stats['cleaned']}" );
+		WP_CLI::log( "   Meta keys deleted: {$stats['meta_deleted']}" );
+	}
+
+	/**
+	 * Convert classic HTML posts to Gutenberg blocks.
+	 *
+	 * Wraps classic HTML content in a Classic block for proper Gutenberg compatibility.
+	 *
+	 * ## OPTIONS
+	 *
+	 * [--dry-run]
+	 * : Preview conversion without modifying database.
+	 *
+	 * [--limit=<number>]
+	 * : Maximum number of posts to convert. Default: all.
+	 *
+	 * [--post-type=<type>]
+	 * : Post type to convert. Default: post.
+	 *
+	 * [--status=<status>]
+	 * : Post status to convert. Default: publish.
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     # Preview conversion
+	 *     $ wp gcb convert-classic-html --dry-run --limit=10
+	 *
+	 *     # Convert all classic HTML posts
+	 *     $ wp gcb convert-classic-html
+	 *
+	 * @param array $args       Positional arguments.
+	 * @param array $assoc_args Associative arguments.
+	 * @return void
+	 */
+	public function convert_classic_html( array $args, array $assoc_args ): void {
+		$dry_run   = isset( $assoc_args['dry-run'] );
+		$limit     = isset( $assoc_args['limit'] ) ? intval( $assoc_args['limit'] ) : -1;
+		$post_type = $assoc_args['post-type'] ?? 'post';
+		$status    = $assoc_args['status'] ?? 'publish';
+
+		$this->load_migration_classes();
+		$service = new GCB_Migration_Service();
+
+		WP_CLI::log( '🔄 Starting classic HTML to Gutenberg conversion...' );
+		WP_CLI::log( '' );
+
+		if ( $dry_run ) {
+			WP_CLI::warning( '🔍 DRY RUN MODE - No changes will be saved' );
+			WP_CLI::log( '' );
+		}
+
+		// Get all posts.
+		$query_args = [
+			'post_type'      => $post_type,
+			'post_status'    => $status,
+			'posts_per_page' => $limit > 0 ? $limit : -1,
+			'fields'         => 'ids',
+		];
+
+		$query    = new WP_Query( $query_args );
+		$post_ids = $query->posts;
+
+		// Filter for classic HTML posts.
+		$classic_posts = [];
+		foreach ( $post_ids as $post_id ) {
+			$content = get_post_field( 'post_content', $post_id );
+			if ( $service->isClassicHTML( $content ) ) {
+				$classic_posts[] = $post_id;
+			}
+		}
+
+		$total = count( $classic_posts );
+		WP_CLI::log( "📊 Found {$total} classic HTML posts" );
+		WP_CLI::log( '' );
+
+		if ( 0 === $total ) {
+			WP_CLI::success( 'No classic HTML posts found!' );
+			return;
+		}
+
+		$stats = [
+			'converted' => 0,
+			'failed'    => 0,
+			'skipped'   => 0,
+		];
+
+		$progress = \WP_CLI\Utils\make_progress_bar( 'Converting posts', $total );
+
+		foreach ( $classic_posts as $post_id ) {
+			$post = get_post( $post_id );
+
+			if ( ! $post ) {
+				$stats['skipped']++;
+				$progress->tick();
+				continue;
+			}
+
+			$result = $service->convertClassicHTML( $post->post_content, $dry_run );
+
+			if ( ! $result->success ) {
+				$stats['failed']++;
+				$progress->tick();
+				continue;
+			}
+
+			if ( ! $dry_run && $result->hasChanges ) {
+				$update_result = wp_update_post(
+					[
+						'ID'           => $post_id,
+						'post_content' => $result->content,
+					],
+					true
+				);
+
+				if ( is_wp_error( $update_result ) ) {
+					$stats['failed']++;
+				} else {
+					update_post_meta( $post_id, '_gcb_converted_from_classic', current_time( 'mysql' ) );
+					$stats['converted']++;
+				}
+			} elseif ( $dry_run ) {
+				$stats['converted']++;
+			}
+
+			$progress->tick();
+		}
+
+		$progress->finish();
+
+		WP_CLI::log( '' );
+		if ( $dry_run ) {
+			WP_CLI::success( '🔍 Dry run complete!' );
+		} else {
+			WP_CLI::success( '✅ Conversion complete!' );
+		}
+
+		WP_CLI::log( '' );
+		WP_CLI::log( '📈 Results:' );
+		WP_CLI::log( "   ✅ Converted: {$stats['converted']}" );
+		WP_CLI::log( "   ⏭️  Skipped: {$stats['skipped']}" );
+		WP_CLI::log( "   ❌ Failed: {$stats['failed']}" );
 	}
 
 	/**

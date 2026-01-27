@@ -76,6 +76,26 @@ final class GCB_Migration_Service {
 	}
 
 	/**
+	 * Check if content is classic HTML (no blocks).
+	 *
+	 * @param string $content Post content to check.
+	 * @return bool True if content is classic HTML without blocks.
+	 */
+	public function isClassicHTML( string $content ): bool {
+		if ( '' === $content ) {
+			return false;
+		}
+
+		// Check if content has Gutenberg block markers.
+		$has_blocks = strpos( $content, '<!-- wp:' ) !== false;
+
+		// Check if content has HTML tags.
+		$has_html = $content !== strip_tags( $content );
+
+		return ! $has_blocks && $has_html;
+	}
+
+	/**
 	 * Migrate content from Avada shortcodes to Gutenberg blocks.
 	 *
 	 * @param string $content  Post content to migrate.
@@ -125,6 +145,106 @@ final class GCB_Migration_Service {
 	}
 
 	/**
+	 * Convert classic HTML to Gutenberg blocks.
+	 *
+	 * @param string $content Classic HTML content.
+	 * @param bool   $dryRun  If true, returns preview without marking as final.
+	 * @return GCB_Migration_Result Migration result with converted content.
+	 */
+	public function convertClassicHTML( string $content, bool $dryRun = false ): GCB_Migration_Result {
+		$result                  = new GCB_Migration_Result();
+		$result->originalContent = $content;
+		$result->isDryRun        = $dryRun;
+
+		if ( ! $this->isClassicHTML( $content ) ) {
+			$result->success    = true;
+			$result->hasChanges = false;
+			$result->content    = $content;
+			return $result;
+		}
+
+		try {
+			// Use WordPress core function to convert classic content to blocks.
+			$converted = do_blocks( $content );
+
+			// Wrap in classic block if WordPress didn't convert it.
+			if ( strpos( $converted, '<!-- wp:' ) === false ) {
+				$converted = '<!-- wp:freeform -->' . "\n" . $content . "\n" . '<!-- /wp:freeform -->';
+			}
+
+			$result->success    = true;
+			$result->hasChanges = $converted !== $content;
+			$result->content    = $converted;
+			$result->stats      = [
+				'converted_to_classic_block' => 1,
+			];
+
+		} catch ( Exception $e ) {
+			$result->success  = false;
+			$result->content  = $content;
+			$result->errors[] = $e->getMessage();
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Clean up Fusion Builder metadata from a post.
+	 *
+	 * @param int  $post_id Post ID.
+	 * @param bool $dryRun  If true, only reports what would be deleted.
+	 * @return array Array with 'deleted' count and 'keys' that were/would be deleted.
+	 */
+	public function cleanupFusionMetadata( int $post_id, bool $dryRun = false ): array {
+		$fusion_meta_keys = [
+			'_fusion',
+			'_fusion_google_fonts',
+			'_fusion_is_global',
+			'fusion_builder_status',
+			'_avada_',
+			'pyre_',
+		];
+
+		$deleted = [];
+
+		foreach ( $fusion_meta_keys as $meta_key ) {
+			// Check if exact key exists or if it's a prefix.
+			if ( strpos( $meta_key, '_' ) === strlen( $meta_key ) - 1 ) {
+				// It's a prefix, find all matching keys.
+				global $wpdb;
+				$matching_keys = $wpdb->get_col(
+					$wpdb->prepare(
+						"SELECT DISTINCT meta_key FROM {$wpdb->postmeta}
+						WHERE post_id = %d AND meta_key LIKE %s",
+						$post_id,
+						$wpdb->esc_like( rtrim( $meta_key, '_' ) ) . '%'
+					)
+				);
+
+				foreach ( $matching_keys as $key ) {
+					if ( ! $dryRun ) {
+						delete_post_meta( $post_id, $key );
+					}
+					$deleted[] = $key;
+				}
+			} else {
+				// Exact key match.
+				if ( metadata_exists( 'post', $post_id, $meta_key ) ) {
+					if ( ! $dryRun ) {
+						delete_post_meta( $post_id, $meta_key );
+					}
+					$deleted[] = $meta_key;
+				}
+			}
+		}
+
+		return [
+			'deleted' => count( $deleted ),
+			'keys'    => $deleted,
+		];
+	}
+
+	/**
 	 * Get batch statistics for a set of posts.
 	 *
 	 * @param array $posts Array of posts with 'id' and 'content' keys.
@@ -134,13 +254,17 @@ final class GCB_Migration_Service {
 		$stats = [
 			'total'           => count( $posts ),
 			'needs_migration' => 0,
+			'classic_html'    => 0,
 			'already_clean'   => 0,
 		];
 
 		foreach ( $posts as $post ) {
 			$content = $post['content'] ?? '';
+
 			if ( $this->needsMigration( $content ) ) {
 				$stats['needs_migration']++;
+			} elseif ( $this->isClassicHTML( $content ) ) {
+				$stats['classic_html']++;
 			} else {
 				$stats['already_clean']++;
 			}

@@ -2,8 +2,8 @@
 /**
  * Plugin Name: GCB Content Intelligence
  * Plugin URI: https://gaycarboys.com
- * Description: Automatically classifies posts by content type (video-quick, video-feature, standard) based on video presence and word count. Integrates with Editorial Brutalism design system.
- * Version: 1.0.0
+ * Description: Automatically classifies posts by content type (video-quick, video-feature, standard) based on video presence and word count. Includes Fusion Builder to Gutenberg migration, classic HTML conversion, and metadata cleanup tools.
+ * Version: 1.1.0
  * Requires at least: 6.0
  * Requires PHP: 8.3
  * Author: Gay Car Boys Dev Team
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Plugin constants.
-define( 'GCB_CI_VERSION', '1.0.0' );
+define( 'GCB_CI_VERSION', '1.1.0' );
 define( 'GCB_CI_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GCB_CI_URL', plugin_dir_url( __FILE__ ) );
 
