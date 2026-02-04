@@ -242,16 +242,20 @@ add_filter( 'wp_resource_hints', 'gcb_add_resource_hints', 10, 2 );
 /**
  * Preload critical font files to prevent FOUT-induced CLS
  *
- * Preloads Playfair Display 700 (logo, headings) and Space Mono 400 (nav, metadata)
- * which are critical for above-the-fold rendering.
+ * On WP.com production, fonts are served from fonts.wp.com (not fonts.gstatic.com).
+ * The gstatic Playfair Display v37 URL returns 404 on production, so we only
+ * preload Space Mono (which works from gstatic) and add preconnect to fonts.wp.com
+ * so the Playfair download starts faster.
+ *
+ * Updated: 2026-02-05 — removed Playfair preload (404 on production)
  */
 function gcb_preload_critical_fonts(): void {
 	if ( is_admin() ) {
 		return;
 	}
-	// Playfair Display 700 (logo, headings)
-	echo '<link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/playfairdisplay/v37/nuFvD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKd6unDXbtM.woff2" crossorigin="anonymous">' . "\n";
-	// Space Mono 400 (nav, metadata)
+	// Preconnect to fonts.wp.com (serves Playfair Display on WP.com production)
+	echo '<link rel="preconnect" href="https://fonts.wp.com" crossorigin="anonymous">' . "\n";
+	// Space Mono 400 (nav, metadata) — this one works from gstatic
 	echo '<link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/spacemono/v13/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2" crossorigin="anonymous">' . "\n";
 }
 add_action( 'wp_head', 'gcb_preload_critical_fonts', 0 );
@@ -385,77 +389,30 @@ function gcb_defer_non_critical_css( string $tag, string $handle, string $href )
 add_filter( 'style_loader_tag', 'gcb_defer_non_critical_css', 10, 3 );
 
 /**
- * Preload LCP candidate image on homepage
+ * Preload LCP candidate image on homepage — DISABLED
  *
- * Preloads the hero post's featured image to improve LCP score.
- * Only active on front page/home to avoid unnecessary preloads.
+ * Previously preloaded the hero image, but on WP.com production the Jetpack
+ * Photon CDN rewrites img srcset with different breakpoints. Our WordPress-native
+ * srcset in the preload doesn't match, causing the browser to download the image
+ * TWICE (once from preload, once from the actual img tag).
+ *
+ * The hero image in bento-grid.php already has fetchpriority="high" and
+ * loading="eager", which tells the browser to prioritize it without a preload.
+ *
+ * Removed: 2026-02-05 — see LCP-OPTIMIZATION-PLAN.md
  */
-function gcb_preload_lcp_image(): void {
-	if ( ! is_front_page() && ! is_home() ) {
-		return;
-	}
-	$hero_post = get_posts(
-		array(
-			'post_type'      => 'post',
-			'posts_per_page' => 1,
-			'orderby'        => 'date',
-			'order'          => 'DESC',
-		)
-	);
-	if ( empty( $hero_post ) ) {
-		return;
-	}
-	$thumbnail_id = get_post_thumbnail_id( $hero_post[0]->ID );
-	if ( ! $thumbnail_id ) {
-		return;
-	}
-	$image_src = wp_get_attachment_image_src( $thumbnail_id, 'large' );
-	if ( ! $image_src ) {
-		return;
-	}
-	$srcset = wp_get_attachment_image_srcset( $thumbnail_id, 'large' );
-	echo '<link rel="preload" as="image" href="' . esc_url( $image_src[0] ) . '"';
-	if ( $srcset ) {
-		echo ' imagesrcset="' . esc_attr( $srcset ) . '" imagesizes="(max-width: 768px) 100vw, 66vw"';
-	}
-	echo ' fetchpriority="high">' . "\n";
-}
-add_action( 'wp_head', 'gcb_preload_lcp_image', 2 );
 
 /**
- * Preload LCP candidate image on single post pages
+ * Preload LCP candidate image on single post pages — DISABLED
  *
- * Preloads the featured image to improve single post LCP.
- * CrUX data shows single posts are the primary contributor to 4689ms LCP.
- * Expected impact: 300-800ms LCP reduction.
+ * Same issue as homepage preload: Jetpack Photon CDN rewrites srcset on
+ * WP.com production, causing preload/img mismatch and double downloads.
  *
- * Only active on single post pages to avoid unnecessary preloads.
+ * The featured image already gets fetchpriority="high" via
+ * gcb_optimize_first_content_image(), which is sufficient.
+ *
+ * Removed: 2026-02-05 — see LCP-OPTIMIZATION-PLAN.md
  */
-function gcb_preload_single_post_lcp_image(): void {
-	if ( ! is_singular( 'post' ) || ! has_post_thumbnail() ) {
-		return;
-	}
-
-	$post_id      = get_the_ID();
-	$thumbnail_id = get_post_thumbnail_id( $post_id );
-
-	if ( ! $thumbnail_id ) {
-		return;
-	}
-
-	$image_src = wp_get_attachment_image_src( $thumbnail_id, 'large' );
-	if ( ! $image_src ) {
-		return;
-	}
-
-	$srcset = wp_get_attachment_image_srcset( $thumbnail_id, 'large' );
-	echo '<link rel="preload" as="image" href="' . esc_url( $image_src[0] ) . '"';
-	if ( $srcset ) {
-		echo ' imagesrcset="' . esc_attr( $srcset ) . '" imagesizes="(max-width: 768px) 100vw, (max-width: 1024px) 80vw, 60vw"';
-	}
-	echo ' fetchpriority="high">' . "\n";
-}
-add_action( 'wp_head', 'gcb_preload_single_post_lcp_image', 2 );
 
 /**
  * Add fetchpriority="high" to first image in post content
@@ -630,6 +587,62 @@ function gcb_legacy_fusion_youtube_handler( array $atts ): string {
 	);
 }
 add_shortcode( 'fusion_youtube', 'gcb_legacy_fusion_youtube_handler' );
+
+/**
+ * Disable WordPress emoji detection script
+ *
+ * Removes wp-emoji-release.min.js (~5.6KB) which detects and replaces emoji
+ * with images. Unnecessary for an automotive magazine — modern browsers
+ * render emoji natively.
+ *
+ * Added: 2026-02-05 — see LCP-OPTIMIZATION-PLAN.md
+ */
+function gcb_disable_emojis(): void {
+	remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+	remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
+	remove_action( 'wp_print_styles', 'print_emoji_styles' );
+	remove_action( 'admin_print_styles', 'print_emoji_styles' );
+	remove_filter( 'the_content_feed', 'wp_staticize_emoji' );
+	remove_filter( 'comment_text_rss', 'wp_staticize_emoji' );
+	remove_filter( 'wp_mail', 'wp_staticize_emoji_for_email' );
+
+	// Remove the DNS prefetch for the emoji CDN
+	add_filter(
+		'wp_resource_hints',
+		function ( $urls, $relation_type ) {
+			if ( 'dns-prefetch' === $relation_type ) {
+				$urls = array_filter(
+					$urls,
+					function ( $url ) {
+						return ! is_string( $url ) || false === strpos( $url, 'https://s.w.org/images/core/emoji/' );
+					}
+				);
+			}
+			return $urls;
+		},
+		10,
+		2
+	);
+}
+add_action( 'init', 'gcb_disable_emojis' );
+
+/**
+ * Dequeue Open Sans font on frontend
+ *
+ * WP.com loads Open Sans by default, but the GCB Brutalist design system only
+ * uses Playfair Display, Space Mono, and system sans-serif. Removing Open Sans
+ * saves a CSS request + font download (~2.8KB CSS + font files).
+ *
+ * Added: 2026-02-05 — see LCP-OPTIMIZATION-PLAN.md
+ */
+function gcb_dequeue_open_sans(): void {
+	if ( is_admin() ) {
+		return;
+	}
+	wp_dequeue_style( 'open-sans-css' );
+	wp_deregister_style( 'open-sans-css' );
+}
+add_action( 'wp_enqueue_scripts', 'gcb_dequeue_open_sans', 100 );
 
 /**
  * Google Fonts are now loaded via theme.json fontFace declarations.
