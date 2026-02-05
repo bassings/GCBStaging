@@ -605,3 +605,121 @@ lite-youtube > iframe {
 	height: 100%;
 	max-width: none; /* Override the 720px max-width when inside embed wrapper */
 }
+
+/* ==========================================================================
+   Comments Section — Editorial Brutalism
+   ========================================================================== */
+
+/* Comments heading */
+.gcb-comments-section .wp-block-comments-title {
+	font-family: var(--wp--preset--font-family--playfair);
+	color: var(--wp--preset--color--off-white);
+	border-bottom: 2px solid var(--wp--preset--color--highlight);
+	padding-bottom: 1rem;
+}
+
+/* Comment avatars — square, brutalist */
+.gcb-comments-section .avatar {
+	border-radius: 0 !important;
+	border: 2px solid var(--wp--preset--color--brutal-border) !important;
+}
+
+/* Comment content paragraphs */
+.gcb-comments-section .wp-block-comment-content p {
+	color: var(--wp--preset--color--off-white);
+	font-family: var(--wp--preset--font-family--system-sans);
+	line-height: 1.6;
+}
+
+/* Reply link styling */
+.gcb-comments-section .wp-block-comment-reply-link a {
+	color: var(--wp--preset--color--highlight);
+	text-decoration: none;
+	font-family: var(--wp--preset--font-family--mono);
+	font-size: 0.75rem;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+
+.gcb-comments-section .wp-block-comment-reply-link a:hover {
+	color: var(--wp--preset--color--off-white);
+}
+
+/* Comment form styling */
+.gcb-comments-section .comment-respond {
+	margin-top: 2rem;
+	padding-top: 2rem;
+	border-top: 2px solid var(--wp--preset--color--brutal-border);
+}
+
+.gcb-comments-section .comment-respond .comment-reply-title {
+	font-family: var(--wp--preset--font-family--playfair);
+	font-size: 1.5rem;
+	color: var(--wp--preset--color--off-white);
+	margin-bottom: 1.5rem;
+}
+
+.gcb-comments-section .comment-respond label {
+	font-family: var(--wp--preset--font-family--mono);
+	font-size: 0.75rem;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	color: var(--wp--preset--color--brutal-grey);
+}
+
+.gcb-comments-section .comment-respond input[type="text"],
+.gcb-comments-section .comment-respond input[type="email"],
+.gcb-comments-section .comment-respond input[type="url"],
+.gcb-comments-section .comment-respond textarea {
+	background: var(--wp--preset--color--void-black);
+	border: 2px solid var(--wp--preset--color--brutal-border);
+	color: var(--wp--preset--color--off-white);
+	font-family: var(--wp--preset--font-family--system-sans);
+	padding: 0.75rem 1rem;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.gcb-comments-section .comment-respond input:focus,
+.gcb-comments-section .comment-respond textarea:focus {
+	border-color: var(--wp--preset--color--highlight);
+	outline: 2px solid var(--wp--preset--color--highlight);
+	outline-offset: 2px;
+}
+
+.gcb-comments-section .comment-respond .submit {
+	background: var(--wp--preset--color--void-black);
+	color: var(--wp--preset--color--off-white);
+	border: 2px solid var(--wp--preset--color--brutal-border);
+	font-family: var(--wp--preset--font-family--mono);
+	font-size: 0.875rem;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	padding: 0.75rem 2rem;
+	cursor: pointer;
+	min-height: 44px;
+}
+
+.gcb-comments-section .comment-respond .submit:hover,
+.gcb-comments-section .comment-respond .submit:focus {
+	border-color: var(--wp--preset--color--highlight);
+	outline: 2px solid var(--wp--preset--color--highlight);
+	outline-offset: 2px;
+}
+
+/* Pagination styling */
+.gcb-comments-section .wp-block-comments-pagination {
+	margin-top: 1.5rem;
+	padding-top: 1.5rem;
+	border-top: 1px solid var(--wp--preset--color--brutal-border);
+}
+
+.gcb-comments-section .wp-block-comments-pagination a {
+	color: var(--wp--preset--color--highlight);
+	text-decoration: none;
+	font-family: var(--wp--preset--font-family--mono);
+}
+
+.gcb-comments-section .wp-block-comments-pagination a:hover {
+	color: var(--wp--preset--color--off-white);
+}
