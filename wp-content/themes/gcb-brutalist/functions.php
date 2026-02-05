@@ -690,142 +690,131 @@ add_filter( 'body_class', 'gcb_add_content_format_body_classes' );
 /**
  * Convert Spectra Image Galleries to email-safe HTML for newsletters
  *
- * Jetpack Newsletter doesn't support JavaScript-based galleries (Isotope, Swiper, etc.).
- * This filter converts Spectra galleries to simple HTML tables for email compatibility.
- * Only runs when content is being sent to email subscribers.
+ * Jetpack Newsletter doesn't support JavaScript-based galleries (Slick carousel, etc.).
+ * This filter converts rendered Spectra gallery HTML to simple tables for email.
  *
- * @param string $content Post content being sent to email subscribers.
+ * Works on RENDERED HTML (not block structure) because by the time content reaches
+ * the newsletter filter, blocks have already been converted to HTML.
+ *
+ * @param string $content Post content (rendered HTML) being sent to email subscribers.
  * @return string Modified content with email-safe galleries.
  */
 function gcb_convert_spectra_gallery_for_email( string $content ): string {
-	// Only run this for email/RSS context
-	if ( ! is_feed() && ! ( defined( 'JETPACK_NEWSLETTER_EMAIL' ) && JETPACK_NEWSLETTER_EMAIL ) ) {
+	// Check if content has Spectra gallery HTML (rendered class names)
+	if ( strpos( $content, 'wp-block-uagb-image-gallery' ) === false &&
+	     strpos( $content, 'spectra-image-gallery' ) === false ) {
 		return $content;
 	}
 
-	// Check if content has Spectra Image Gallery blocks
-	if ( ! has_block( 'uagb/image-gallery', $content ) ) {
-		return $content;
-	}
+	// Use regex to find and replace Spectra gallery containers
+	// Match the entire gallery div from opening to closing tag
+	$pattern = '/<div[^>]*class="[^"]*wp-block-uagb-image-gallery[^"]*"[^>]*>.*?<\/div>\s*<\/div>\s*<\/div>/is';
 
-	// Parse blocks from content
-	$blocks = parse_blocks( $content );
+	$content = preg_replace_callback( $pattern, 'gcb_spectra_gallery_to_email_table', $content );
 
-	// Process blocks recursively to convert galleries
-	$processed_blocks = gcb_process_blocks_for_email( $blocks );
+	// Also try to match simpler gallery structures
+	$pattern2 = '/<figure[^>]*class="[^"]*wp-block-uagb-image-gallery[^"]*"[^>]*>.*?<\/figure>/is';
+	$content  = preg_replace_callback( $pattern2, 'gcb_spectra_gallery_to_email_table', $content );
 
-	// Serialize blocks back to content
-	return serialize_blocks( $processed_blocks );
+	return $content;
 }
-add_filter( 'the_content_feed', 'gcb_convert_spectra_gallery_for_email', 10, 1 );
-add_filter( 'jetpack_newsletter_post_content', 'gcb_convert_spectra_gallery_for_email', 10, 1 );
+
+// Hook into multiple filters to catch newsletter content
+add_filter( 'the_content_feed', 'gcb_convert_spectra_gallery_for_email', 5 );
+add_filter( 'jetpack_newsletter_post_content', 'gcb_convert_spectra_gallery_for_email', 5 );
+add_filter( 'render_block', 'gcb_maybe_convert_spectra_for_email', 10, 2 );
 
 /**
- * Recursively process blocks to convert Spectra galleries
+ * Maybe convert Spectra gallery during block render (for Jetpack context)
  *
- * Walks through block tree and converts uagb/image-gallery blocks to email-safe HTML.
- *
- * @param array $blocks Array of parsed blocks.
- * @return array Processed blocks.
+ * @param string $block_content The block content.
+ * @param array  $block         The block data.
+ * @return string Modified content.
  */
-function gcb_process_blocks_for_email( array $blocks ): array {
-	$processed = array();
-
-	foreach ( $blocks as $block ) {
-		// If this is a Spectra Image Gallery, convert it
-		if ( 'uagb/image-gallery' === $block['blockName'] ) {
-			$processed[] = gcb_convert_spectra_to_email_table( $block );
-		} else {
-			// Process inner blocks recursively
-			if ( ! empty( $block['innerBlocks'] ) ) {
-				$block['innerBlocks'] = gcb_process_blocks_for_email( $block['innerBlocks'] );
-			}
-			$processed[] = $block;
-		}
+function gcb_maybe_convert_spectra_for_email( string $block_content, array $block ): string {
+	// Only process in feed/email context
+	if ( ! is_feed() && ! doing_filter( 'jetpack_newsletter_post_content' ) ) {
+		return $block_content;
 	}
 
-	return $processed;
+	// Only process Spectra image gallery blocks
+	if ( 'uagb/image-gallery' !== $block['blockName'] ) {
+		return $block_content;
+	}
+
+	// Convert to email-safe HTML
+	return gcb_spectra_gallery_to_email_table( array( $block_content ) );
 }
 
 /**
- * Convert Spectra gallery block to email-safe HTML table
+ * Convert Spectra gallery HTML to email-safe table
  *
- * Email clients don't support JavaScript, CSS Grid, or Flexbox reliably.
- * This converts the gallery to a 2-column HTML table with inline styles.
+ * Extracts images from the rendered gallery HTML and creates a simple table.
  *
- * @param array $block Spectra gallery block data.
- * @return array HTML block with email-safe gallery.
+ * @param array $matches Regex matches (full match at index 0).
+ * @return string Email-safe HTML table.
  */
-function gcb_convert_spectra_to_email_table( array $block ): array {
-	$attrs         = $block['attrs'] ?? array();
-	$media_gallery = $attrs['mediaGallery'] ?? array();
+function gcb_spectra_gallery_to_email_table( array $matches ): string {
+	$gallery_html = $matches[0];
 
-	if ( empty( $media_gallery ) ) {
-		return $block; // Return original if no images
+	// Extract all img tags from the gallery
+	preg_match_all( '/<img[^>]+>/i', $gallery_html, $img_matches );
+
+	if ( empty( $img_matches[0] ) ) {
+		// No images found, return empty or placeholder
+		return '<p style="color: #AAAAAA; font-family: sans-serif; text-align: center;">[Gallery images - view on website]</p>';
 	}
 
-	// Build email-safe HTML table (works in all email clients including Outlook)
-	$html = '<table role="presentation" cellspacing="0" cellpadding="10" border="0" width="100%" style="border-collapse: collapse; max-width: 600px; margin: 0 auto;">';
-	$html .= '<tr>';
+	$images = $img_matches[0];
 
-	// Use 2-column layout for email (mobile-friendly)
+	// Build email-safe HTML table
+	$html = '<table role="presentation" cellspacing="0" cellpadding="8" border="0" width="100%" style="border-collapse: collapse; max-width: 600px; margin: 16px auto;">';
+
+	// 2-column layout for email
 	$columns = 2;
 	$count   = 0;
 
-	foreach ( $media_gallery as $image ) {
-		// Start new row after every $columns images
-		if ( $count > 0 && 0 === $count % $columns ) {
-			$html .= '</tr><tr>';
+	foreach ( $images as $img_tag ) {
+		// Start new row
+		if ( $count % $columns === 0 ) {
+			if ( $count > 0 ) {
+				$html .= '</tr>';
+			}
+			$html .= '<tr>';
 		}
 
-		// Get image URL and alt text (use medium size for faster email loading)
-		$image_url = '';
-		if ( ! empty( $image['sizes']['medium']['url'] ) ) {
-			$image_url = $image['sizes']['medium']['url'];
-		} elseif ( ! empty( $image['url'] ) ) {
-			$image_url = $image['url'];
-		}
+		// Extract src and alt from img tag
+		preg_match( '/src=["\']([^"\']+)["\']/', $img_tag, $src_match );
+		preg_match( '/alt=["\']([^"\']*)["\']/', $img_tag, $alt_match );
 
-		$alt_text = $image['alt'] ?? '';
-		$caption  = $image['caption'] ?? '';
+		$src = $src_match[1] ?? '';
+		$alt = $alt_match[1] ?? '';
 
-		if ( empty( $image_url ) ) {
+		// Skip if no src
+		if ( empty( $src ) ) {
 			$count++;
 			continue;
 		}
 
-		// Email-safe table cell with inline styles
-		$html .= '<td align="center" valign="top" style="padding: 10px;">';
-		$html .= '<img src="' . esc_url( $image_url ) . '" alt="' . esc_attr( $alt_text ) . '" width="280" style="max-width: 100%; height: auto; display: block; border: 1px solid #333333;">';
+		// Clean up WP.com CDN URLs - get a reasonably sized image
+		$src = preg_replace( '/\?resize=\d+%2C\d+/', '?resize=280%2C187', $src );
+		$src = preg_replace( '/&ssl=1/', '&ssl=1', $src );
 
-		// Add caption if it exists (brutalist theme styling)
-		if ( ! empty( $caption ) ) {
-			$html .= '<p style="margin: 8px 0 0; font-size: 14px; color: #AAAAAA; font-family: \'Space Mono\', \'Courier New\', monospace;">' . wp_kses_post( $caption ) . '</p>';
-		}
-
+		$html .= '<td align="center" valign="top" style="padding: 8px; width: 50%;">';
+		$html .= '<img src="' . esc_url( $src ) . '" alt="' . esc_attr( $alt ) . '" width="280" style="max-width: 100%; height: auto; display: block; border: 1px solid #333333;">';
 		$html .= '</td>';
+
 		$count++;
 	}
 
-	// Fill remaining cells in the last row to prevent layout issues
-	$remaining = $columns - ( $count % $columns );
-	if ( $remaining < $columns ) {
-		for ( $i = 0; $i < $remaining; $i++ ) {
-			$html .= '<td style="padding: 10px;"></td>';
-		}
+	// Fill remaining cells if odd number of images
+	if ( $count % $columns !== 0 ) {
+		$html .= '<td style="padding: 8px;"></td>';
 	}
 
-	$html .= '</tr>';
-	$html .= '</table>';
+	$html .= '</tr></table>';
 
-	// Return as HTML block (core/html) which email clients handle well
-	return array(
-		'blockName'    => 'core/html',
-		'attrs'        => array(),
-		'innerBlocks'  => array(),
-		'innerHTML'    => $html,
-		'innerContent' => array( $html ),
-	);
+	return $html;
 }
 
 /**
