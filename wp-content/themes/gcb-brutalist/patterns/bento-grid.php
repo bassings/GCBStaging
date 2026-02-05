@@ -72,7 +72,8 @@ if ( ! $grid_posts->have_posts() ) {
 			if ( 1 === $index ) :
 			?>
 			<!-- Mobile Carousel Wrapper (horizontal scroll on mobile only) -->
-			<div class="gcb-mobile-carousel" role="region" aria-label="More featured stories">
+			<div class="gcb-mobile-carousel-wrapper">
+				<div class="gcb-mobile-carousel" role="region" aria-label="More featured stories">
 			<?php endif; ?>
 
 			<!-- Bento Grid Item -->
@@ -146,7 +147,8 @@ if ( ! $grid_posts->have_posts() ) {
 		// Close carousel wrapper if we opened it (had more than 1 post)
 		if ( $index > 1 ) :
 		?>
-			</div><!-- .gcb-mobile-carousel -->
+				</div><!-- .gcb-mobile-carousel -->
+			</div><!-- .gcb-mobile-carousel-wrapper -->
 		<?php endif; ?>
 
 		<?php wp_reset_postdata(); ?>
@@ -207,12 +209,61 @@ if ( ! $grid_posts->have_posts() ) {
 			content: '';
 			flex: 0 0 1rem;
 		}
+		
+		/* Scroll arrow indicators */
+		.gcb-mobile-carousel-wrapper {
+			position: relative;
+		}
+		.gcb-mobile-carousel-wrapper::before,
+		.gcb-mobile-carousel-wrapper::after {
+			content: '';
+			position: absolute;
+			top: 50%;
+			transform: translateY(-50%);
+			width: 32px;
+			height: 32px;
+			background: var(--wp--preset--color--highlight);
+			border-radius: 50%;
+			z-index: 10;
+			pointer-events: none;
+			opacity: 0.9;
+		}
+		/* Left arrow */
+		.gcb-mobile-carousel-wrapper::before {
+			left: 4px;
+			background: var(--wp--preset--color--highlight) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23050505' viewBox='0 0 24 24'%3E%3Cpath d='M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z'/%3E%3C/svg%3E") center/20px no-repeat;
+			opacity: 0; /* Hidden initially - appears when scrolled right */
+		}
+		/* Right arrow */
+		.gcb-mobile-carousel-wrapper::after {
+			right: 4px;
+			background: var(--wp--preset--color--highlight) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23050505' viewBox='0 0 24 24'%3E%3Cpath d='M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z'/%3E%3C/svg%3E") center/20px no-repeat;
+		}
+		/* Hide arrows when scrolled to edges */
+		.gcb-mobile-carousel-wrapper.scrolled-start::before {
+			opacity: 0;
+		}
+		.gcb-mobile-carousel-wrapper.scrolled-end::after {
+			opacity: 0;
+		}
+		.gcb-mobile-carousel-wrapper.scrolled-middle::before,
+		.gcb-mobile-carousel-wrapper.scrolled-middle::after {
+			opacity: 0.9;
+		}
 	}
 	
-	/* Tablet and up: Carousel wrapper becomes grid */
+	/* Tablet and up: Carousel wrapper becomes transparent */
 	@media (min-width: 769px) {
+		.gcb-mobile-carousel-wrapper {
+			display: contents !important;
+		}
 		.gcb-mobile-carousel {
 			display: contents !important; /* Children flow into parent grid */
+		}
+		/* Hide arrows on desktop */
+		.gcb-mobile-carousel-wrapper::before,
+		.gcb-mobile-carousel-wrapper::after {
+			display: none !important;
 		}
 	}
 
@@ -269,3 +320,50 @@ if ( ! $grid_posts->have_posts() ) {
 		}
 	}
 </style>
+
+<!-- Carousel scroll tracking for arrow visibility -->
+<script>
+(function() {
+	'use strict';
+	
+	function initCarouselArrows() {
+		document.querySelectorAll('.gcb-mobile-carousel').forEach(function(carousel) {
+			var wrapper = carousel.closest('.gcb-mobile-carousel-wrapper');
+			if (!wrapper) return;
+			
+			function updateArrows() {
+				var scrollLeft = carousel.scrollLeft;
+				var maxScroll = carousel.scrollWidth - carousel.clientWidth;
+				
+				// Remove all scroll state classes
+				wrapper.classList.remove('scrolled-start', 'scrolled-middle', 'scrolled-end');
+				
+				// Add appropriate class based on scroll position
+				if (scrollLeft <= 10) {
+					wrapper.classList.add('scrolled-start');
+				} else if (scrollLeft >= maxScroll - 10) {
+					wrapper.classList.add('scrolled-end');
+				} else {
+					wrapper.classList.add('scrolled-middle');
+				}
+			}
+			
+			// Initial state
+			wrapper.classList.add('scrolled-start');
+			
+			// Update on scroll
+			carousel.addEventListener('scroll', updateArrows, { passive: true });
+			
+			// Update on resize
+			window.addEventListener('resize', updateArrows, { passive: true });
+		});
+	}
+	
+	// Run on DOM ready
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', initCarouselArrows);
+	} else {
+		initCarouselArrows();
+	}
+})();
+</script>

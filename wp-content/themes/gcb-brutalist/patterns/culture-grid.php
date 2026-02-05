@@ -50,6 +50,7 @@ if ( ! $culture_grid_query->have_posts() ) {
         </div>
 
         <!-- 4-Column Responsive Grid (carousel on mobile) -->
+        <div class="culture-carousel-wrapper">
         <div class="culture-grid-container gcb-mobile-carousel-culture" role="region" aria-label="Latest reviews and news">
             <?php while ($culture_grid_query->have_posts()) : $culture_grid_query->the_post(); ?>
                 <?php
@@ -95,6 +96,7 @@ if ( ! $culture_grid_query->have_posts() ) {
 
             <?php endwhile; ?>
         </div>
+        </div><!-- .culture-carousel-wrapper -->
     </div>
 </section>
 
@@ -269,6 +271,76 @@ if ( ! $culture_grid_query->have_posts() ) {
     .culture-card-link:focus {
         outline: none;
     }
+    
+    /* Mobile carousel arrow indicators */
+    @media (max-width: 767px) {
+        .culture-carousel-wrapper {
+            position: relative;
+        }
+        .culture-carousel-wrapper::before,
+        .culture-carousel-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 32px;
+            background: var(--wp--preset--color--highlight);
+            border-radius: 50%;
+            z-index: 10;
+            pointer-events: none;
+            opacity: 0.9;
+        }
+        /* Left arrow - hidden initially */
+        .culture-carousel-wrapper::before {
+            left: 4px;
+            background: var(--wp--preset--color--highlight) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23050505' viewBox='0 0 24 24'%3E%3Cpath d='M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z'/%3E%3C/svg%3E") center/20px no-repeat;
+            opacity: 0;
+        }
+        /* Right arrow */
+        .culture-carousel-wrapper::after {
+            right: 4px;
+            background: var(--wp--preset--color--highlight) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23050505' viewBox='0 0 24 24'%3E%3Cpath d='M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z'/%3E%3C/svg%3E") center/20px no-repeat;
+        }
+        .culture-carousel-wrapper.scrolled-start::before { opacity: 0; }
+        .culture-carousel-wrapper.scrolled-end::after { opacity: 0; }
+        .culture-carousel-wrapper.scrolled-middle::before,
+        .culture-carousel-wrapper.scrolled-middle::after { opacity: 0.9; }
+    }
 </style>
+
+<!-- Carousel scroll tracking for arrow visibility -->
+<script>
+(function() {
+    'use strict';
+    function initCultureCarouselArrows() {
+        document.querySelectorAll('.gcb-mobile-carousel-culture').forEach(function(carousel) {
+            var wrapper = carousel.closest('.culture-carousel-wrapper');
+            if (!wrapper) return;
+            
+            function updateArrows() {
+                var scrollLeft = carousel.scrollLeft;
+                var maxScroll = carousel.scrollWidth - carousel.clientWidth;
+                wrapper.classList.remove('scrolled-start', 'scrolled-middle', 'scrolled-end');
+                if (scrollLeft <= 10) {
+                    wrapper.classList.add('scrolled-start');
+                } else if (scrollLeft >= maxScroll - 10) {
+                    wrapper.classList.add('scrolled-end');
+                } else {
+                    wrapper.classList.add('scrolled-middle');
+                }
+            }
+            wrapper.classList.add('scrolled-start');
+            carousel.addEventListener('scroll', updateArrows, { passive: true });
+            window.addEventListener('resize', updateArrows, { passive: true });
+        });
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initCultureCarouselArrows);
+    } else {
+        initCultureCarouselArrows();
+    }
+})();
+</script>
 
 <?php wp_reset_postdata(); ?>
