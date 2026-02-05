@@ -912,10 +912,15 @@ function gcb_spectra_gallery_to_email_table( array $matches ): string {
 	$html = '<table role="presentation" cellspacing="0" cellpadding="8" border="0" width="100%" style="border-collapse: collapse; max-width: 600px; margin: 16px auto;">';
 
 	// 2-column layout for email
-	$columns = 2;
-	$count   = 0;
+	$columns     = 2;
+	$count       = 0;
+	$total       = count( $images );
+	$is_odd      = ( $total % 2 !== 0 );
 
-	foreach ( $images as $img_tag ) {
+	foreach ( $images as $index => $img_tag ) {
+		// Check if this is the last image and total is odd (needs centering)
+		$is_last_odd = $is_odd && ( $index === $total - 1 );
+		
 		// Start new row
 		if ( $count % $columns === 0 ) {
 			if ( $count > 0 ) {
@@ -937,25 +942,27 @@ function gcb_spectra_gallery_to_email_table( array $matches ): string {
 			continue;
 		}
 
-		// Clean up WP.com CDN URLs - get a reasonably sized image for email (280px wide)
+		// Clean up WP.com CDN URLs - get a reasonably sized image for email (280px wide, or 560px if centered)
 		// Handle both encoded (%2C) and regular (,) resize params
-		$src = preg_replace( '/\?resize=\d+%2C\d+/', '?resize=280%2C187', $src );
-		$src = preg_replace( '/\?resize=\d+,\d+/', '?resize=280,187', $src );
+		$img_width = $is_last_odd ? 560 : 280;
+		$src = preg_replace( '/\?resize=\d+%2C\d+/', '?resize=' . $img_width . '%2C' . round( $img_width * 0.667 ), $src );
+		$src = preg_replace( '/\?resize=\d+,\d+/', '?resize=' . $img_width . ',' . round( $img_width * 0.667 ), $src );
 		// Ensure ssl=1 is present for HTTPS
 		if ( strpos( $src, 'ssl=1' ) === false && strpos( $src, 'i0.wp.com' ) !== false ) {
 			$src .= ( strpos( $src, '?' ) !== false ) ? '&ssl=1' : '?ssl=1';
 		}
 
-		$html .= '<td align="center" valign="top" style="padding: 8px; width: 50%;">';
-		$html .= '<img src="' . esc_url( $src ) . '" alt="' . esc_attr( $alt ) . '" width="280" style="max-width: 100%; height: auto; display: block; border: 1px solid #333333;">';
+		// Last odd image spans both columns and is centered
+		if ( $is_last_odd ) {
+			$html .= '<td colspan="2" align="center" valign="top" style="padding: 8px;">';
+			$html .= '<img src="' . esc_url( $src ) . '" alt="' . esc_attr( $alt ) . '" width="' . $img_width . '" style="max-width: 100%; height: auto; display: block; border: 1px solid #333333; margin: 0 auto;">';
+		} else {
+			$html .= '<td align="center" valign="top" style="padding: 8px; width: 50%;">';
+			$html .= '<img src="' . esc_url( $src ) . '" alt="' . esc_attr( $alt ) . '" width="' . $img_width . '" style="max-width: 100%; height: auto; display: block; border: 1px solid #333333;">';
+		}
 		$html .= '</td>';
 
 		$count++;
-	}
-
-	// Fill remaining cells if odd number of images
-	if ( $count % $columns !== 0 ) {
-		$html .= '<td style="padding: 8px;"></td>';
 	}
 
 	$html .= '</tr></table>';
