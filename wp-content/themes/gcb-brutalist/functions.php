@@ -207,6 +207,43 @@ function gcb_enqueue_lite_youtube(): void {
 add_action( 'wp_enqueue_scripts', 'gcb_enqueue_lite_youtube' );
 
 /**
+ * Enqueue Lazy Spectra Gallery script
+ *
+ * Uses Intersection Observer to delay Spectra gallery initialization
+ * until user scrolls near the gallery. Reduces TBT on initial load.
+ */
+function gcb_enqueue_lazy_spectra(): void {
+	// Only load on frontend single posts (where galleries appear)
+	if ( is_admin() || ! is_singular( 'post' ) ) {
+		return;
+	}
+
+	wp_enqueue_script(
+		'gcb-lazy-spectra',
+		get_template_directory_uri() . '/assets/js/lazy-spectra.js',
+		array(),
+		wp_get_theme()->get( 'Version' ),
+		array(
+			'strategy'  => 'defer',
+			'in_footer' => true,
+		)
+	);
+
+	// Add inline CSS to hide galleries until loaded (prevents flash)
+	wp_add_inline_style( 'gcb-brutalist-style', '
+		/* Hide Spectra galleries until lazy-loaded */
+		.wp-block-uagb-image-gallery:not(.spectra-lazy-loaded) .spectra-image-gallery__layout--carousel {
+			opacity: 0;
+		}
+		.wp-block-uagb-image-gallery.spectra-lazy-loaded .spectra-image-gallery__layout--carousel {
+			opacity: 1;
+			transition: opacity 0.3s ease;
+		}
+	' );
+}
+add_action( 'wp_enqueue_scripts', 'gcb_enqueue_lazy_spectra' );
+
+/**
  * Add resource hints for critical external resources
  *
  * Pre-establishes connections to reduce latency for:
