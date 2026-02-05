@@ -812,6 +812,46 @@ function gcb_convert_spectra_gallery_for_email( string $content ): string {
 		}
 	}
 
+	// Strip out Spectra lightbox controls using div counting (same technique as gallery)
+	// The lightbox has class 'spectra-image-gallery__control-lightbox' (often single quotes)
+	if ( preg_match_all( '/<div[^>]*spectra-image-gallery__control-lightbox[^>]*>/i', $content, $lightbox_starts, PREG_OFFSET_CAPTURE ) ) {
+		foreach ( array_reverse( $lightbox_starts[0] ) as $match ) {
+			$start_pos = $match[1];
+			$depth = 1;
+			$pos = $start_pos + strlen( $match[0] );
+			$len = strlen( $content );
+			$end_pos = $len;
+			
+			while ( $pos < $len && $depth > 0 ) {
+				$next_open  = strpos( $content, '<div', $pos );
+				$next_close = strpos( $content, '</div>', $pos );
+				
+				if ( $next_close === false ) break;
+				
+				if ( $next_open !== false && $next_open < $next_close ) {
+					$depth++;
+					$pos = $next_open + 4;
+				} else {
+					$depth--;
+					$pos = $next_close + 6;
+					if ( $depth === 0 ) {
+						$end_pos = $next_close + 6;
+					}
+				}
+			}
+			
+			// Remove this lightbox div entirely
+			$content = substr( $content, 0, $start_pos ) . substr( $content, $end_pos );
+		}
+	}
+	
+	// Also strip the close button that may appear outside the lightbox div
+	$content = preg_replace(
+		'/<button[^>]*spectra-image-gallery__control-lightbox--close[^>]*>.*?<\/button>/is',
+		'',
+		$content
+	);
+
 	return $content;
 }
 
