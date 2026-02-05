@@ -349,13 +349,15 @@ if ( ! $culture_grid_query->have_posts() ) {
                 var scrollLeft = carousel.scrollLeft;
                 var maxScroll = carousel.scrollWidth - carousel.clientWidth;
                 
+                // Left arrow: hidden when at start
                 if (scrollLeft <= 10) {
                     prevBtn.classList.add('hidden');
                 } else {
                     prevBtn.classList.remove('hidden');
                 }
                 
-                if (scrollLeft >= maxScroll - 10) {
+                // Right arrow: hidden when at end or no room to scroll
+                if (maxScroll <= 10 || scrollLeft >= maxScroll - 10) {
                     nextBtn.classList.add('hidden');
                 } else {
                     nextBtn.classList.remove('hidden');

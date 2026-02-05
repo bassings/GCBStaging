@@ -353,13 +353,15 @@ if ( ! $grid_posts->have_posts() ) {
 				var maxScroll = carousel.scrollWidth - carousel.clientWidth;
 				
 				// Hide/show arrows based on position
+				// Left arrow: hidden when at start (can't scroll left)
 				if (scrollLeft <= 10) {
 					prevBtn.classList.add('hidden');
 				} else {
 					prevBtn.classList.remove('hidden');
 				}
 				
-				if (scrollLeft >= maxScroll - 10) {
+				// Right arrow: hidden when at end or no room to scroll
+				if (maxScroll <= 10 || scrollLeft >= maxScroll - 10) {
 					nextBtn.classList.add('hidden');
 				} else {
 					nextBtn.classList.remove('hidden');
