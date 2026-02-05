@@ -824,6 +824,60 @@ function gcb_spectra_gallery_to_email_table( array $matches ): string {
 }
 
 /**
+ * Convert lite-youtube elements to email-safe HTML for newsletters
+ *
+ * The lite-youtube custom element works great on websites but email clients
+ * don't support custom HTML elements or JavaScript. This converts them to
+ * simple clickable thumbnail images for email compatibility.
+ *
+ * @param string $content Post content being sent to email subscribers.
+ * @return string Modified content with email-safe video thumbnails.
+ */
+function gcb_convert_lite_youtube_for_email( string $content ): string {
+	// Check if content has lite-youtube elements
+	if ( strpos( $content, '<lite-youtube' ) === false ) {
+		return $content;
+	}
+
+	// Match lite-youtube elements and convert to email-safe thumbnails
+	$pattern = '/<lite-youtube\s+videoid=["\']([^"\']+)["\'][^>]*(?:title=["\']([^"\']*)["\'])?[^>]*><\/lite-youtube>/i';
+
+	$content = preg_replace_callback( $pattern, function( $matches ) {
+		$video_id = $matches[1];
+		$title    = ! empty( $matches[2] ) ? $matches[2] : 'Watch video';
+
+		// YouTube thumbnail URL (maxresdefault for high quality)
+		$thumbnail_url = 'https://i.ytimg.com/vi/' . esc_attr( $video_id ) . '/maxresdefault.jpg';
+		$video_url     = 'https://www.youtube.com/watch?v=' . esc_attr( $video_id );
+
+		// Build email-safe HTML table with centered thumbnail
+		$html  = '<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="border-collapse: collapse; max-width: 600px; margin: 16px auto;">';
+		$html .= '<tr><td align="center" style="padding: 0;">';
+		$html .= '<a href="' . esc_url( $video_url ) . '" target="_blank" style="display: block; text-decoration: none;">';
+		$html .= '<img src="' . esc_url( $thumbnail_url ) . '" alt="' . esc_attr( $title ) . '" width="600" style="width: 100%; max-width: 600px; height: auto; display: block; border: 2px solid #333333;">';
+		$html .= '</a>';
+		$html .= '</td></tr>';
+		// Add "Click to watch" text below thumbnail
+		$html .= '<tr><td align="center" style="padding: 8px 0 0 0;">';
+		$html .= '<a href="' . esc_url( $video_url ) . '" target="_blank" style="font-family: monospace; font-size: 12px; color: #0084FF; text-decoration: none; text-transform: uppercase; letter-spacing: 0.05em;">▶ CLICK TO WATCH VIDEO</a>';
+		$html .= '</td></tr>';
+		$html .= '</table>';
+
+		return $html;
+	}, $content );
+
+	// Also handle any wrapper divs around lite-youtube
+	$wrapper_pattern = '/<div[^>]*class="[^"]*wp-block-embed__wrapper[^"]*"[^>]*>\s*(<table[^>]*>.*?<\/table>)\s*<\/div>/is';
+	$content = preg_replace( $wrapper_pattern, '$1', $content );
+
+	return $content;
+}
+
+// Hook into newsletter content filters
+add_filter( 'the_content_feed', 'gcb_convert_lite_youtube_for_email', 6 );
+add_filter( 'jetpack_newsletter_post_content', 'gcb_convert_lite_youtube_for_email', 6 );
+
+/**
  * Register Video Rail block pattern
  *
  * Registers the PHP-generated video rail pattern for use in templates.
