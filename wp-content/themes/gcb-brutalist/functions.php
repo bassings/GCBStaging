@@ -712,15 +712,54 @@ function gcb_convert_spectra_gallery_for_email( string $content ): string {
 		return $content;
 	}
 
-	// Use regex to find and replace Spectra gallery containers
-	// Match the entire gallery div from opening to closing tag
-	$pattern = '/<div[^>]*class="[^"]*wp-block-uagb-image-gallery[^"]*"[^>]*>.*?<\/div>\s*<\/div>\s*<\/div>/is';
+	// Match the Spectra gallery container - greedy match to the closing div
+	// The structure is: <div class="wp-block-uagb-image-gallery...">..nested content..</div>
+	// Use a more permissive pattern that captures everything between opening and final closing
+	$pattern = '/<div[^>]*class="[^"]*wp-block-uagb-image-gallery[^"]*"[^>]*>(?:[^<]|<(?!\/div>))*(?:<div[^>]*>(?:[^<]|<(?!\/div>))*<\/div>)*[^<]*<\/div>/is';
 
-	$content = preg_replace_callback( $pattern, 'gcb_spectra_gallery_to_email_table', $content );
-
-	// Also try to match simpler gallery structures
-	$pattern2 = '/<figure[^>]*class="[^"]*wp-block-uagb-image-gallery[^"]*"[^>]*>.*?<\/figure>/is';
-	$content  = preg_replace_callback( $pattern2, 'gcb_spectra_gallery_to_email_table', $content );
+	// Simpler approach: match from wp-block-uagb-image-gallery to the next major section
+	// Since the gallery has deep nesting, extract all spectra images from content first
+	if ( preg_match_all( '/<div[^>]*class="[^"]*wp-block-uagb-image-gallery[^"]*"[^>]*>/i', $content, $gallery_starts, PREG_OFFSET_CAPTURE ) ) {
+		// Process each gallery found
+		foreach ( array_reverse( $gallery_starts[0] ) as $match ) {
+			$start_pos = $match[1];
+			
+			// Find the end of this gallery block by counting div nesting
+			$depth      = 1;
+			$pos        = $start_pos + strlen( $match[0] );
+			$len        = strlen( $content );
+			$gallery_end = $len;
+			
+			while ( $pos < $len && $depth > 0 ) {
+				$next_open  = strpos( $content, '<div', $pos );
+				$next_close = strpos( $content, '</div>', $pos );
+				
+				if ( $next_close === false ) {
+					break;
+				}
+				
+				if ( $next_open !== false && $next_open < $next_close ) {
+					$depth++;
+					$pos = $next_open + 4;
+				} else {
+					$depth--;
+					$pos = $next_close + 6;
+					if ( $depth === 0 ) {
+						$gallery_end = $next_close + 6;
+					}
+				}
+			}
+			
+			// Extract gallery HTML
+			$gallery_html = substr( $content, $start_pos, $gallery_end - $start_pos );
+			
+			// Convert to email-safe table
+			$replacement = gcb_spectra_gallery_to_email_table( array( $gallery_html ) );
+			
+			// Replace in content
+			$content = substr( $content, 0, $start_pos ) . $replacement . substr( $content, $gallery_end );
+		}
+	}
 
 	return $content;
 }
@@ -763,8 +802,13 @@ function gcb_maybe_convert_spectra_for_email( string $block_content, array $bloc
 function gcb_spectra_gallery_to_email_table( array $matches ): string {
 	$gallery_html = $matches[0];
 
-	// Extract all img tags from the gallery
-	preg_match_all( '/<img[^>]+>/i', $gallery_html, $img_matches );
+	// Extract all img tags from the gallery (prioritize spectra thumbnail class)
+	preg_match_all( '/<img[^>]*class="[^"]*spectra-image-gallery__media-thumbnail[^"]*"[^>]*>/i', $gallery_html, $img_matches );
+
+	// Fallback: try any img tag if no spectra-specific images found
+	if ( empty( $img_matches[0] ) ) {
+		preg_match_all( '/<img[^>]+>/i', $gallery_html, $img_matches );
+	}
 
 	if ( empty( $img_matches[0] ) ) {
 		// No images found, return empty or placeholder
@@ -802,9 +846,14 @@ function gcb_spectra_gallery_to_email_table( array $matches ): string {
 			continue;
 		}
 
-		// Clean up WP.com CDN URLs - get a reasonably sized image
+		// Clean up WP.com CDN URLs - get a reasonably sized image for email (280px wide)
+		// Handle both encoded (%2C) and regular (,) resize params
 		$src = preg_replace( '/\?resize=\d+%2C\d+/', '?resize=280%2C187', $src );
-		$src = preg_replace( '/&ssl=1/', '&ssl=1', $src );
+		$src = preg_replace( '/\?resize=\d+,\d+/', '?resize=280,187', $src );
+		// Ensure ssl=1 is present for HTTPS
+		if ( strpos( $src, 'ssl=1' ) === false && strpos( $src, 'i0.wp.com' ) !== false ) {
+			$src .= ( strpos( $src, '?' ) !== false ) ? '&ssl=1' : '?ssl=1';
+		}
 
 		$html .= '<td align="center" valign="top" style="padding: 8px; width: 50%;">';
 		$html .= '<img src="' . esc_url( $src ) . '" alt="' . esc_attr( $alt ) . '" width="280" style="max-width: 100%; height: auto; display: block; border: 1px solid #333333;">';
