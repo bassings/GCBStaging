@@ -1,70 +1,50 @@
 /**
- * Lazy Spectra Gallery Initialization
+ * Spectra Gallery Image Preloading
  * 
- * Delays Spectra carousel/gallery initialization until the user scrolls near it.
- * Reduces TBT (Total Blocking Time) on initial page load.
- * 
- * How it works:
- * 1. Hides Spectra galleries initially (CSS handles this)
- * 2. Uses Intersection Observer to detect when gallery enters viewport
- * 3. Triggers Spectra's initialization only when needed
- * 4. Reveals the gallery with a fade-in
+ * Improves carousel UX by preloading nearby images:
+ * 1. First 3 images in each gallery load eagerly (no lazy)
+ * 2. When gallery scrolls, preload upcoming images
+ * 3. Reveals gallery smoothly when ready
  */
 
 (function() {
 	'use strict';
 
-	// Only run if Intersection Observer is supported
-	if (!('IntersectionObserver' in window)) {
-		// Fallback: just show galleries immediately on old browsers
+	function initGalleryPreloading() {
 		document.querySelectorAll('.wp-block-uagb-image-gallery').forEach(function(gallery) {
-			gallery.classList.add('spectra-lazy-loaded');
-		});
-		return;
-	}
-
-	// Create observer with rootMargin to start loading slightly before visible
-	const observer = new IntersectionObserver(function(entries) {
-		entries.forEach(function(entry) {
-			if (entry.isIntersecting) {
-				const gallery = entry.target;
-				
-				// Stop observing this gallery
-				observer.unobserve(gallery);
-				
-				// Trigger Spectra's initialization by dispatching a custom event
-				// or calling their init function if available
-				if (window.UAGBImageGallery && typeof window.UAGBImageGallery.init === 'function') {
-					window.UAGBImageGallery.init(gallery);
-				}
-				
-				// If Spectra uses Slick or Swiper, they might auto-init on DOM ready
-				// In that case, the carousel should already be initialized
-				// We just need to reveal it
-				
-				// Add loaded class to trigger CSS fade-in
-				gallery.classList.add('spectra-lazy-loaded');
-				
-				// Dispatch event for any other scripts that need to know
-				gallery.dispatchEvent(new CustomEvent('spectra-gallery-loaded'));
+			var images = gallery.querySelectorAll('img[loading="lazy"]');
+			
+			// Make first 3 images load eagerly
+			for (var i = 0; i < Math.min(3, images.length); i++) {
+				images[i].removeAttribute('loading');
+				images[i].setAttribute('fetchpriority', i === 0 ? 'high' : 'auto');
 			}
-		});
-	}, {
-		rootMargin: '200px 0px', // Start loading 200px before visible
-		threshold: 0.01
-	});
-
-	// Observe all Spectra galleries
-	function observeGalleries() {
-		document.querySelectorAll('.wp-block-uagb-image-gallery:not(.spectra-lazy-loaded)').forEach(function(gallery) {
-			observer.observe(gallery);
+			
+			// Mark gallery as initialized
+			gallery.classList.add('spectra-lazy-loaded');
+			
+			// For carousel galleries, preload next images on scroll
+			var carousel = gallery.querySelector('.spectra-image-gallery__layout--carousel');
+			if (carousel) {
+				var preloadedIndex = 3;
+				
+				carousel.addEventListener('scroll', function() {
+					// Preload next 2 images when scrolling
+					for (var j = preloadedIndex; j < Math.min(preloadedIndex + 2, images.length); j++) {
+						if (images[j].getAttribute('loading') === 'lazy') {
+							images[j].removeAttribute('loading');
+						}
+					}
+					preloadedIndex = Math.min(preloadedIndex + 2, images.length);
+				}, { passive: true });
+			}
 		});
 	}
 
 	// Run on DOM ready
 	if (document.readyState === 'loading') {
-		document.addEventListener('DOMContentLoaded', observeGalleries);
+		document.addEventListener('DOMContentLoaded', initGalleryPreloading);
 	} else {
-		observeGalleries();
+		initGalleryPreloading();
 	}
 })();
