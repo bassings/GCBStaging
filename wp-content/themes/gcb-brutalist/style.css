@@ -723,3 +723,34 @@ lite-youtube > iframe {
 .gcb-comments-section .wp-block-comments-pagination a:hover {
 	color: var(--wp--preset--color--off-white);
 }
+
+/* ==========================================================================
+   Author Box — Single Post
+   ========================================================================== */
+
+.gcb-author-box {
+	gap: 1.5rem !important;
+}
+
+.gcb-author-box .avatar {
+	flex-shrink: 0;
+	border-radius: 0 !important;
+}
+
+.gcb-author-box .wp-block-post-author-name a {
+	color: var(--wp--preset--color--off-white);
+	text-decoration: none;
+}
+
+.gcb-author-box .wp-block-post-author-name a:hover {
+	color: var(--wp--preset--color--highlight);
+}
+
+/* Responsive: stack on mobile */
+@media (max-width: 600px) {
+	.gcb-author-box {
+		flex-direction: column !important;
+		align-items: center !important;
+		text-align: center;
+	}
+}
