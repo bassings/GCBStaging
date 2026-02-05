@@ -728,21 +728,24 @@ function gcb_conditional_asset_loading(): void {
 	if ( is_front_page() || is_home() || is_archive() || is_search() ) {
 		// Jetpack Likes (like buttons on posts)
 		wp_dequeue_style( 'jetpack_likes' );
+		wp_dequeue_style( 'jetpack-likes' );
 		wp_dequeue_script( 'jetpack_likes_queuehandler' );
 		
-		// Jetpack Sharedaddy (social sharing buttons)
+		// Jetpack Sharedaddy (social sharing buttons) - exact handle from HTML
 		wp_dequeue_style( 'sharedaddy' );
+		wp_dequeue_style( 'sharedaddy-css' );
 		wp_dequeue_style( 'sharing' );
 		
 		// Jetpack Related Posts
 		wp_dequeue_style( 'jetpack-related-posts' );
 		wp_dequeue_style( 'jetpack_related-posts' );
 		
-		// Social logos (used by sharing buttons)
+		// Social logos (used by sharing buttons) - exact handle from HTML
 		wp_dequeue_style( 'social-logos' );
+		wp_dequeue_style( 'social-logos-css' );
 	}
 }
-add_action( 'wp_enqueue_scripts', 'gcb_conditional_asset_loading', 100 );
+add_action( 'wp_enqueue_scripts', 'gcb_conditional_asset_loading', 999 );
 
 /**
  * Dequeue Open Sans font on frontend
