@@ -49,8 +49,8 @@ if ( ! $culture_grid_query->have_posts() ) {
             <h2 class="culture-grid-title">LATEST REVIEWS & NEWS</h2>
         </div>
 
-        <!-- 4-Column Responsive Grid -->
-        <div class="culture-grid-container">
+        <!-- 4-Column Responsive Grid (carousel on mobile) -->
+        <div class="culture-grid-container gcb-mobile-carousel-culture" role="region" aria-label="Latest reviews and news">
             <?php while ($culture_grid_query->have_posts()) : $culture_grid_query->the_post(); ?>
                 <?php
                 // Get post data
@@ -141,10 +141,43 @@ if ( ! $culture_grid_query->have_posts() ) {
         }
     }
 
-    /* Mobile: 1 column */
+    /* Mobile: Horizontal carousel with peek */
     @media (max-width: 767px) {
         .culture-grid-container {
-            grid-template-columns: 1fr;
+            /* Override grid with flex for horizontal scroll */
+            display: flex !important;
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            scroll-snap-type: x mandatory !important;
+            -webkit-overflow-scrolling: touch !important;
+            gap: 1rem !important;
+            /* Extend to edges for full-bleed scroll */
+            margin-left: calc(-1 * var(--wp--preset--spacing--30)) !important;
+            margin-right: calc(-1 * var(--wp--preset--spacing--30)) !important;
+            padding-left: var(--wp--preset--spacing--30) !important;
+            padding-right: var(--wp--preset--spacing--30) !important;
+            padding-bottom: 0.5rem !important;
+            /* Hide scrollbar but keep functionality */
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
+        }
+        .culture-grid-container::-webkit-scrollbar {
+            display: none !important;
+        }
+        
+        /* Carousel cards - 80% width with peek (text cards are smaller) */
+        .culture-grid-container > .culture-card {
+            flex: 0 0 80% !important;
+            min-width: 80% !important;
+            max-width: 80% !important;
+            scroll-snap-align: start !important;
+        }
+        
+        /* Ensure last card has room to snap */
+        .culture-grid-container::after {
+            content: '';
+            flex: 0 0 var(--wp--preset--spacing--30);
         }
 
         .culture-grid-title {

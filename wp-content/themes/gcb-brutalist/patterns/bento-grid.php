@@ -47,6 +47,7 @@ if ( ! $grid_posts->have_posts() ) {
 
 		<?php
 		$index = 0;
+		
 		while ( $grid_posts->have_posts() ) :
 			$grid_posts->the_post();
 			$post_id = get_the_ID();
@@ -65,8 +66,14 @@ if ( ! $grid_posts->have_posts() ) {
 			$srcset_size   = 'large'; // Generate srcset from large for full range
 			$thumbnail     = get_the_post_thumbnail_url( $post_id, $default_size );
 			$srcset        = $thumbnail_id ? wp_get_attachment_image_srcset( $thumbnail_id, $srcset_size ) : '';
-			$sizes         = $is_featured ? '(max-width: 768px) 100vw, (max-width: 1024px) 66vw, 800px' : '(max-width: 768px) 50vw, 280px';
+			$sizes         = $is_featured ? '(max-width: 768px) 100vw, (max-width: 1024px) 66vw, 800px' : '(max-width: 768px) 85vw, 280px';
+			
+			// Open carousel wrapper after hero (index 1)
+			if ( 1 === $index ) :
 			?>
+			<!-- Mobile Carousel Wrapper (horizontal scroll on mobile only) -->
+			<div class="gcb-mobile-carousel" role="region" aria-label="More featured stories">
+			<?php endif; ?>
 
 			<!-- Bento Grid Item -->
 			<div class="bento-item gcb-bento-card bento-item--standard <?php echo esc_attr( $size_class ); ?>" data-size="<?php echo $is_featured ? 'large' : 'standard'; ?>" style="<?php echo esc_attr( $grid_span ); ?> border: 2px solid var(--wp--preset--color--brutal-border); background: var(--wp--preset--color--void-black); overflow: hidden; display: flex; flex-direction: column; height: 100%;">
@@ -135,7 +142,12 @@ if ( ! $grid_posts->have_posts() ) {
 		<?php
 			$index++;
 		endwhile;
+		
+		// Close carousel wrapper if we opened it (had more than 1 post)
+		if ( $index > 1 ) :
 		?>
+			</div><!-- .gcb-mobile-carousel -->
+		<?php endif; ?>
 
 		<?php wp_reset_postdata(); ?>
 
@@ -146,13 +158,61 @@ if ( ! $grid_posts->have_posts() ) {
 
 <!-- Responsive CSS for Bento Grid -->
 <style>
-	/* Mobile: Stack to single column */
+	/* Mobile: Hero full-width, rest as horizontal carousel */
 	@media (max-width: 768px) {
 		.gcb-bento-grid__container {
-			grid-template-columns: 1fr !important;
+			display: block !important;
 		}
+		
+		/* Hero stays full width, normal flow */
 		.bento-item--featured {
-			grid-column: span 1 !important;
+			width: 100% !important;
+			margin-bottom: 1rem !important;
+		}
+		
+		/* Mobile carousel - horizontal scroll */
+		.gcb-mobile-carousel {
+			display: flex !important;
+			flex-wrap: nowrap !important;
+			overflow-x: auto !important;
+			overflow-y: hidden !important;
+			scroll-snap-type: x mandatory !important;
+			-webkit-overflow-scrolling: touch !important;
+			gap: 1rem !important;
+			padding-bottom: 1rem !important;
+			/* Extend to edges for full-bleed scroll */
+			margin-left: -1rem !important;
+			margin-right: -1rem !important;
+			padding-left: 1rem !important;
+			padding-right: 1rem !important;
+			/* Hide scrollbar but keep functionality */
+			scrollbar-width: none !important;
+			-ms-overflow-style: none !important;
+		}
+		.gcb-mobile-carousel::-webkit-scrollbar {
+			display: none !important;
+		}
+		
+		/* Carousel cards - 85% width with peek */
+		.gcb-mobile-carousel > .bento-item {
+			flex: 0 0 85% !important;
+			min-width: 85% !important;
+			max-width: 85% !important;
+			scroll-snap-align: start !important;
+			height: auto !important;
+		}
+		
+		/* Ensure last card has room to snap */
+		.gcb-mobile-carousel::after {
+			content: '';
+			flex: 0 0 1rem;
+		}
+	}
+	
+	/* Tablet and up: Carousel wrapper becomes grid */
+	@media (min-width: 769px) {
+		.gcb-mobile-carousel {
+			display: contents !important; /* Children flow into parent grid */
 		}
 	}
 
