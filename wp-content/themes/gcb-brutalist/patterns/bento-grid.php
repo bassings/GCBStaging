@@ -96,10 +96,13 @@ if ( ! $grid_posts->have_posts() ) {
 								sizes="<?php echo esc_attr( $sizes ); ?>"
 							<?php endif; ?>
 							style="width: 100%; height: 100%; object-fit: cover; display: block;<?php echo ( defined( 'GCB_IMAGE_MODE' ) && 'grayscale' === GCB_IMAGE_MODE ) ? ' filter: grayscale(100%) contrast(1.3);' : ''; ?>"
-							<?php if ( $is_featured ) : ?>
-							fetchpriority="high"
+							<?php 
+							// Hero (0) and first 2 carousel cards (1,2) load eagerly
+							// Rest load lazily to save bandwidth
+							if ( $index <= 2 ) : ?>
+							fetchpriority="<?php echo $is_featured ? 'high' : 'auto'; ?>"
 							loading="eager"
-							decoding="sync"
+							decoding="<?php echo $is_featured ? 'sync' : 'async'; ?>"
 							<?php else : ?>
 							loading="lazy"
 							decoding="async"
