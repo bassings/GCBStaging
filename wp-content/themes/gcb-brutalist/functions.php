@@ -14,6 +14,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Newsletter Preview Tool
+ * 
+ * Add ?newsletter_preview=1 to any URL to see post list
+ * Add ?newsletter_preview=1&post_id=XXX to preview specific post
+ * Only works for admins or localhost
+ */
+function gcb_newsletter_preview_init(): void {
+	if ( isset( $_GET['newsletter_preview'] ) && $_GET['newsletter_preview'] === '1' ) {
+		include get_template_directory() . '/newsletter-preview.php';
+	}
+}
+add_action( 'template_redirect', 'gcb_newsletter_preview_init', 1 );
+
+/**
  * Flush rewrite rules on theme activation
  *
  * Ensures custom rewrite rules (like /video/) are registered.
