@@ -272,10 +272,8 @@ function gcb_add_resource_hints( array $urls, string $relation_type ): array {
 			'href' => 'https://i.ytimg.com',
 		);
 
-		// YouTube embed domain (for lite-youtube facade and standard embeds)
-		$urls[] = array(
-			'href' => 'https://www.youtube-nocookie.com',
-		);
+		// Note: youtube-nocookie.com preconnect removed 2026-02-06
+		// Lighthouse flagged it as unused — lite-youtube only loads iframe on click
 
 		// WP.com Photon image CDN (critical for LCP)
 		// Always preconnect — Jetpack Photon serves all images via i0/i1/i2.wp.com
@@ -300,11 +298,11 @@ add_filter( 'wp_resource_hints', 'gcb_add_resource_hints', 10, 2 );
  * Preload critical font files to prevent FOUT-induced CLS
  *
  * On WP.com production, fonts are served from fonts.wp.com (not fonts.gstatic.com).
- * The gstatic Playfair Display v37 URL returns 404 on production, so we only
- * preload Space Mono (which works from gstatic) and add preconnect to fonts.wp.com
- * so the Playfair download starts faster.
+ * We preload the exact Playfair Display woff2 files that WP.com serves to eliminate
+ * the font loading delay from the critical render path.
  *
- * Updated: 2026-02-05 — removed Playfair preload (404 on production)
+ * Updated: 2026-02-05 — removed gstatic Playfair preload (404 on production)
+ * Updated: 2026-02-06 — added fonts.wp.com Playfair preloads (exact URLs from Lighthouse)
  */
 function gcb_preload_critical_fonts(): void {
 	if ( is_admin() ) {
@@ -312,7 +310,14 @@ function gcb_preload_critical_fonts(): void {
 	}
 	// Preconnect to fonts.wp.com (serves Playfair Display on WP.com production)
 	echo '<link rel="preconnect" href="https://fonts.wp.com" crossorigin="anonymous">' . "\n";
-	// Space Mono 400 (nav, metadata) — this one works from gstatic
+	
+	// Playfair Display 400 (Regular) — critical for headlines/hero text
+	echo '<link rel="preload" as="font" type="font/woff2" href="https://fonts.wp.com/s/playfairdisplay/v36/nuFvD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKfsukDVZNLo_U2r.woff2" crossorigin="anonymous">' . "\n";
+	
+	// Playfair Display 700 (Bold) — used for logo and emphasis
+	echo '<link rel="preload" as="font" type="font/woff2" href="https://fonts.wp.com/s/playfairdisplay/v36/nuFvD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKeiukDVZNLo_U2r.woff2" crossorigin="anonymous">' . "\n";
+	
+	// Space Mono 400 (nav, metadata) — works from gstatic
 	echo '<link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/spacemono/v13/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2" crossorigin="anonymous">' . "\n";
 }
 add_action( 'wp_head', 'gcb_preload_critical_fonts', 0 );
