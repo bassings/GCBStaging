@@ -226,14 +226,20 @@ function gcb_add_resource_hints( array $urls, string $relation_type ): array {
 			'href' => 'https://www.youtube-nocookie.com',
 		);
 
-		// WP.com image CDN (for production environment)
-		// Only add if we detect WP.com hosting or i0.wp.com in content
-		if ( defined( 'IS_WPCOM' ) && IS_WPCOM ) {
-			$urls[] = array(
-				'href'        => 'https://i0.wp.com',
-				'crossorigin' => 'anonymous',
-			);
-		}
+		// WP.com Photon image CDN (critical for LCP)
+		// Always preconnect — Jetpack Photon serves all images via i0/i1/i2.wp.com
+		$urls[] = array(
+			'href'        => 'https://i0.wp.com',
+			'crossorigin' => 'anonymous',
+		);
+		$urls[] = array(
+			'href'        => 'https://i1.wp.com',
+			'crossorigin' => 'anonymous',
+		);
+		$urls[] = array(
+			'href'        => 'https://i2.wp.com',
+			'crossorigin' => 'anonymous',
+		);
 	}
 	return $urls;
 }

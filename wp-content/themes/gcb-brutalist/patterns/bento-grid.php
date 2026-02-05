@@ -58,10 +58,14 @@ if ( ! $grid_posts->have_posts() ) {
 			$grid_span   = $is_featured ? 'grid-column: 1 / -1;' : '';
 
 			// Get thumbnail with dimensions for CLS prevention.
-			$thumbnail_id = get_post_thumbnail_id( $post_id );
-			$thumbnail    = get_the_post_thumbnail_url( $post_id, 'large' );
-			$srcset       = $thumbnail_id ? wp_get_attachment_image_srcset( $thumbnail_id, 'large' ) : '';
-			$sizes        = $is_featured ? '(max-width: 768px) 100vw, 66vw' : '(max-width: 768px) 100vw, 33vw';
+			// Use medium_large (768px) as default src for faster mobile LCP,
+			// with full srcset for larger screens to pick appropriate size.
+			$thumbnail_id  = get_post_thumbnail_id( $post_id );
+			$default_size  = $is_featured ? 'medium_large' : 'medium';
+			$srcset_size   = 'large'; // Generate srcset from large for full range
+			$thumbnail     = get_the_post_thumbnail_url( $post_id, $default_size );
+			$srcset        = $thumbnail_id ? wp_get_attachment_image_srcset( $thumbnail_id, $srcset_size ) : '';
+			$sizes         = $is_featured ? '(max-width: 768px) 100vw, (max-width: 1024px) 66vw, 800px' : '(max-width: 768px) 50vw, 280px';
 			?>
 
 			<!-- Bento Grid Item -->
