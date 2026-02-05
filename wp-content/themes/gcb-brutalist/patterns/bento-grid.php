@@ -73,6 +73,9 @@ if ( ! $grid_posts->have_posts() ) {
 			?>
 			<!-- Mobile Carousel Wrapper (horizontal scroll on mobile only) -->
 			<div class="gcb-mobile-carousel-wrapper">
+				<button class="gcb-carousel-arrow gcb-carousel-arrow--prev hidden" aria-label="Previous article">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+				</button>
 				<div class="gcb-mobile-carousel" role="region" aria-label="More featured stories">
 			<?php endif; ?>
 
@@ -148,6 +151,9 @@ if ( ! $grid_posts->have_posts() ) {
 		if ( $index > 1 ) :
 		?>
 				</div><!-- .gcb-mobile-carousel -->
+				<button class="gcb-carousel-arrow gcb-carousel-arrow--next" aria-label="Next article">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>
+				</button>
 			</div><!-- .gcb-mobile-carousel-wrapper -->
 		<?php endif; ?>
 
@@ -195,60 +201,65 @@ if ( ! $grid_posts->have_posts() ) {
 			display: none !important;
 		}
 		
-		/* Carousel cards - 85% width with peek */
+		/* Carousel cards - 75% width to leave room for arrow buttons */
 		.gcb-mobile-carousel > .bento-item {
-			flex: 0 0 85% !important;
-			min-width: 85% !important;
-			max-width: 85% !important;
-			scroll-snap-align: start !important;
+			flex: 0 0 75% !important;
+			min-width: 75% !important;
+			max-width: 75% !important;
+			scroll-snap-align: center !important;
 			height: auto !important;
 		}
 		
 		/* Ensure last card has room to snap */
 		.gcb-mobile-carousel::after {
 			content: '';
-			flex: 0 0 1rem;
+			flex: 0 0 12.5%;
 		}
 		
-		/* Scroll arrow indicators */
+		/* Carousel wrapper with arrow button space */
 		.gcb-mobile-carousel-wrapper {
 			position: relative;
+			padding: 0 44px; /* Space for arrow buttons */
 		}
-		.gcb-mobile-carousel-wrapper::before,
-		.gcb-mobile-carousel-wrapper::after {
-			content: '';
+		
+		/* Arrow buttons */
+		.gcb-carousel-arrow {
 			position: absolute;
 			top: 50%;
 			transform: translateY(-50%);
-			width: 32px;
-			height: 32px;
+			width: 36px;
+			height: 36px;
 			background: var(--wp--preset--color--highlight);
+			border: none;
 			border-radius: 50%;
 			z-index: 10;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			opacity: 0.9;
+			-webkit-tap-highlight-color: transparent;
+		}
+		.gcb-carousel-arrow:active {
+			opacity: 1;
+			transform: translateY(-50%) scale(0.95);
+		}
+		.gcb-carousel-arrow svg {
+			width: 20px;
+			height: 20px;
+			fill: var(--wp--preset--color--void-black);
+		}
+		.gcb-carousel-arrow--prev {
+			left: 0;
+		}
+		.gcb-carousel-arrow--next {
+			right: 0;
+		}
+		/* Hide arrows at edges */
+		.gcb-carousel-arrow--prev.hidden,
+		.gcb-carousel-arrow--next.hidden {
+			opacity: 0.3;
 			pointer-events: none;
-			opacity: 0.9;
-		}
-		/* Left arrow */
-		.gcb-mobile-carousel-wrapper::before {
-			left: 4px;
-			background: var(--wp--preset--color--highlight) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23050505' viewBox='0 0 24 24'%3E%3Cpath d='M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z'/%3E%3C/svg%3E") center/20px no-repeat;
-			opacity: 0; /* Hidden initially - appears when scrolled right */
-		}
-		/* Right arrow */
-		.gcb-mobile-carousel-wrapper::after {
-			right: 4px;
-			background: var(--wp--preset--color--highlight) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23050505' viewBox='0 0 24 24'%3E%3Cpath d='M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z'/%3E%3C/svg%3E") center/20px no-repeat;
-		}
-		/* Hide arrows when scrolled to edges */
-		.gcb-mobile-carousel-wrapper.scrolled-start::before {
-			opacity: 0;
-		}
-		.gcb-mobile-carousel-wrapper.scrolled-end::after {
-			opacity: 0;
-		}
-		.gcb-mobile-carousel-wrapper.scrolled-middle::before,
-		.gcb-mobile-carousel-wrapper.scrolled-middle::after {
-			opacity: 0.9;
 		}
 	}
 	
@@ -256,13 +267,13 @@ if ( ! $grid_posts->have_posts() ) {
 	@media (min-width: 769px) {
 		.gcb-mobile-carousel-wrapper {
 			display: contents !important;
+			padding: 0 !important;
 		}
 		.gcb-mobile-carousel {
 			display: contents !important; /* Children flow into parent grid */
 		}
 		/* Hide arrows on desktop */
-		.gcb-mobile-carousel-wrapper::before,
-		.gcb-mobile-carousel-wrapper::after {
+		.gcb-carousel-arrow {
 			display: none !important;
 		}
 	}
@@ -321,41 +332,81 @@ if ( ! $grid_posts->have_posts() ) {
 	}
 </style>
 
-<!-- Carousel scroll tracking for arrow visibility -->
+<!-- Carousel arrow functionality -->
 <script>
 (function() {
 	'use strict';
 	
 	function initCarouselArrows() {
-		document.querySelectorAll('.gcb-mobile-carousel').forEach(function(carousel) {
-			var wrapper = carousel.closest('.gcb-mobile-carousel-wrapper');
-			if (!wrapper) return;
+		document.querySelectorAll('.gcb-mobile-carousel-wrapper').forEach(function(wrapper) {
+			var carousel = wrapper.querySelector('.gcb-mobile-carousel');
+			var prevBtn = wrapper.querySelector('.gcb-carousel-arrow--prev');
+			var nextBtn = wrapper.querySelector('.gcb-carousel-arrow--next');
 			
-			function updateArrows() {
+			if (!carousel || !prevBtn || !nextBtn) return;
+			
+			var cards = carousel.querySelectorAll('.bento-item');
+			var currentIndex = 0;
+			
+			function updateArrowState() {
 				var scrollLeft = carousel.scrollLeft;
 				var maxScroll = carousel.scrollWidth - carousel.clientWidth;
 				
-				// Remove all scroll state classes
-				wrapper.classList.remove('scrolled-start', 'scrolled-middle', 'scrolled-end');
-				
-				// Add appropriate class based on scroll position
+				// Hide/show arrows based on position
 				if (scrollLeft <= 10) {
-					wrapper.classList.add('scrolled-start');
-				} else if (scrollLeft >= maxScroll - 10) {
-					wrapper.classList.add('scrolled-end');
+					prevBtn.classList.add('hidden');
 				} else {
-					wrapper.classList.add('scrolled-middle');
+					prevBtn.classList.remove('hidden');
+				}
+				
+				if (scrollLeft >= maxScroll - 10) {
+					nextBtn.classList.add('hidden');
+				} else {
+					nextBtn.classList.remove('hidden');
 				}
 			}
 			
+			function scrollToCard(index) {
+				if (index < 0) index = 0;
+				if (index >= cards.length) index = cards.length - 1;
+				
+				var card = cards[index];
+				if (card) {
+					card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+					currentIndex = index;
+				}
+			}
+			
+			// Find current card index based on scroll position
+			function getCurrentIndex() {
+				var scrollCenter = carousel.scrollLeft + carousel.clientWidth / 2;
+				for (var i = 0; i < cards.length; i++) {
+					var card = cards[i];
+					var cardLeft = card.offsetLeft;
+					var cardRight = cardLeft + card.offsetWidth;
+					if (scrollCenter >= cardLeft && scrollCenter <= cardRight) {
+						return i;
+					}
+				}
+				return 0;
+			}
+			
+			// Button click handlers
+			prevBtn.addEventListener('click', function() {
+				currentIndex = getCurrentIndex();
+				scrollToCard(currentIndex - 1);
+			});
+			
+			nextBtn.addEventListener('click', function() {
+				currentIndex = getCurrentIndex();
+				scrollToCard(currentIndex + 1);
+			});
+			
+			// Update arrows on scroll
+			carousel.addEventListener('scroll', updateArrowState, { passive: true });
+			
 			// Initial state
-			wrapper.classList.add('scrolled-start');
-			
-			// Update on scroll
-			carousel.addEventListener('scroll', updateArrows, { passive: true });
-			
-			// Update on resize
-			window.addEventListener('resize', updateArrows, { passive: true });
+			updateArrowState();
 		});
 	}
 	

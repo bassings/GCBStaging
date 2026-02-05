@@ -51,7 +51,10 @@ if ( ! $culture_grid_query->have_posts() ) {
 
         <!-- 4-Column Responsive Grid (carousel on mobile) -->
         <div class="culture-carousel-wrapper">
-        <div class="culture-grid-container gcb-mobile-carousel-culture" role="region" aria-label="Latest reviews and news">
+            <button class="gcb-carousel-arrow gcb-carousel-arrow--prev hidden" aria-label="Previous article">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            </button>
+            <div class="culture-grid-container gcb-mobile-carousel-culture" role="region" aria-label="Latest reviews and news">
             <?php while ($culture_grid_query->have_posts()) : $culture_grid_query->the_post(); ?>
                 <?php
                 // Get post data
@@ -95,7 +98,10 @@ if ( ! $culture_grid_query->have_posts() ) {
                 </article>
 
             <?php endwhile; ?>
-        </div>
+            </div>
+            <button class="gcb-carousel-arrow gcb-carousel-arrow--next" aria-label="Next article">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>
+            </button>
         </div><!-- .culture-carousel-wrapper -->
     </div>
 </section>
@@ -168,22 +174,28 @@ if ( ! $culture_grid_query->have_posts() ) {
             display: none !important;
         }
         
-        /* Carousel cards - 80% width with peek (text cards are smaller) */
+        /* Carousel cards - 70% width to leave room for arrow buttons */
         .culture-grid-container > .culture-card {
-            flex: 0 0 80% !important;
-            min-width: 80% !important;
-            max-width: 80% !important;
-            scroll-snap-align: start !important;
+            flex: 0 0 70% !important;
+            min-width: 70% !important;
+            max-width: 70% !important;
+            scroll-snap-align: center !important;
         }
         
         /* Ensure last card has room to snap */
         .culture-grid-container::after {
             content: '';
-            flex: 0 0 var(--wp--preset--spacing--30);
+            flex: 0 0 15%;
         }
 
         .culture-grid-title {
             font-size: 2rem;
+        }
+        
+        /* Carousel wrapper with arrow button space */
+        .culture-carousel-wrapper {
+            position: relative;
+            padding: 0 44px;
         }
     }
 
@@ -272,67 +284,116 @@ if ( ! $culture_grid_query->have_posts() ) {
         outline: none;
     }
     
-    /* Mobile carousel arrow indicators */
+    /* Arrow buttons for culture carousel */
     @media (max-width: 767px) {
-        .culture-carousel-wrapper {
-            position: relative;
-        }
-        .culture-carousel-wrapper::before,
-        .culture-carousel-wrapper::after {
-            content: '';
+        .culture-carousel-wrapper .gcb-carousel-arrow {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             background: var(--wp--preset--color--highlight);
+            border: none;
             border-radius: 50%;
             z-index: 10;
-            pointer-events: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             opacity: 0.9;
+            -webkit-tap-highlight-color: transparent;
         }
-        /* Left arrow - hidden initially */
-        .culture-carousel-wrapper::before {
-            left: 4px;
-            background: var(--wp--preset--color--highlight) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23050505' viewBox='0 0 24 24'%3E%3Cpath d='M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z'/%3E%3C/svg%3E") center/20px no-repeat;
-            opacity: 0;
+        .culture-carousel-wrapper .gcb-carousel-arrow:active {
+            opacity: 1;
+            transform: translateY(-50%) scale(0.95);
         }
-        /* Right arrow */
-        .culture-carousel-wrapper::after {
-            right: 4px;
-            background: var(--wp--preset--color--highlight) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23050505' viewBox='0 0 24 24'%3E%3Cpath d='M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z'/%3E%3C/svg%3E") center/20px no-repeat;
+        .culture-carousel-wrapper .gcb-carousel-arrow svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--wp--preset--color--void-black);
         }
-        .culture-carousel-wrapper.scrolled-start::before { opacity: 0; }
-        .culture-carousel-wrapper.scrolled-end::after { opacity: 0; }
-        .culture-carousel-wrapper.scrolled-middle::before,
-        .culture-carousel-wrapper.scrolled-middle::after { opacity: 0.9; }
+        .culture-carousel-wrapper .gcb-carousel-arrow--prev { left: 0; }
+        .culture-carousel-wrapper .gcb-carousel-arrow--next { right: 0; }
+        .culture-carousel-wrapper .gcb-carousel-arrow.hidden {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+    }
+    
+    /* Hide arrows on tablet and desktop */
+    @media (min-width: 768px) {
+        .culture-carousel-wrapper {
+            padding: 0 !important;
+        }
+        .culture-carousel-wrapper .gcb-carousel-arrow {
+            display: none !important;
+        }
     }
 </style>
 
-<!-- Carousel scroll tracking for arrow visibility -->
+<!-- Carousel arrow functionality -->
 <script>
 (function() {
     'use strict';
     function initCultureCarouselArrows() {
-        document.querySelectorAll('.gcb-mobile-carousel-culture').forEach(function(carousel) {
-            var wrapper = carousel.closest('.culture-carousel-wrapper');
-            if (!wrapper) return;
+        document.querySelectorAll('.culture-carousel-wrapper').forEach(function(wrapper) {
+            var carousel = wrapper.querySelector('.gcb-mobile-carousel-culture');
+            var prevBtn = wrapper.querySelector('.gcb-carousel-arrow--prev');
+            var nextBtn = wrapper.querySelector('.gcb-carousel-arrow--next');
             
-            function updateArrows() {
+            if (!carousel || !prevBtn || !nextBtn) return;
+            
+            var cards = carousel.querySelectorAll('.culture-card');
+            
+            function updateArrowState() {
                 var scrollLeft = carousel.scrollLeft;
                 var maxScroll = carousel.scrollWidth - carousel.clientWidth;
-                wrapper.classList.remove('scrolled-start', 'scrolled-middle', 'scrolled-end');
+                
                 if (scrollLeft <= 10) {
-                    wrapper.classList.add('scrolled-start');
-                } else if (scrollLeft >= maxScroll - 10) {
-                    wrapper.classList.add('scrolled-end');
+                    prevBtn.classList.add('hidden');
                 } else {
-                    wrapper.classList.add('scrolled-middle');
+                    prevBtn.classList.remove('hidden');
+                }
+                
+                if (scrollLeft >= maxScroll - 10) {
+                    nextBtn.classList.add('hidden');
+                } else {
+                    nextBtn.classList.remove('hidden');
                 }
             }
-            wrapper.classList.add('scrolled-start');
-            carousel.addEventListener('scroll', updateArrows, { passive: true });
-            window.addEventListener('resize', updateArrows, { passive: true });
+            
+            function getCurrentIndex() {
+                var scrollCenter = carousel.scrollLeft + carousel.clientWidth / 2;
+                for (var i = 0; i < cards.length; i++) {
+                    var card = cards[i];
+                    var cardLeft = card.offsetLeft;
+                    var cardRight = cardLeft + card.offsetWidth;
+                    if (scrollCenter >= cardLeft && scrollCenter <= cardRight) {
+                        return i;
+                    }
+                }
+                return 0;
+            }
+            
+            function scrollToCard(index) {
+                if (index < 0) index = 0;
+                if (index >= cards.length) index = cards.length - 1;
+                var card = cards[index];
+                if (card) {
+                    card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                }
+            }
+            
+            prevBtn.addEventListener('click', function() {
+                scrollToCard(getCurrentIndex() - 1);
+            });
+            
+            nextBtn.addEventListener('click', function() {
+                scrollToCard(getCurrentIndex() + 1);
+            });
+            
+            carousel.addEventListener('scroll', updateArrowState, { passive: true });
+            updateArrowState();
         });
     }
     if (document.readyState === 'loading') {
