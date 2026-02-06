@@ -724,28 +724,25 @@ add_action( 'init', 'gcb_remove_wpcom_rum_scripts' );
  * Added: 2026-02-06 — granular per-page asset loading for LCP optimization
  */
 function gcb_conditional_asset_loading(): void {
-	// Only dequeue on homepage/front page (not single posts where these are needed)
+	// Only remove on homepage/front page/archives (not single posts where these are needed)
 	if ( is_front_page() || is_home() || is_archive() || is_search() ) {
-		// Jetpack Likes (like buttons on posts)
-		wp_dequeue_style( 'jetpack_likes' );
-		wp_dequeue_style( 'jetpack-likes' );
-		wp_dequeue_script( 'jetpack_likes_queuehandler' );
+		// Use wp_deregister_style (stronger than dequeue) on wp_print_styles hook
+		// Jetpack Likes
+		wp_deregister_style( 'jetpack_likes' );
 		
-		// Jetpack Sharedaddy (social sharing buttons) - exact handle from HTML
-		wp_dequeue_style( 'sharedaddy' );
-		wp_dequeue_style( 'sharedaddy-css' );
-		wp_dequeue_style( 'sharing' );
+		// Jetpack Sharedaddy (social sharing buttons)
+		wp_deregister_style( 'sharedaddy' );
+		wp_deregister_style( 'sharing' );
 		
 		// Jetpack Related Posts
-		wp_dequeue_style( 'jetpack-related-posts' );
-		wp_dequeue_style( 'jetpack_related-posts' );
+		wp_deregister_style( 'jetpack_related-posts' );
 		
-		// Social logos (used by sharing buttons) - exact handle from HTML
-		wp_dequeue_style( 'social-logos' );
-		wp_dequeue_style( 'social-logos-css' );
+		// Social logos (used by sharing buttons)
+		wp_deregister_style( 'social-logos' );
 	}
 }
-add_action( 'wp_enqueue_scripts', 'gcb_conditional_asset_loading', 999 );
+// Use wp_print_styles hook - runs after enqueue, before output
+add_action( 'wp_print_styles', 'gcb_conditional_asset_loading', 100 );
 
 /**
  * Dequeue Open Sans font on frontend
