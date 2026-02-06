@@ -689,23 +689,19 @@ function gcb_disable_emojis(): void {
 add_action( 'init', 'gcb_disable_emojis' );
 
 /**
- * Remove WP.com platform RUM (Real User Monitoring) scripts
- *
- * bilmur.min.js tracks real user metrics for WP.com Stats but adds ~200ms
- * to main-thread blocking time. Since we use Google Analytics, this is
- * redundant overhead.
+ * Remove WP.com platform scripts (selective)
  *
  * devicepx-jetpack.js handles retina image swapping but is redundant when
  * using responsive images with srcset (which Jetpack Photon provides).
  *
- * Trade-off: May affect WP.com Stats dashboard accuracy.
+ * NOTE: bilmur.min.js (RUM) is kept enabled for WP.com Stats functionality.
+ * It adds ~200ms overhead but provides visitor analytics in WP Admin.
  *
  * Added: 2026-02-06 — based on Gemini deep research on WP.com LCP optimization
+ * Updated: 2026-02-06 — re-enabled bilmur for WP.com Stats
  */
 function gcb_remove_wpcom_rum_scripts(): void {
-	// Remove bilmur RUM script (Real User Monitoring for WP.com Stats)
-	remove_action( 'wp_footer', 'wpcomsh_footer_rum_js' );
-	remove_action( 'admin_footer', 'wpcomsh_footer_rum_js' );
+	// bilmur kept enabled for WP.com Stats
 	
 	// Remove devicepx-jetpack.js (retina image swapping - redundant with srcset)
 	add_action( 'wp_enqueue_scripts', function() {
