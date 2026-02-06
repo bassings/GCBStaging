@@ -828,12 +828,14 @@ function gcb_convert_spectra_gallery_for_email( string $content ): string {
 
 	// Match the Spectra gallery container - greedy match to the closing div
 	// The structure is: <div class="wp-block-uagb-image-gallery...">..nested content..</div>
+	// OR for carousel: <div class="spectra-image-gallery spectra-image-gallery__layout--carousel">
 	// Use a more permissive pattern that captures everything between opening and final closing
 	$pattern = '/<div[^>]*class="[^"]*wp-block-uagb-image-gallery[^"]*"[^>]*>(?:[^<]|<(?!\/div>))*(?:<div[^>]*>(?:[^<]|<(?!\/div>))*<\/div>)*[^<]*<\/div>/is';
 
-	// Simpler approach: match from wp-block-uagb-image-gallery to the next major section
+	// Simpler approach: match from gallery container to the next major section
 	// Since the gallery has deep nesting, extract all spectra images from content first
-	if ( preg_match_all( '/<div[^>]*class="[^"]*wp-block-uagb-image-gallery[^"]*"[^>]*>/i', $content, $gallery_starts, PREG_OFFSET_CAPTURE ) ) {
+	// Match either wp-block-uagb-image-gallery OR spectra-image-gallery (carousel layout uses latter)
+	if ( preg_match_all( '/<div[^>]*class="[^"]*(wp-block-uagb-image-gallery|spectra-image-gallery\s+spectra-image-gallery__layout)[^"]*"[^>]*>/i', $content, $gallery_starts, PREG_OFFSET_CAPTURE ) ) {
 		// Process each gallery found
 		foreach ( array_reverse( $gallery_starts[0] ) as $match ) {
 			$start_pos = $match[1];
