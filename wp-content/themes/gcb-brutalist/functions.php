@@ -736,10 +736,15 @@ function gcb_conditional_asset_loading_scripts(): void {
 	// Only remove on homepage/front page/archives (not single posts where these are needed)
 	if ( is_front_page() || is_home() || is_archive() || is_search() ) {
 		// Remove Jetpack Likes queue handler JS
+		// Try multiple approaches for WP.com compatibility
+		wp_dequeue_script( 'jetpack_likes_queuehandler' );
 		wp_deregister_script( 'jetpack_likes_queuehandler' );
 	}
 }
-add_action( 'wp_print_scripts', 'gcb_conditional_asset_loading_scripts', 100 );
+// Use multiple hooks to catch it wherever Jetpack adds it
+add_action( 'wp_enqueue_scripts', 'gcb_conditional_asset_loading_scripts', 999 );
+add_action( 'wp_print_scripts', 'gcb_conditional_asset_loading_scripts', 999 );
+add_action( 'wp_footer', 'gcb_conditional_asset_loading_scripts', 1 );
 
 /**
  * Dequeue Open Sans font on frontend
