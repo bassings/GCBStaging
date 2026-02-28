@@ -23,11 +23,6 @@ add_filter( 'wpseo_locale', function () {
 	return 'en_AU';
 } );
 
-// Allow Google Discover to use large image previews.
-add_action( 'wp_head', function () {
-	echo '<meta name="robots" content="max-image-preview:large">' . "\n";
-}, 1 );
-
 /**
  * Newsletter Preview Tool
  * 
