@@ -14,6 +14,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * SEO & GEO (Generative Engine Optimization) Filters
+ *
+ * Fix Yoast og:locale for Australian English.
+ * WordPress site language is set to en_AU but Yoast falls back to en_US.
+ */
+add_filter( 'wpseo_locale', function () {
+	return 'en_AU';
+} );
+
+/**
  * Newsletter Preview Tool
  * 
  * Add ?newsletter_preview=1 to any URL to see post list
@@ -312,7 +322,8 @@ function gcb_preload_critical_fonts(): void {
 	echo '<link rel="preconnect" href="https://fonts.wp.com" crossorigin="anonymous">' . "\n";
 	
 	// Playfair Display 400 (Regular) — critical for headlines/hero text
-	echo '<link rel="preload" as="font" type="font/woff2" href="https://fonts.wp.com/s/playfairdisplay/v36/nuFvD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKfsukDVZNLo_U2r.woff2" crossorigin="anonymous">' . "\n";
+	// NOTE: URL must match the @font-face src that WP.com generates in wp-fonts-local
+	echo '<link rel="preload" as="font" type="font/woff2" href="https://fonts.wp.com/s/playfairdisplay/v36/nuFvD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKdFvUDVZNLo_U2r.woff2" crossorigin="anonymous">' . "\n";
 	
 	// Playfair Display 700 (Bold) — used for logo and emphasis
 	echo '<link rel="preload" as="font" type="font/woff2" href="https://fonts.wp.com/s/playfairdisplay/v36/nuFvD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKeiukDVZNLo_U2r.woff2" crossorigin="anonymous">' . "\n";
@@ -429,26 +440,14 @@ function gcb_inline_critical_css(): void {
 add_action( 'wp_head', 'gcb_inline_critical_css', 1 );
 
 /**
- * Defer non-critical CSS loading
+ * Defer non-critical CSS loading — DISABLED
  *
- * Uses media="print" + onload swap technique to defer the main stylesheet.
- * Critical CSS is already inlined via gcb_inline_critical_css().
+ * Jetpack Boost now handles CSS deferral on WP.com production using its own
+ * media="not all" + onload technique. Having both the theme AND Jetpack Boost
+ * defer the same stylesheet created broken nested noscript tags and messy HTML.
  *
- * @param string $tag    The stylesheet tag.
- * @param string $handle The stylesheet handle.
- * @param string $href   The stylesheet URL.
- * @return string Modified tag.
+ * Removed: 2026-02-09 — Jetpack Boost handles this; theme defer was conflicting.
  */
-function gcb_defer_non_critical_css( string $tag, string $handle, string $href ): string {
-	if ( 'gcb-brutalist-style' !== $handle || is_admin() ) {
-		return $tag;
-	}
-	// Use media="print" + onload swap
-	$tag = str_replace( "media='all'", "media='print' onload=\"this.media='all'\"", $tag );
-	// Noscript fallback for browsers without JavaScript
-	return $tag . '<noscript><link rel="stylesheet" href="' . esc_url( $href ) . '"></noscript>';
-}
-add_filter( 'style_loader_tag', 'gcb_defer_non_critical_css', 10, 3 );
 
 /**
  * Preload LCP candidate image on homepage — DISABLED
