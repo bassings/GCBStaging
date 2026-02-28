@@ -2516,3 +2516,34 @@ function gcb_primary_menu_fallback( $args ) {
 		);
 	}
 }
+
+/**
+ * Inject author box into the_content before Jetpack sharing/related posts.
+ *
+ * Jetpack sharing runs at priority 19, related posts at 40.
+ * We inject at priority 9 so the author box appears right after article text
+ * but before sharing buttons, related stories, and subscribe form.
+ */
+add_filter( 'the_content', function ( $content ) {
+	if ( ! is_single() || ! in_the_loop() || ! is_main_query() ) {
+		return $content;
+	}
+
+	$author_id   = get_the_author_meta( 'ID' );
+	$avatar      = get_avatar( $author_id, 80, '', '', array( 'class' => 'gcb-author-avatar' ) );
+	$name        = get_the_author();
+	$author_url  = get_author_posts_url( $author_id );
+	$bio         = get_the_author_meta( 'description' );
+
+	$author_box = '
+	<div class="gcb-author-box-injected" style="border:2px solid var(--wp--preset--color--brutal-border, #333);padding:1.5rem;margin-top:3rem;display:flex;gap:1.5rem;align-items:flex-start;">
+		<div style="flex-shrink:0;">' . $avatar . '</div>
+		<div style="display:flex;flex-direction:column;gap:0.5rem;">
+			<span style="font-family:var(--wp--preset--font-family--mono, monospace);font-size:0.625rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--wp--preset--color--highlight, #35c5f4);">Written by</span>
+			<a href="' . esc_url( $author_url ) . '" style="font-family:var(--wp--preset--font-family--playfair, serif);font-size:1.25rem;font-weight:700;color:var(--wp--preset--color--off-white, #f5f5f5);text-decoration:none;">' . esc_html( $name ) . '</a>
+			<p style="font-family:var(--wp--preset--font-family--system-sans, sans-serif);font-size:0.875rem;line-height:1.5;color:var(--wp--preset--color--brutal-grey, #888);margin:0;">' . esc_html( $bio ) . '</p>
+		</div>
+	</div>';
+
+	return $content . $author_box;
+}, 9 );
