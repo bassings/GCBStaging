@@ -2557,3 +2557,29 @@ add_filter( 'the_content', function ( $content ) {
 
 	return $content . $author_box;
 }, 9 );
+
+/**
+ * Render Yoast breadcrumbs via the theme-level PHP function.
+ *
+ * The Yoast breadcrumb block and shortcode ignore the "Taxonomy to show
+ * in breadcrumbs" setting. Only yoast_breadcrumb() respects it.
+ * We hook into render_block to replace our placeholder div with the
+ * properly rendered breadcrumbs.
+ */
+add_filter( 'render_block', function ( $block_content, $block ) {
+	if ( $block['blockName'] !== 'core/html' ) {
+		return $block_content;
+	}
+
+	if ( strpos( $block_content, 'gcb-yoast-breadcrumbs' ) === false ) {
+		return $block_content;
+	}
+
+	if ( ! function_exists( 'yoast_breadcrumb' ) ) {
+		return $block_content;
+	}
+
+	$breadcrumbs = yoast_breadcrumb( '', '', false );
+
+	return '<div class="gcb-breadcrumbs">' . $breadcrumbs . '</div>';
+}, 10, 2 );
