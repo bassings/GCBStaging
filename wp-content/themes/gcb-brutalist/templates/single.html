@@ -48,12 +48,26 @@
 
 
 	<!-- Previous / Next Post Navigation -->
-	<!-- wp:group {"className":"gcb-post-nav","style":{"spacing":{"margin":{"top":"var:preset|spacing|50"},"padding":{"top":"1.5rem","bottom":"1.5rem"}},"border":{"top":{"color":"var:preset|color|brutal-border","width":"2px","style":"solid"},"bottom":{"color":"var:preset|color|brutal-border","width":"2px","style":"solid"}}},"layout":{"type":"flex","justifyContent":"space-between","flexWrap":"nowrap"}} -->
-	<div class="wp-block-group gcb-post-nav" style="border-top-color:var(--wp--preset--color--brutal-border);border-top-style:solid;border-top-width:2px;border-bottom-color:var(--wp--preset--color--brutal-border);border-bottom-style:solid;border-bottom-width:2px;margin-top:var(--wp--preset--spacing--50);padding-top:1.5rem;padding-bottom:1.5rem">
+	<!-- wp:group {"className":"gcb-post-nav","style":{"spacing":{"margin":{"top":"var:preset|spacing|50"},"padding":{"top":"0","bottom":"0"}},"border":{"top":{"color":"var:preset|color|brutal-border","width":"2px","style":"solid"}}},"layout":{"type":"flex","justifyContent":"space-between","flexWrap":"nowrap"}} -->
+	<div class="wp-block-group gcb-post-nav" style="border-top-color:var(--wp--preset--color--brutal-border);border-top-style:solid;border-top-width:2px;margin-top:var(--wp--preset--spacing--50);padding-top:0;padding-bottom:0">
 
-		<!-- wp:post-navigation-link {"type":"previous","showTitle":true,"style":{"typography":{"fontFamily":"var(--wp--preset--font-family--mono)","fontSize":"0.75rem","textTransform":"uppercase","letterSpacing":"0.05em"},"color":{"text":"var:preset|color|brutal-grey"}},"className":"gcb-nav-prev"} /-->
+		<!-- wp:group {"className":"gcb-nav-prev","style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","right":"1rem"}},"border":{"right":{"color":"var:preset|color|brutal-border","width":"1px","style":"solid"}}},"layout":{"type":"constrained","contentSize":"50%"}} -->
+		<div class="wp-block-group gcb-nav-prev" style="border-right-color:var(--wp--preset--color--brutal-border);border-right-style:solid;border-right-width:1px;padding-top:1.5rem;padding-bottom:1.5rem;padding-right:1rem">
+			<!-- wp:paragraph {"style":{"typography":{"fontFamily":"var(--wp--preset--font-family--mono)","fontSize":"0.625rem","textTransform":"uppercase","letterSpacing":"0.1em"},"color":{"text":"var:preset|color|highlight"}}} -->
+			<p class="has-highlight-color has-text-color" style="font-family:var(--wp--preset--font-family--mono);font-size:0.625rem;letter-spacing:0.1em;text-transform:uppercase">← Previous</p>
+			<!-- /wp:paragraph -->
+			<!-- wp:post-navigation-link {"type":"previous","showTitle":true,"style":{"typography":{"fontFamily":"var(--wp--preset--font-family--playfair)","fontSize":"1rem","fontWeight":"700"},"color":{"text":"var:preset|color|off-white"}}} /-->
+		</div>
+		<!-- /wp:group -->
 
-		<!-- wp:post-navigation-link {"showTitle":true,"style":{"typography":{"fontFamily":"var(--wp--preset--font-family--mono)","fontSize":"0.75rem","textTransform":"uppercase","letterSpacing":"0.05em"},"color":{"text":"var:preset|color|brutal-grey"}},"className":"gcb-nav-next"} /-->
+		<!-- wp:group {"className":"gcb-nav-next","style":{"spacing":{"padding":{"top":"1.5rem","bottom":"1.5rem","left":"1rem"}}},"layout":{"type":"constrained","contentSize":"50%"}} -->
+		<div class="wp-block-group gcb-nav-next" style="padding-top:1.5rem;padding-bottom:1.5rem;padding-left:1rem">
+			<!-- wp:paragraph {"style":{"typography":{"fontFamily":"var(--wp--preset--font-family--mono)","fontSize":"0.625rem","textTransform":"uppercase","letterSpacing":"0.1em","textAlign":"right"},"color":{"text":"var:preset|color|highlight"}}} -->
+			<p class="has-highlight-color has-text-color" style="font-family:var(--wp--preset--font-family--mono);font-size:0.625rem;letter-spacing:0.1em;text-transform:uppercase;text-align:right">Next →</p>
+			<!-- /wp:paragraph -->
+			<!-- wp:post-navigation-link {"showTitle":true,"textAlign":"right","style":{"typography":{"fontFamily":"var(--wp--preset--font-family--playfair)","fontSize":"1rem","fontWeight":"700"},"color":{"text":"var:preset|color|off-white"}}} /-->
+		</div>
+		<!-- /wp:group -->
 
 	</div>
 	<!-- /wp:group -->
