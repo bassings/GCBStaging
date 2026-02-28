@@ -6,7 +6,9 @@
 	<!-- wp:group {"style":{"spacing":{"padding":{"top":"3rem","right":"3rem","bottom":"3rem","left":"3rem"}},"border":{"width":"2px","style":"solid","color":"var:preset|color|brutal-border"}}} -->
 	<div class="wp-block-group" style="border-color:var(--wp--preset--color--brutal-border);border-style:solid;border-width:2px;padding-top:3rem;padding-right:3rem;padding-bottom:3rem;padding-left:3rem">
 
-		<!-- wp:yoast-seo/breadcrumbs {"style":{"typography":{"fontFamily":"var(--wp--preset--font-family--mono)","fontSize":"0.75rem"},"color":{"text":"var:preset|color|brutal-grey"}},"className":"gcb-breadcrumbs"} /-->
+		<!-- wp:shortcode -->
+		[wpseo_breadcrumb]
+		<!-- /wp:shortcode -->
 
 		<!-- wp:post-title {"level":1,"style":{"typography":{"fontFamily":"var(--wp--preset--font-family--playfair)","fontSize":"3rem","lineHeight":"1.2"},"spacing":{"margin":{"bottom":"var:preset|spacing|30"}}}} /-->
 
@@ -101,6 +103,21 @@
 <!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->
 
 <style>
+/* Yoast breadcrumb styling */
+#main-content .wp-block-shortcode {
+tfont-family: var(--wp--preset--font-family--mono, monospace);
+tfont-size: 0.75rem;
+tcolor: var(--wp--preset--color--brutal-grey, #888);
+tmargin-bottom: 1rem;
+}
+#main-content .wp-block-shortcode a {
+tcolor: var(--wp--preset--color--brutal-grey, #888);
+ttext-decoration: none;
+}
+#main-content .wp-block-shortcode a:hover {
+tcolor: var(--wp--preset--color--highlight, #35c5f4);
+}
+
 /* Disable WordPress aspect ratio ::before when video-shortcode handles it */
 /* This prevents double aspect-ratio padding (WP ::before + video-shortcode padding-bottom) */
 #main-content .wp-block-post-content .wp-block-embed__wrapper:has(.video-shortcode)::before {
