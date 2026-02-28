@@ -24,6 +24,16 @@ add_filter( 'wpseo_locale', function () {
 } );
 
 /**
+ * Enable Yoast SEO breadcrumbs for this theme.
+ *
+ * Required for the breadcrumb block to respect taxonomy settings
+ * (e.g. showing categories in the breadcrumb trail for posts).
+ */
+add_action( 'after_setup_theme', function () {
+	add_theme_support( 'yoast-seo-breadcrumbs' );
+}, 5 );
+
+/**
  * Newsletter Preview Tool
  * 
  * Add ?newsletter_preview=1 to any URL to see post list
