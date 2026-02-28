@@ -2559,12 +2559,12 @@ add_filter( 'the_content', function ( $content ) {
 }, 9 );
 
 /**
- * Render Yoast breadcrumbs via the theme-level PHP function.
+ * Render breadcrumbs with category hierarchy for single posts.
  *
- * The Yoast breadcrumb block and shortcode ignore the "Taxonomy to show
- * in breadcrumbs" setting. Only yoast_breadcrumb() respects it.
- * We hook into render_block to replace our placeholder div with the
- * properly rendered breadcrumbs.
+ * Yoast's breadcrumb block, shortcode, and even yoast_breadcrumb() all
+ * rely on the indexable hierarchy table, which may not rebuild after
+ * changing the maintax setting. This manual approach reads the primary
+ * category directly and builds a proper breadcrumb trail.
  */
 add_filter( 'render_block', function ( $block_content, $block ) {
 	if ( $block['blockName'] !== 'core/html' ) {
@@ -2575,11 +2575,40 @@ add_filter( 'render_block', function ( $block_content, $block ) {
 		return $block_content;
 	}
 
-	if ( ! function_exists( 'yoast_breadcrumb' ) ) {
-		return $block_content;
+	$sep = ' » ';
+	$crumbs = '<a href="' . esc_url( home_url( '/' ) ) . '">Home</a>';
+
+	if ( is_single() ) {
+		// Try Yoast primary category first, fall back to first category
+		$primary_term_id = 0;
+		if ( class_exists( 'WPSEO_Primary_Term' ) ) {
+			$primary = new \WPSEO_Primary_Term( 'category', get_the_ID() );
+			$primary_term_id = $primary->get_primary_term();
+		}
+
+		if ( ! $primary_term_id ) {
+			$cats = get_the_category();
+			if ( ! empty( $cats ) ) {
+				$primary_term_id = $cats[0]->term_id;
+			}
+		}
+
+		if ( $primary_term_id ) {
+			$ancestors = array_reverse( get_ancestors( $primary_term_id, 'category' ) );
+			foreach ( $ancestors as $anc_id ) {
+				$anc = get_term( $anc_id, 'category' );
+				if ( $anc && ! is_wp_error( $anc ) ) {
+					$crumbs .= $sep . '<a href="' . esc_url( get_term_link( $anc ) ) . '">' . esc_html( $anc->name ) . '</a>';
+				}
+			}
+			$term = get_term( $primary_term_id, 'category' );
+			if ( $term && ! is_wp_error( $term ) ) {
+				$crumbs .= $sep . '<a href="' . esc_url( get_term_link( $term ) ) . '">' . esc_html( $term->name ) . '</a>';
+			}
+		}
+
+		$crumbs .= $sep . '<span class="breadcrumb_last" aria-current="page">' . esc_html( get_the_title() ) . '</span>';
 	}
 
-	$breadcrumbs = yoast_breadcrumb( '', '', false );
-
-	return '<div class="gcb-breadcrumbs">' . $breadcrumbs . '</div>';
+	return '<div class="gcb-breadcrumbs">' . $crumbs . '</div>';
 }, 10, 2 );
