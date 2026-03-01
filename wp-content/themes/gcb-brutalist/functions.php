@@ -2582,7 +2582,16 @@ add_filter( 'the_content', function ( $content ) {
 	if ( ! $primary_term_id ) {
 		$cats = get_the_category();
 		if ( ! empty( $cats ) ) {
-			$primary_term_id = $cats[0]->term_id;
+			// Pick the deepest (most specific) category — avoids showing
+			// an unrelated parent like "Mercedes Benz News" on a Jaecoo post.
+			$best = $cats[0];
+			foreach ( $cats as $cat ) {
+				if ( count( get_ancestors( $cat->term_id, 'category' ) ) >
+				     count( get_ancestors( $best->term_id, 'category' ) ) ) {
+					$best = $cat;
+				}
+			}
+			$primary_term_id = $best->term_id;
 		}
 	}
 
