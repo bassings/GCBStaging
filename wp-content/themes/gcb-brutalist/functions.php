@@ -2628,7 +2628,7 @@ add_filter( 'the_content', function ( $content ) {
  * ratings per article (future enhancement via custom field or block).
  */
 add_action( 'wp_head', function () {
-	if ( ! is_single() || ! in_the_loop() ) {
+	if ( ! is_single() ) {
 		return;
 	}
 
