@@ -2559,56 +2559,50 @@ add_filter( 'the_content', function ( $content ) {
 }, 9 );
 
 /**
- * Render breadcrumbs with category hierarchy for single posts.
+ * Inject category breadcrumbs at the top of single post content.
  *
- * Yoast's breadcrumb block, shortcode, and even yoast_breadcrumb() all
- * rely on the indexable hierarchy table, which may not rebuild after
- * changing the maintax setting. This manual approach reads the primary
- * category directly and builds a proper breadcrumb trail.
+ * Runs at priority 1 on the_content — before the author box (9) and
+ * Jetpack sharing (19) / related posts (40).
  */
-add_filter( 'render_block', function ( $block_content, $block ) {
-	if ( $block['blockName'] !== 'core/html' ) {
-		return $block_content;
-	}
-
-	if ( strpos( $block_content, 'gcb-yoast-breadcrumbs' ) === false ) {
-		return $block_content;
+add_filter( 'the_content', function ( $content ) {
+	if ( ! is_single() || ! in_the_loop() || ! is_main_query() ) {
+		return $content;
 	}
 
 	$sep = ' » ';
 	$crumbs = '<a href="' . esc_url( home_url( '/' ) ) . '">Home</a>';
 
-	if ( is_single() ) {
-		// Try Yoast primary category first, fall back to first category
-		$primary_term_id = 0;
-		if ( class_exists( 'WPSEO_Primary_Term' ) ) {
-			$primary = new \WPSEO_Primary_Term( 'category', get_the_ID() );
-			$primary_term_id = $primary->get_primary_term();
-		}
-
-		if ( ! $primary_term_id ) {
-			$cats = get_the_category();
-			if ( ! empty( $cats ) ) {
-				$primary_term_id = $cats[0]->term_id;
-			}
-		}
-
-		if ( $primary_term_id ) {
-			$ancestors = array_reverse( get_ancestors( $primary_term_id, 'category' ) );
-			foreach ( $ancestors as $anc_id ) {
-				$anc = get_term( $anc_id, 'category' );
-				if ( $anc && ! is_wp_error( $anc ) ) {
-					$crumbs .= $sep . '<a href="' . esc_url( get_term_link( $anc ) ) . '">' . esc_html( $anc->name ) . '</a>';
-				}
-			}
-			$term = get_term( $primary_term_id, 'category' );
-			if ( $term && ! is_wp_error( $term ) ) {
-				$crumbs .= $sep . '<a href="' . esc_url( get_term_link( $term ) ) . '">' . esc_html( $term->name ) . '</a>';
-			}
-		}
-
-		$crumbs .= $sep . '<span class="breadcrumb_last" aria-current="page">' . esc_html( get_the_title() ) . '</span>';
+	// Try Yoast primary category first, fall back to first category.
+	$primary_term_id = 0;
+	if ( class_exists( 'WPSEO_Primary_Term' ) ) {
+		$primary = new \WPSEO_Primary_Term( 'category', get_the_ID() );
+		$primary_term_id = $primary->get_primary_term();
 	}
 
-	return '<div class="gcb-breadcrumbs">' . $crumbs . '</div>';
-}, 10, 2 );
+	if ( ! $primary_term_id ) {
+		$cats = get_the_category();
+		if ( ! empty( $cats ) ) {
+			$primary_term_id = $cats[0]->term_id;
+		}
+	}
+
+	if ( $primary_term_id ) {
+		$ancestors = array_reverse( get_ancestors( $primary_term_id, 'category' ) );
+		foreach ( $ancestors as $anc_id ) {
+			$anc = get_term( $anc_id, 'category' );
+			if ( $anc && ! is_wp_error( $anc ) ) {
+				$crumbs .= $sep . '<a href="' . esc_url( get_term_link( $anc ) ) . '">' . esc_html( $anc->name ) . '</a>';
+			}
+		}
+		$term = get_term( $primary_term_id, 'category' );
+		if ( $term && ! is_wp_error( $term ) ) {
+			$crumbs .= $sep . '<a href="' . esc_url( get_term_link( $term ) ) . '">' . esc_html( $term->name ) . '</a>';
+		}
+	}
+
+	$crumbs .= $sep . '<span class="breadcrumb_last" aria-current="page">' . esc_html( get_the_title() ) . '</span>';
+
+	$breadcrumb_html = '<nav class="gcb-breadcrumbs" aria-label="Breadcrumb">' . $crumbs . '</nav>';
+
+	return $breadcrumb_html . $content;
+}, 1 );
