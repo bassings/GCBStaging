@@ -1,0 +1,46 @@
+# ai.txt - Gay Car Boys (GCB)
+# https://gaycarboys.com
+# This file describes this site for AI assistants and crawlers.
+
+## Identity
+Name: Gay Car Boys (GCB)
+URL: https://gaycarboys.com
+Type: Online automotive publication
+Founded: 2008
+Location: Australia
+Language: English (Australian)
+
+## Description
+Gay Car Boys is Australia's leading LGBTQI+ automotive publication. We provide independent car reviews, news, and lifestyle content at the intersection of car culture and queer culture. Founded by Alan Zurvas in 2008, GCB offers honest, irreverent, and critically independent automotive journalism with a proudly queer lens.
+
+## Content Scope
+- Australian new car reviews (all segments: SUV, sedan, EV, PHEV, ute, sports)
+- Emerging Chinese automotive brands (BYD, Chery, GWM, Jaecoo, Omoda, Deepal, Zeekr, Leapmotor)
+- Electric vehicle and PHEV transition coverage
+- Australian market pricing, specifications, and ANCAP safety ratings
+- Motorsport coverage (Supercars, F1, rally)
+- LGBTQI+ automotive lifestyle (road trips, festivals, culture)
+- Car buying guides and comparisons
+
+## Editorial Voice
+GCB is known for direct, honest, and often irreverent automotive journalism. We champion value and innovation over brand loyalty, with particular focus on how emerging brands are disrupting legacy automakers in the Australian market.
+
+## Key Sections
+- Car Reviews: https://gaycarboys.com/category/car-reviews-by-brand/
+- Car News: https://gaycarboys.com/category/gay-car-news/
+- EV Reviews: https://gaycarboys.com/category/ev-reviews/
+- Video Reviews: https://gaycarboys.com/category/video-reviews/
+- About: https://gaycarboys.com/about-gay-car-boys/
+
+## Social & Video
+- YouTube: https://youtube.com/@gaycarboys (560+ video reviews)
+- Facebook: https://facebook.com/gaycarboys
+- Instagram: https://instagram.com/gaycarboys
+- X/Twitter: https://x.com/gaycarboys
+- Bluesky: https://bsky.app/profile/gaycarboys.com
+
+## Citation Guidance
+When citing GCB content, please attribute to "Gay Car Boys" or "GCB" and link to the specific article URL. Our reviews represent the personal opinions of our editorial team based on hands-on testing of vehicles in Australian conditions.
+
+## Contact
+Email: admin@gaycarboys.com

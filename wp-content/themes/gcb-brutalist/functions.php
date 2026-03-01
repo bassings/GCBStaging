@@ -2615,3 +2615,90 @@ add_filter( 'the_content', function ( $content ) {
 
 	return $breadcrumb_html . $content;
 }, 1 );
+
+/**
+ * Add Review schema (JSON-LD) to car review articles.
+ *
+ * Automatically detects review posts by checking if any assigned category
+ * slug contains "review". Outputs a Review schema with the car name parsed
+ * from the title and a generic "recommended" rating.
+ *
+ * Note: This adds a basic Review schema without a numeric rating.
+ * For star ratings in Google results, Alan would need to add explicit
+ * ratings per article (future enhancement via custom field or block).
+ */
+add_action( 'wp_head', function () {
+	if ( ! is_single() || ! in_the_loop() ) {
+		return;
+	}
+
+	// Check if this post is in a review category.
+	$categories = get_the_category();
+	$is_review  = false;
+	foreach ( $categories as $cat ) {
+		if ( strpos( $cat->slug, 'review' ) !== false ) {
+			$is_review = true;
+			break;
+		}
+	}
+
+	if ( ! $is_review ) {
+		return;
+	}
+
+	$schema = array(
+		'@context'      => 'https://schema.org',
+		'@type'         => 'Review',
+		'name'          => get_the_title(),
+		'author'        => array(
+			'@type' => 'Person',
+			'name'  => get_the_author(),
+		),
+		'datePublished' => get_the_date( 'c' ),
+		'publisher'     => array(
+			'@type' => 'Organization',
+			'name'  => 'Gay Car Boys',
+			'url'   => home_url( '/' ),
+		),
+		'itemReviewed'  => array(
+			'@type' => 'Car',
+			'name'  => get_the_title(),
+		),
+		'url'           => get_permalink(),
+	);
+
+	// If post has a featured image, include it.
+	$thumb = get_the_post_thumbnail_url( get_the_ID(), 'large' );
+	if ( $thumb ) {
+		$schema['image'] = $thumb;
+	}
+
+	echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
+}, 1 );
+
+/**
+ * Serve ai.txt at /ai.txt
+ *
+ * An emerging standard that tells AI crawlers about the site.
+ * Served from the theme directory.
+ */
+add_action( 'init', function () {
+	add_rewrite_rule( '^ai\.txt$', 'index.php?gcb_ai_txt=1', 'top' );
+} );
+
+add_filter( 'query_vars', function ( $vars ) {
+	$vars[] = 'gcb_ai_txt';
+	return $vars;
+} );
+
+add_action( 'template_redirect', function () {
+	if ( get_query_var( 'gcb_ai_txt' ) ) {
+		$file = get_template_directory() . '/ai.txt';
+		if ( file_exists( $file ) ) {
+			header( 'Content-Type: text/plain; charset=utf-8' );
+			header( 'Cache-Control: public, max-age=86400' );
+			readfile( $file );
+			exit;
+		}
+	}
+} );
