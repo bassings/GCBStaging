@@ -2852,3 +2852,63 @@ function gcb_webp_rewrite_html( $html ) {
 	);
 	return $html;
 }
+
+/**
+ * GCB Auto-WebP — Convert all new uploads to WebP automatically
+ *
+ * Two parts:
+ * 1. Convert the original uploaded file from JPG/PNG to WebP on upload
+ * 2. Tell WordPress to generate all thumbnail sizes as WebP
+ *
+ * No plugin needed — uses WordPress core filters (available since WP 5.8).
+ * Memory guard: skips images larger than 8000px on either dimension to avoid OOM.
+ */
+
+// Part 1: Convert original upload to WebP
+add_filter( 'wp_handle_upload', 'gcb_auto_webp_on_upload' );
+function gcb_auto_webp_on_upload( $upload ) {
+	if ( ! in_array( $upload['type'], array( 'image/jpeg', 'image/png' ), true ) ) {
+		return $upload;
+	}
+
+	$path = $upload['file'];
+
+	// Memory guard: check dimensions before loading into GD
+	$size = @getimagesize( $path );
+	if ( $size && ( $size[0] > 8000 || $size[1] > 8000 ) ) {
+		// Too large for safe GD conversion — keep original format
+		return $upload;
+	}
+
+	$webp_path = preg_replace( '/\.(jpe?g|png)$/i', '.webp', $path );
+
+	if ( $upload['type'] === 'image/png' ) {
+		$image = @imagecreatefrompng( $path );
+		if ( $image ) {
+			imagealphablending( $image, false );
+			imagesavealpha( $image, true );
+		}
+	} else {
+		$image = @imagecreatefromjpeg( $path );
+	}
+
+	if ( $image && imagewebp( $image, $webp_path, 82 ) ) {
+		imagedestroy( $image );
+		unlink( $path );
+		$upload['file'] = $webp_path;
+		$upload['url']  = preg_replace( '/\.(jpe?g|png)$/i', '.webp', $upload['url'] );
+		$upload['type'] = 'image/webp';
+	} elseif ( $image ) {
+		imagedestroy( $image );
+	}
+
+	return $upload;
+}
+
+// Part 2: Generate all thumbnail sizes as WebP (WordPress core, since 5.8)
+add_filter( 'image_editor_output_format', 'gcb_webp_output_format' );
+function gcb_webp_output_format( $formats ) {
+	$formats['image/jpeg'] = 'image/webp';
+	$formats['image/png']  = 'image/webp';
+	return $formats;
+}
