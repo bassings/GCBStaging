@@ -23,6 +23,11 @@ add_filter( 'wpseo_locale', function () {
 	return 'en_AU';
 } );
 
+// Also fix the OG locale meta tag (Yoast uses a separate filter).
+add_filter( 'wpseo_og_locale', function () {
+	return 'en_AU';
+} );
+
 /**
  * Enable Yoast SEO breadcrumbs for this theme.
  *
@@ -2702,3 +2707,148 @@ add_action( 'template_redirect', function () {
 		}
 	}
 } );
+
+
+/**
+ * GCB WebP Safety Net v2
+ *
+ * Serves .webp files when .jpg/.png is requested.
+ * If the exact thumbnail .webp doesn't exist, falls back to the full-size .webp
+ * via Photon resize parameters.
+ *
+ * Three layers:
+ * 1. wp_get_attachment_url — catches WP-generated attachment URLs
+ * 2. wp_calculate_image_srcset — catches srcset thumbnail URLs
+ * 3. Output buffer — catches everything else (Spectra, Photon, inline HTML)
+ */
+
+// Helper: Given an upload-relative path like 2026/02/image-300x200.jpg,
+// check if the .webp exists. If not, try the full-size .webp and return
+// a Photon-resized URL. Returns [new_url, found] or [original, false].
+function gcb_webp_resolve( $url ) {
+	static $upload_dir = null;
+	if ( $upload_dir === null ) {
+		$upload_dir = wp_upload_dir();
+	}
+
+	// Only process URLs pointing to our uploads
+	if ( strpos( $url, 'wp-content/uploads/' ) === false ) {
+		return $url;
+	}
+
+	// Strip Photon wrapper if present (i0.wp.com/domain/path)
+	$clean_url = $url;
+	$is_photon = false;
+	if ( preg_match( '#https?://i[012]\.wp\.com/(.+)#', $url, $pm ) ) {
+		$clean_url = 'https://' . $pm[1];
+		$is_photon = true;
+	}
+
+	// Strip query params for file checking
+	$url_no_query = preg_replace( '/\?.*$/', '', $clean_url );
+
+	// Not a jpg/jpeg/png? Skip.
+	if ( ! preg_match( '/\.(jpe?g|png)$/i', $url_no_query ) ) {
+		return $url;
+	}
+
+	// Build the webp path
+	$webp_url  = preg_replace( '/\.(jpe?g|png)$/i', '.webp', $url_no_query );
+	$webp_path = str_replace( $upload_dir['baseurl'], $upload_dir['basedir'], $webp_url );
+
+	// Case 1: Exact .webp exists (full-size or thumbnail)
+	if ( file_exists( $webp_path ) ) {
+		return preg_replace( '/\.(jpe?g|png)/i', '.webp', $url );
+	}
+
+	// Case 2: Thumbnail doesn't exist as .webp — try full-size .webp + Photon resize
+	if ( preg_match( '/(.+)-(\d+)x(\d+)\.(jpe?g|png)$/i', $url_no_query, $tm ) ) {
+		$full_url  = $tm[1] . '.webp';
+		$width     = $tm[2];
+		$height    = $tm[3];
+		$full_path = str_replace( $upload_dir['baseurl'], $upload_dir['basedir'], $full_url );
+
+		if ( file_exists( $full_path ) ) {
+			// Return Photon URL that resizes the full-size webp on the fly
+			$site_url = preg_replace( '#^https?://#', '', $upload_dir['baseurl'] );
+			return "https://i0.wp.com/{$site_url}/" . basename( dirname( $full_url ) ) . '/../' .
+			       substr( $full_url, strlen( $upload_dir['baseurl'] ) + 1 ) .
+			       "?resize={$width}%2C{$height}&ssl=1";
+		}
+	}
+
+	return $url;
+}
+
+// Simpler version of the Photon fallback for the output buffer
+function gcb_webp_rewrite_upload_url( $full_match, $path_before_ext, $ext, $after_ext = '' ) {
+	static $upload_dir = null;
+	if ( $upload_dir === null ) {
+		$upload_dir = wp_upload_dir();
+	}
+
+	// Try exact .webp
+	$rel_path = $path_before_ext . '.webp';
+	// Extract the uploads-relative portion
+	if ( preg_match( '#wp-content/uploads/(.+)$#', $rel_path, $m ) ) {
+		$disk_path = $upload_dir['basedir'] . '/' . $m[1];
+		if ( file_exists( $disk_path ) ) {
+			return $path_before_ext . '.webp' . $after_ext;
+		}
+
+		// Try stripping thumbnail dimensions to find full-size
+		if ( preg_match( '#^(.+)-\d+x\d+$#', $path_before_ext, $tm ) ) {
+			$full_rel = $tm[1] . '.webp';
+			if ( preg_match( '#wp-content/uploads/(.+)$#', $full_rel, $fm ) ) {
+				$full_disk = $upload_dir['basedir'] . '/' . $fm[1];
+				if ( file_exists( $full_disk ) ) {
+					// Rewrite to full-size .webp (Photon will handle resizing via query params)
+					return $tm[1] . '.webp' . $after_ext;
+				}
+			}
+		}
+	}
+
+	return $full_match;
+}
+
+// Layer 1: Filter attachment URLs
+add_filter( 'wp_get_attachment_url', 'gcb_webp_attachment_url', 99 );
+function gcb_webp_attachment_url( $url ) {
+	$new = gcb_webp_resolve( $url );
+	return $new;
+}
+
+// Layer 2: Filter srcset
+add_filter( 'wp_calculate_image_srcset', 'gcb_webp_srcset', 99 );
+function gcb_webp_srcset( $sources ) {
+	if ( ! is_array( $sources ) ) return $sources;
+	foreach ( $sources as $width => &$source ) {
+		if ( isset( $source['url'] ) ) {
+			$source['url'] = gcb_webp_resolve( $source['url'] );
+		}
+	}
+	return $sources;
+}
+
+// Layer 3: Output buffer
+add_action( 'template_redirect', 'gcb_webp_output_buffer_start', 1 );
+function gcb_webp_output_buffer_start() {
+	if ( is_admin() ) return;
+	ob_start( 'gcb_webp_rewrite_html' );
+}
+
+function gcb_webp_rewrite_html( $html ) {
+	// Rewrite upload URLs: both direct and through Photon
+	$html = preg_replace_callback(
+		'#((?:i[012]\.wp\.com/[^/]+/)?wp-content/uploads/\d{4}/\d{2}/[^\s"\'<>?]+)\.(jpe?g|png)(\?[^\s"\'<>]*)?#i',
+		function ( $matches ) {
+			$path   = $matches[1];
+			$ext    = $matches[2];
+			$query  = isset( $matches[3] ) ? $matches[3] : '';
+			return gcb_webp_rewrite_upload_url( $matches[0], $path, $ext, $query );
+		},
+		$html
+	);
+	return $html;
+}
