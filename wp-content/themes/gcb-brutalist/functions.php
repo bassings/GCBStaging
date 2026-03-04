@@ -222,7 +222,7 @@ function gcb_enqueue_lite_youtube(): void {
 		'lite-youtube-embed',
 		get_template_directory_uri() . '/assets/js/lite-youtube-embed.js',
 		array(),
-		wp_get_theme()->get( 'Version' ),
+		'1.0.1',
 		array(
 			'strategy'  => 'defer',
 			'in_footer' => true,
@@ -2709,6 +2709,8 @@ add_action( 'template_redirect', function () {
 } );
 
 
+
+
 /**
  * GCB WebP Safety Net v2
  *
@@ -2832,6 +2834,7 @@ function gcb_webp_srcset( $sources ) {
 }
 
 // Layer 3: Output buffer
+
 add_action( 'template_redirect', 'gcb_webp_output_buffer_start', 1 );
 function gcb_webp_output_buffer_start() {
 	if ( is_admin() ) return;
@@ -2854,61 +2857,58 @@ function gcb_webp_rewrite_html( $html ) {
 }
 
 /**
- * GCB Auto-WebP — Convert all new uploads to WebP automatically
+ * GCB Image Upload Optimisation
  *
- * Two parts:
- * 1. Convert the original uploaded file from JPG/PNG to WebP on upload
- * 2. Tell WordPress to generate all thumbnail sizes as WebP
- *
- * No plugin needed — uses WordPress core filters (available since WP 5.8).
- * Memory guard: skips images larger than 8000px on either dimension to avoid OOM.
+ * 1. Cap uploaded images at 1200px (WordPress handles the downscale)
+ * 2. Convert JPG/PNG uploads to WebP automatically (quality 82)
  */
 
-// Part 1: Convert original upload to WebP
-add_filter( 'wp_handle_upload', 'gcb_auto_webp_on_upload' );
-function gcb_auto_webp_on_upload( $upload ) {
-	if ( ! in_array( $upload['type'], array( 'image/jpeg', 'image/png' ), true ) ) {
+// Cap max image dimensions to 1200px on upload
+add_filter( 'big_image_size_threshold', function() {
+	return 1200;
+});
+
+// Convert uploaded JPG/PNG to WebP
+add_filter( 'wp_handle_upload', function( $upload ) {
+	// Only process images
+	if ( ! in_array( $upload['type'], [ 'image/jpeg', 'image/png' ], true ) ) {
 		return $upload;
 	}
 
-	$path = $upload['file'];
+	$file = $upload['file'];
+	$info = @getimagesize( $file );
+	if ( ! $info ) return $upload;
 
-	// Memory guard: check dimensions before loading into GD
-	$size = @getimagesize( $path );
-	if ( $size && ( $size[0] > 8000 || $size[1] > 8000 ) ) {
-		// Too large for safe GD conversion — keep original format
-		return $upload;
+	// Memory guard — skip extremely large images (shouldn't happen with 1200px cap, but just in case)
+	$w = $info[0];
+	$h = $info[1];
+	if ( $w > 8000 || $h > 8000 ) return $upload;
+
+	// Load image with GD
+	switch ( $info[2] ) {
+		case IMAGETYPE_JPEG: $img = @imagecreatefromjpeg( $file ); break;
+		case IMAGETYPE_PNG:  $img = @imagecreatefrompng( $file );  break;
+		default: return $upload;
+	}
+	if ( ! $img ) return $upload;
+
+	// Preserve alpha for PNGs
+	if ( $info[2] === IMAGETYPE_PNG ) {
+		imagepalettetotruecolor( $img );
+		imagealphablending( $img, true );
+		imagesavealpha( $img, true );
 	}
 
-	$webp_path = preg_replace( '/\.(jpe?g|png)$/i', '.webp', $path );
-
-	if ( $upload['type'] === 'image/png' ) {
-		$image = @imagecreatefrompng( $path );
-		if ( $image ) {
-			imagealphablending( $image, false );
-			imagesavealpha( $image, true );
-		}
-	} else {
-		$image = @imagecreatefromjpeg( $path );
-	}
-
-	if ( $image && imagewebp( $image, $webp_path, 82 ) ) {
-		imagedestroy( $image );
-		unlink( $path );
+	// Write WebP
+	$webp_path = preg_replace( '/\.(jpe?g|png)$/i', '.webp', $file );
+	if ( imagewebp( $img, $webp_path, 82 ) ) {
+		// Remove original, update upload array to point to WebP
+		@unlink( $file );
 		$upload['file'] = $webp_path;
 		$upload['url']  = preg_replace( '/\.(jpe?g|png)$/i', '.webp', $upload['url'] );
 		$upload['type'] = 'image/webp';
-	} elseif ( $image ) {
-		imagedestroy( $image );
 	}
+	imagedestroy( $img );
 
 	return $upload;
-}
-
-// Part 2: Generate all thumbnail sizes as WebP (WordPress core, since 5.8)
-add_filter( 'image_editor_output_format', 'gcb_webp_output_format' );
-function gcb_webp_output_format( $formats ) {
-	$formats['image/jpeg'] = 'image/webp';
-	$formats['image/png']  = 'image/webp';
-	return $formats;
-}
+});
