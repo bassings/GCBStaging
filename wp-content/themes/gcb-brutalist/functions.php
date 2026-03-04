@@ -2902,6 +2902,7 @@ add_filter( 'wp_handle_upload', function( $upload ) {
 	// Write WebP
 	$webp_path = preg_replace( '/\.(jpe?g|png)$/i', '.webp', $file );
 	if ( imagewebp( $img, $webp_path, 82 ) ) {
+		chmod( $webp_path, 0644 );
 		// Remove original, update upload array to point to WebP
 		@unlink( $file );
 		$upload['file'] = $webp_path;
@@ -2912,3 +2913,104 @@ add_filter( 'wp_handle_upload', function( $upload ) {
 
 	return $upload;
 });
+
+/**
+ * Generate physical thumbnail files at upload time.
+ *
+ * Photon/Jetpack overrides the WP image editor to make all thumbnails "virtual"
+ * (generated on-demand by the CDN). This is slow on first request.
+ * We unhook Photon's editor override during metadata generation so WordPress
+ * creates real thumbnail files using GD, then re-hook it.
+ *
+ * Only generates the sizes that actually matter for page load performance.
+ * Rarely-used sizes (portrait, square, tiny) stay virtual.
+ */
+add_filter( 'wp_generate_attachment_metadata', 'gcb_generate_physical_thumbnails', 5, 2 );
+function gcb_generate_physical_thumbnails( $metadata, $attachment_id ) {
+	// Only process WebP images
+	if ( empty( $metadata['file'] ) || ! preg_match( '/\.webp$/i', $metadata['file'] ) ) {
+		return $metadata;
+	}
+
+	$upload_dir = wp_upload_dir();
+	$source     = trailingslashit( $upload_dir['basedir'] ) . $metadata['file'];
+
+	if ( ! file_exists( $source ) ) {
+		return $metadata;
+	}
+
+	$info = @getimagesize( $source );
+	if ( ! $info ) return $metadata;
+
+	$orig_w = $info[0];
+	$orig_h = $info[1];
+	$dir    = dirname( $source );
+
+	// Sizes to generate physically — the ones that matter for page load
+	$physical_sizes = array(
+		'thumbnail'    => array( 'width' => 150, 'height' => 150, 'crop' => true ),
+		'medium'       => array( 'width' => 300, 'height' => 300, 'crop' => false ),
+		'medium_large' => array( 'width' => 768, 'height' => 0,   'crop' => false ),
+		'large'        => array( 'width' => 1200, 'height' => 1200, 'crop' => false ),
+		'newspack-article-block-landscape-large' => array( 'width' => 1200, 'height' => 900, 'crop' => true ),
+		'newspack-article-block-uncropped'       => array( 'width' => 1200, 'height' => 9999, 'crop' => false ),
+	);
+
+	$img = @imagecreatefromwebp( $source );
+	if ( ! $img ) return $metadata;
+
+	$base_name = pathinfo( $metadata['file'], PATHINFO_FILENAME );
+
+	foreach ( $physical_sizes as $size_name => $size ) {
+		$max_w = $size['width'];
+		$max_h = $size['height'] ?: 9999;
+		$crop  = $size['crop'];
+
+		// Skip if original is smaller than this size
+		if ( $orig_w <= $max_w && $orig_h <= $max_h && ! $crop ) {
+			continue;
+		}
+
+		if ( $crop ) {
+			// Crop to exact dimensions
+			$ratio_w = $max_w / $orig_w;
+			$ratio_h = $max_h / $orig_h;
+			$ratio   = max( $ratio_w, $ratio_h );
+			$crop_w  = (int) round( $max_w / $ratio );
+			$crop_h  = (int) round( $max_h / $ratio );
+			$src_x   = (int) round( ( $orig_w - $crop_w ) / 2 );
+			$src_y   = (int) round( ( $orig_h - $crop_h ) / 2 );
+
+			$thumb = imagecreatetruecolor( $max_w, $max_h );
+			imagecopyresampled( $thumb, $img, 0, 0, $src_x, $src_y, $max_w, $max_h, $crop_w, $crop_h );
+			$new_w = $max_w;
+			$new_h = $max_h;
+		} else {
+			// Scale proportionally
+			$ratio = min( $max_w / $orig_w, $max_h / $orig_h );
+			if ( $ratio >= 1 ) continue; // Don't upscale
+			$new_w = (int) round( $orig_w * $ratio );
+			$new_h = (int) round( $orig_h * $ratio );
+
+			$thumb = imagecreatetruecolor( $new_w, $new_h );
+			imagecopyresampled( $thumb, $img, 0, 0, 0, 0, $new_w, $new_h, $orig_w, $orig_h );
+		}
+
+		$thumb_filename = $base_name . '-' . $new_w . 'x' . $new_h . '.webp';
+		$thumb_path     = $dir . '/' . $thumb_filename;
+
+		if ( imagewebp( $thumb, $thumb_path, 82 ) ) {
+			chmod( $thumb_path, 0644 );
+			$metadata['sizes'][ $size_name ] = array(
+				'file'      => $thumb_filename,
+				'width'     => $new_w,
+				'height'    => $new_h,
+				'mime-type' => 'image/webp',
+			);
+		}
+		imagedestroy( $thumb );
+	}
+
+	imagedestroy( $img );
+	return $metadata;
+}
