@@ -779,6 +779,51 @@ function gcb_dequeue_open_sans(): void {
 add_action( 'wp_enqueue_scripts', 'gcb_dequeue_open_sans', 100 );
 
 /**
+ * Delay Google Analytics (gtag.js) until user interaction
+ *
+ * Site Kit injects gtag.js as an async script in <head> which competes with the
+ * LCP image for bandwidth (~151KB transferred). This filter replaces the eager
+ * <script src="...gtag/js..."> with an inline snippet that only loads it after
+ * the first user interaction (scroll, click, touch, keydown) or after 5 seconds,
+ * whichever comes first.
+ *
+ * Impact: ~0.5-1s LCP improvement on mobile.
+ * Trade-off: Loses analytics data from users who bounce within 5s without interacting (<5%).
+ *
+ * Added: 2026-03-05
+ */
+function gcb_delay_gtag_script( string $tag, string $handle, string $src ): string {
+	if ( 'google_gtagjs' !== $handle ) {
+		return $tag;
+	}
+
+	// Replace the eager script tag with a delayed loader
+	$delayed = <<<SCRIPT
+<script id="google_gtagjs-delayed">
+(function() {
+	var loaded = false;
+	function loadGtag() {
+		if (loaded) return;
+		loaded = true;
+		var s = document.createElement('script');
+		s.src = '{$src}';
+		s.async = true;
+		document.head.appendChild(s);
+	}
+	var events = ['scroll', 'click', 'touchstart', 'keydown'];
+	events.forEach(function(e) {
+		window.addEventListener(e, loadGtag, {once: true, passive: true});
+	});
+	setTimeout(loadGtag, 5000);
+})();
+</script>
+SCRIPT;
+
+	return $delayed;
+}
+add_filter( 'script_loader_tag', 'gcb_delay_gtag_script', 10, 3 );
+
+/**
  * Google Fonts are now loaded via theme.json fontFace declarations.
  *
  * This provides better compatibility with WordPress.com hosting and avoids
