@@ -465,24 +465,66 @@ add_action( 'wp_head', 'gcb_inline_critical_css', 1 );
  */
 
 /**
- * Preload LCP candidate image on homepage — DISABLED
+ * Preload LCP hero image on homepage — v2 (Photon-aware)
  *
- * Previously preloaded the hero image, but on WP.com production the Jetpack
- * Photon CDN rewrites img srcset with different breakpoints. Our WordPress-native
- * srcset in the preload doesn't match, causing the browser to download the image
- * TWICE (once from preload, once from the actual img tag).
+ * v1 was disabled (2026-02-05) because it preloaded the WordPress-native srcset
+ * which didn't match Photon's rewritten URLs, causing double downloads.
  *
- * The hero image in bento-grid.php already has fetchpriority="high" and
- * loading="eager", which tells the browser to prioritize it without a preload.
+ * v2 fix: Preload ONLY the src URL (no imagesrcset), using the exact same
+ * function (get_the_post_thumbnail_url) that bento-grid.php uses. Photon
+ * rewrites both identically, so preload URL = img src URL. No double download.
  *
- * Removed: 2026-02-05 — see LCP-OPTIMIZATION-PLAN.md
+ * Uses the same transient cache as the bento grid pattern for zero extra DB queries.
+ *
+ * Added: 2026-03-05
  */
+function gcb_preload_hero_image(): void {
+	if ( ! is_front_page() ) {
+		return;
+	}
+
+	// Use the same cache key as bento-grid.php
+	$cache_key  = 'gcb_bento_grid_' . date( 'Y-m-d-H' );
+	$grid_posts = get_transient( $cache_key );
+
+	// If cache miss, run the same query (it'll be cached for bento-grid.php too)
+	if ( false === $grid_posts ) {
+		$grid_posts = new WP_Query(
+			array(
+				'post_type'      => 'post',
+				'posts_per_page' => 1, // Only need the hero
+				'orderby'        => 'date',
+				'order'          => 'DESC',
+			)
+		);
+	}
+
+	if ( ! $grid_posts->have_posts() ) {
+		return;
+	}
+
+	$grid_posts->the_post();
+	$hero_url = get_the_post_thumbnail_url( get_the_ID(), 'medium_large' );
+	wp_reset_postdata();
+
+	if ( ! $hero_url ) {
+		return;
+	}
+
+	// Output preload — src only, no srcset (avoids Photon mismatch)
+	printf(
+		'<link rel="preload" as="image" href="%s" fetchpriority="high">' . "\n",
+		esc_url( $hero_url )
+	);
+}
+add_action( 'wp_head', 'gcb_preload_hero_image', 2 ); // Priority 2 = very early in <head>
 
 /**
  * Preload LCP candidate image on single post pages — DISABLED
  *
- * Same issue as homepage preload: Jetpack Photon CDN rewrites srcset on
+ * Same issue as homepage preload v1: Jetpack Photon CDN rewrites srcset on
  * WP.com production, causing preload/img mismatch and double downloads.
+ * Could be re-enabled with the same Photon-aware approach as the homepage.
  *
  * The featured image already gets fetchpriority="high" via
  * gcb_optimize_first_content_image(), which is sufficient.
