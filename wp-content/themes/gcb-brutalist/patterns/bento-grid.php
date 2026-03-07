@@ -62,11 +62,11 @@ if ( ! $grid_posts->have_posts() ) {
 			// Use medium_large (768px) as default src for faster mobile LCP,
 			// with full srcset for larger screens to pick appropriate size.
 			$thumbnail_id  = get_post_thumbnail_id( $post_id );
-			$default_size  = $is_featured ? 'medium_large' : 'medium';
+			$default_size  = $is_featured ? 'large' : 'medium';
 			$srcset_size   = 'large'; // Generate srcset from large for full range
 			$thumbnail     = get_the_post_thumbnail_url( $post_id, $default_size );
 			$srcset        = $thumbnail_id ? wp_get_attachment_image_srcset( $thumbnail_id, $srcset_size ) : '';
-			$sizes         = $is_featured ? '(max-width: 768px) 100vw, (max-width: 1024px) 66vw, 800px' : '(max-width: 768px) 85vw, 280px';
+			$sizes         = $is_featured ? '(max-width: 768px) 100vw, (max-width: 1024px) 66vw, 1200px' : '(max-width: 768px) 85vw, 280px';
 			
 			// Open carousel wrapper after hero (index 1)
 			if ( 1 === $index ) :
@@ -296,6 +296,12 @@ if ( ! $grid_posts->have_posts() ) {
 		.gcb-bento-grid__container {
 			grid-template-columns: repeat(3, 1fr);
 		}
+		/* Featured hero card: 75% width, centred within full-span row */
+		.bento-item--featured.bento-item--large {
+			max-width: 75%;
+			margin-left: auto;
+			margin-right: auto;
+		}
 	}
 
 	/* Hover effect */
@@ -303,35 +309,11 @@ if ( ! $grid_posts->have_posts() ) {
 		border-color: var(--wp--preset--color--highlight) !important;
 	}
 
-	/* Bento Grid Image Container Heights - Standard cards */
+	/* Bento Grid Image Container - consistent aspect ratio across all cards */
 	.gcb-bento-card__image-link {
-		height: 200px; /* Mobile */
+		aspect-ratio: 16 / 9;
+		height: auto;
 		border-bottom: 2px solid var(--wp--preset--color--brutal-border);
-	}
-	@media (min-width: 768px) {
-		.gcb-bento-card__image-link {
-			height: 220px; /* Tablet */
-		}
-	}
-	@media (min-width: 1024px) {
-		.gcb-bento-card__image-link {
-			height: 240px; /* Desktop */
-		}
-	}
-
-	/* Hero/Featured Image Container - 16:9 aspect ratio */
-	.bento-item--featured .gcb-bento-card__image-link {
-		height: 220px; /* Mobile */
-	}
-	@media (min-width: 768px) {
-		.bento-item--featured .gcb-bento-card__image-link {
-			height: 430px; /* Tablet */
-		}
-	}
-	@media (min-width: 1024px) {
-		.bento-item--featured .gcb-bento-card__image-link {
-			height: 640px; /* Desktop - 16:9 ratio */
-		}
 	}
 </style>
 
