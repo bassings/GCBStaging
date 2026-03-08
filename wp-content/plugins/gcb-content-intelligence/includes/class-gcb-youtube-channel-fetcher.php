@@ -66,6 +66,57 @@ class GCB_YouTube_Channel_Fetcher {
 
 		// Hook cron job to fetch function.
 		add_action( self::CRON_HOOK, array( __CLASS__, 'refresh_videos' ) );
+
+		// Admin action: manual thumbnail cache trigger.
+		add_action( 'admin_init', array( __CLASS__, 'handle_manual_thumbnail_cache' ) );
+	}
+
+	/**
+	 * Handle manual thumbnail cache trigger from WP Admin.
+	 *
+	 * Visit: /wp-admin/?gcb_cache_youtube_thumbnails=1
+	 * Requires manage_options capability.
+	 */
+	public static function handle_manual_thumbnail_cache(): void {
+		if ( empty( $_GET['gcb_cache_youtube_thumbnails'] ) ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( 'Unauthorised.' );
+		}
+
+		// Fetch current videos (from cache or API).
+		$videos = self::get_videos();
+
+		if ( empty( $videos ) ) {
+			// Try the all-videos cache too.
+			$videos = self::get_all_videos( 50 );
+		}
+
+		$cached = 0;
+		$stats_before = array( 'total' => 0, 'valid' => 0, 'stale' => 0 );
+
+		if ( class_exists( 'GCB_YouTube_Thumbnail_Cache' ) ) {
+			$stats_before = GCB_YouTube_Thumbnail_Cache::get_stats();
+			$cached = GCB_YouTube_Thumbnail_Cache::cache_thumbnails( $videos );
+			$stats_after = GCB_YouTube_Thumbnail_Cache::get_stats();
+		}
+
+		wp_die( sprintf(
+			'<h2>GCB YouTube Thumbnail Cache</h2>'
+			. '<p><strong>Videos found:</strong> %d</p>'
+			. '<p><strong>New thumbnails cached:</strong> %d</p>'
+			. '<p><strong>Before:</strong> %d total (%d valid, %d stale)</p>'
+			. '<p><strong>After:</strong> %d total (%d valid, %d stale)</p>'
+			. '<p><a href="%s">Run again</a> | <a href="%s">Back to Dashboard</a></p>',
+			count( $videos ),
+			$cached,
+			$stats_before['total'], $stats_before['valid'], $stats_before['stale'],
+			$stats_after['total'] ?? 0, $stats_after['valid'] ?? 0, $stats_after['stale'] ?? 0,
+			admin_url( '?gcb_cache_youtube_thumbnails=1' ),
+			admin_url()
+		), 'GCB YouTube Thumbnail Cache', array( 'back_link' => false ) );
 	}
 
 	/**
