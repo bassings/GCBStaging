@@ -72,7 +72,7 @@ function gcb_ci_activate(): void {
 	// Schedule hourly YouTube channel refresh.
 	require_once GCB_CI_DIR . 'includes/class-gcb-youtube-thumbnail-cache.php';
 	require_once GCB_CI_DIR . 'includes/class-gcb-youtube-channel-fetcher.php';
-	GCB_YouTube_Channel_Fetcher::schedule_refresh();
+	GCB_YouTube_Channel_Fetcher::init();
 
 	flush_rewrite_rules();
 }

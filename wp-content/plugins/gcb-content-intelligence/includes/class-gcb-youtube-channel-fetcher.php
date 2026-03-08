@@ -67,8 +67,76 @@ class GCB_YouTube_Channel_Fetcher {
 		// Hook cron job to fetch function.
 		add_action( self::CRON_HOOK, array( __CLASS__, 'refresh_videos' ) );
 
-		// Admin action: manual thumbnail cache trigger.
+		// Admin actions: manual triggers.
 		add_action( 'admin_init', array( __CLASS__, 'handle_manual_thumbnail_cache' ) );
+		add_action( 'admin_init', array( __CLASS__, 'handle_manual_refresh' ) );
+	}
+
+	/**
+	 * Handle manual full refresh from WP Admin.
+	 *
+	 * Visit: /wp-admin/?gcb_refresh_youtube=1
+	 * Clears video transients, fetches fresh from API, then caches thumbnails.
+	 * Requires manage_options capability.
+	 */
+	public static function handle_manual_refresh(): void {
+		if ( empty( $_GET['gcb_refresh_youtube'] ) ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( 'Unauthorised.' );
+		}
+
+		// Clear all caches.
+		self::clear_cache();
+
+		// Also clear the bento grid transient so it picks up fresh data.
+		delete_transient( 'gcb_bento_grid_' . gmdate( 'Y-m-d-H' ) );
+
+		// Fetch fresh videos from API.
+		$videos = self::get_videos();
+
+		// Cache thumbnails if available.
+		$cached = 0;
+		$thumb_stats = array( 'total' => 0, 'valid' => 0, 'stale' => 0 );
+		if ( class_exists( 'GCB_YouTube_Thumbnail_Cache' ) && ! empty( $videos ) ) {
+			$cached = GCB_YouTube_Thumbnail_Cache::cache_thumbnails( $videos );
+			$thumb_stats = GCB_YouTube_Thumbnail_Cache::get_stats();
+		}
+
+		$output = '<h2>GCB YouTube Refresh</h2>';
+		$output .= '<h3>Videos</h3>';
+		$output .= sprintf( '<p><strong>Videos fetched:</strong> %d</p>', count( $videos ) );
+
+		if ( ! empty( $videos ) ) {
+			$output .= '<ol>';
+			foreach ( $videos as $v ) {
+				$output .= sprintf(
+					'<li><strong>%s</strong> (%s) — %s views</li>',
+					esc_html( $v['title'] ?? '' ),
+					esc_html( $v['video_id'] ?? '' ),
+					number_format( (int) ( $v['view_count'] ?? 0 ) )
+				);
+			}
+			$output .= '</ol>';
+		}
+
+		$output .= '<h3>Thumbnails</h3>';
+		$output .= sprintf( '<p><strong>New thumbnails cached:</strong> %d</p>', $cached );
+		$output .= sprintf(
+			'<p><strong>Cache status:</strong> %d total (%d valid, %d stale)</p>',
+			$thumb_stats['total'], $thumb_stats['valid'], $thumb_stats['stale']
+		);
+
+		$output .= sprintf(
+			'<p><a href="%s">Refresh again</a> | <a href="%s">Cache more thumbnails</a> | <a href="%s">Dashboard</a></p>',
+			admin_url( '?gcb_refresh_youtube=1' ),
+			admin_url( '?gcb_cache_youtube_thumbnails=1' ),
+			admin_url()
+		);
+
+		wp_die( $output, 'GCB YouTube Refresh', array( 'back_link' => false ) );
 	}
 
 	/**
