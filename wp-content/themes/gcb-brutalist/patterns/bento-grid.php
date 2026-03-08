@@ -63,10 +63,18 @@ if ( ! $grid_posts->have_posts() ) {
 			// with full srcset for larger screens to pick appropriate size.
 			$thumbnail_id  = get_post_thumbnail_id( $post_id );
 			$default_size  = $is_featured ? 'large' : 'medium';
-			$srcset_size   = 'large'; // Generate srcset from large for full range
 			$thumbnail     = get_the_post_thumbnail_url( $post_id, $default_size );
-			$srcset        = $thumbnail_id ? wp_get_attachment_image_srcset( $thumbnail_id, $srcset_size ) : '';
-			$sizes         = $is_featured ? '(max-width: 768px) 100vw, (max-width: 1024px) 66vw, 900px' : '(max-width: 768px) 85vw, 400px';
+
+			// Hero gets Jetpack LCP enrichment (18+ srcset entries) automatically.
+			// Standard cards only get physical thumbnails (300w, 768w, 1200w) from
+			// wp_get_attachment_image_srcset(), leaving a gap at ~400w. We generate
+			// CrUX-aligned Photon srcset entries to fill the gaps.
+			if ( $is_featured ) {
+				$srcset = $thumbnail_id ? wp_get_attachment_image_srcset( $thumbnail_id, 'large' ) : '';
+			} else {
+				$srcset = $thumbnail_id ? gcb_photon_srcset( $thumbnail_id, array( 300, 400, 768, 1024, 1200 ) ) : '';
+			}
+			$sizes = $is_featured ? '(max-width: 768px) 100vw, (max-width: 1024px) 66vw, 900px' : '(max-width: 768px) 85vw, 400px';
 			
 			// Open carousel wrapper after hero (index 1)
 			if ( 1 === $index ) :

@@ -2851,6 +2851,64 @@ function gcb_optimize_youtube_thumbnail( string $url, string $context = 'rail' )
 }
 
 /**
+ * Generate a CrUX-aligned srcset with Photon resize URLs
+ *
+ * WordPress's wp_get_attachment_image_srcset() only includes physical thumbnails
+ * (300w, 768w, 1200w). The hero image gets Jetpack LCP enrichment (18+ entries)
+ * but standard bento cards don't, causing a gap: sizes="400px" picks 768w because
+ * there's no ~400w entry in the srcset.
+ *
+ * This function generates srcset entries at widths that match real-world browser
+ * picks for CrUX devices, using Photon's on-the-fly resize capability.
+ *
+ * @param int    $attachment_id  The attachment post ID.
+ * @param array  $target_widths  Array of pixel widths to include in srcset.
+ * @return string srcset attribute value, or empty string on failure.
+ */
+function gcb_photon_srcset( int $attachment_id, array $target_widths = array( 300, 400, 768, 1024, 1200 ) ): string {
+	$src = wp_get_attachment_image_url( $attachment_id, 'full' );
+	if ( ! $src ) {
+		return '';
+	}
+
+	$meta = wp_get_attachment_metadata( $attachment_id );
+	if ( empty( $meta['width'] ) || empty( $meta['height'] ) ) {
+		return '';
+	}
+
+	$orig_w = (int) $meta['width'];
+	$orig_h = (int) $meta['height'];
+	$ratio  = $orig_h / $orig_w;
+
+	// Strip any existing Photon query params from the source URL
+	$base_url = preg_replace( '/\?.*$/', '', $src );
+
+	// If the URL is already Photon-wrapped, use it as-is; otherwise wrap it
+	if ( strpos( $base_url, 'i0.wp.com' ) === false &&
+	     strpos( $base_url, 'i1.wp.com' ) === false &&
+	     strpos( $base_url, 'i2.wp.com' ) === false ) {
+		// Wrap in Photon
+		$clean = preg_replace( '#^https?://#', '', $base_url );
+		$base_url = 'https://i0.wp.com/' . $clean;
+	}
+
+	$entries = array();
+	foreach ( $target_widths as $w ) {
+		if ( $w > $orig_w ) {
+			// Don't upscale — include the original as the max entry
+			$h = $orig_h;
+			$w = $orig_w;
+			$entries[ $w ] = sprintf( '%s?resize=%d%%2C%d&ssl=1 %dw', $base_url, $w, $h, $w );
+			break;
+		}
+		$h = (int) round( $w * $ratio );
+		$entries[ $w ] = sprintf( '%s?resize=%d%%2C%d&ssl=1 %dw', $base_url, $w, $h, $w );
+	}
+
+	return implode( ', ', $entries );
+}
+
+/**
  * GCB WebP Safety Net v2
  *
  * Serves .webp files when .jpg/.png is requested.
