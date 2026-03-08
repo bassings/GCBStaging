@@ -37,6 +37,11 @@ add_filter( 'wpseo_og_locale', function () {
 add_action( 'after_setup_theme', function () {
 	add_theme_support( 'yoast-seo-breadcrumbs' );
 
+	// Bento card thumbnail: matches desktop display width (~400px) so srcset has a physical
+	// file at the exact size the browser needs. Also ensures local dev (WP Studio, no Photon)
+	// serves correctly-sized images.
+	add_image_size( 'gcb-card', 400, 0, false );
+
 	// CrUX-optimised thumbnail: covers hero + standard card at mobile 2.6x DPR (~1071px).
 	// Physical file avoids Photon virtual resize cold-start on new article social shares.
 	add_image_size( 'gcb-crux', 1024, 0, false );
@@ -3147,6 +3152,7 @@ function gcb_generate_physical_thumbnails( $metadata, $attachment_id ) {
 	$physical_sizes = array(
 		'thumbnail'    => array( 'width' => 150, 'height' => 150, 'crop' => true ),
 		'medium'       => array( 'width' => 300, 'height' => 300, 'crop' => false ),
+		'gcb-card'     => array( 'width' => 400, 'height' => 0,   'crop' => false ), // Bento card desktop display size (~400px)
 		'medium_large' => array( 'width' => 768, 'height' => 0,   'crop' => false ),
 		'gcb-crux'     => array( 'width' => 1024, 'height' => 0,  'crop' => false ), // CrUX: covers hero + card at mobile 2.6x DPR (~1071px)
 		'large'        => array( 'width' => 1200, 'height' => 1200, 'crop' => false ),

@@ -62,7 +62,7 @@ if ( ! $grid_posts->have_posts() ) {
 			// Use medium_large (768px) as default src for faster mobile LCP,
 			// with full srcset for larger screens to pick appropriate size.
 			$thumbnail_id  = get_post_thumbnail_id( $post_id );
-			$default_size  = $is_featured ? 'large' : 'medium';
+			$default_size  = $is_featured ? 'large' : 'gcb-card';
 			$thumbnail     = get_the_post_thumbnail_url( $post_id, $default_size );
 
 			// Hero gets Jetpack LCP enrichment (18+ srcset entries) automatically.
