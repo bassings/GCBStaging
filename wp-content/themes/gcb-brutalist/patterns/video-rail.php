@@ -114,9 +114,20 @@ if ( empty( $videos ) ) {
 			$title       = $video['title'];
 			$duration    = $video['duration'];
 			$view_count  = $video['view_count'];
-			$thumbnail   = function_exists( 'gcb_optimize_youtube_thumbnail' )
-				? gcb_optimize_youtube_thumbnail( $video['thumbnail'], 'rail' )
-				: $video['thumbnail'];
+			// Use locally cached thumbnail if available (WebP, optimised, proper srcset).
+			// Falls back to YouTube URL if not yet cached.
+			$thumb_data  = array( 'url' => $video['thumbnail'], 'srcset' => '', 'attachment_id' => 0 );
+			if ( class_exists( 'GCB_YouTube_Thumbnail_Cache' ) ) {
+				$thumb_data = GCB_YouTube_Thumbnail_Cache::get_thumbnail_data( $video_id, $video['thumbnail'], $title, 'gcb-card' );
+			}
+			$thumbnail   = $thumb_data['url'];
+			$thumb_srcset = $thumb_data['srcset'];
+
+			// If not cached locally, fall back to smaller YouTube thumbnail.
+			if ( 0 === $thumb_data['attachment_id'] && function_exists( 'gcb_optimize_youtube_thumbnail' ) ) {
+				$thumbnail = gcb_optimize_youtube_thumbnail( $video['thumbnail'], 'rail' );
+			}
+
 			$youtube_url = "https://www.youtube.com/watch?v={$video_id}";
 			?>
 
@@ -126,13 +137,17 @@ if ( empty( $videos ) ) {
 					<!-- 9:16 Aspect Ratio Container -->
 					<div class="gcb-video-card__aspect gcb-video-card__border" style="border: 1px solid var(--wp--preset--color--brutal-border); overflow: hidden; position: relative;">
 
-						<!-- Background Image (YouTube standard thumbnail dimensions) -->
+						<!-- Background Image -->
 						<?php if ( $thumbnail ) : ?>
 							<img
 								src="<?php echo esc_url( $thumbnail ); ?>"
 								alt="<?php echo esc_attr( $title ); ?>"
-								width="480"
-								height="360"
+								<?php if ( ! empty( $thumb_srcset ) ) : ?>
+									srcset="<?php echo esc_attr( $thumb_srcset ); ?>"
+									sizes="(max-width: 640px) 320px, (max-width: 768px) 380px, 450px"
+								<?php endif; ?>
+								width="<?php echo $thumb_data['attachment_id'] ? '400' : '480'; ?>"
+								height="<?php echo $thumb_data['attachment_id'] ? '267' : '360'; ?>"
 								style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;<?php echo ( defined( 'GCB_IMAGE_MODE' ) && 'grayscale' === GCB_IMAGE_MODE ) ? ' filter: grayscale(100%) contrast(1.3);' : ''; ?>"
 								loading="lazy"
 							/>

@@ -35,6 +35,7 @@ function gcb_ci_init(): void {
 	require_once GCB_CI_DIR . 'includes/class-gcb-content-detector.php';
 	require_once GCB_CI_DIR . 'includes/class-gcb-content-classifier.php';
 	require_once GCB_CI_DIR . 'includes/class-gcb-classification-rest-api.php';
+	require_once GCB_CI_DIR . 'includes/class-gcb-youtube-thumbnail-cache.php';
 
 	// Register taxonomy.
 	add_action( 'init', array( 'GCB_Taxonomy_Registration', 'register_content_format_taxonomy' ) );
@@ -69,6 +70,7 @@ function gcb_ci_activate(): void {
 	GCB_Taxonomy_Registration::register_content_format_taxonomy();
 
 	// Schedule hourly YouTube channel refresh.
+	require_once GCB_CI_DIR . 'includes/class-gcb-youtube-thumbnail-cache.php';
 	require_once GCB_CI_DIR . 'includes/class-gcb-youtube-channel-fetcher.php';
 	GCB_YouTube_Channel_Fetcher::schedule_refresh();
 

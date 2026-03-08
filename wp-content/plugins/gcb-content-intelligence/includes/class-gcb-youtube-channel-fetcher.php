@@ -357,6 +357,14 @@ class GCB_YouTube_Channel_Fetcher {
 
 		if ( ! empty( $videos ) ) {
 			set_transient( self::TRANSIENT_KEY, $videos, self::CACHE_DURATION );
+
+			// Cache thumbnails into media library (processes up to 5 per cycle).
+			if ( class_exists( 'GCB_YouTube_Thumbnail_Cache' ) ) {
+				$cached = GCB_YouTube_Thumbnail_Cache::cache_thumbnails( $videos );
+				if ( $cached > 0 ) {
+					error_log( sprintf( 'GCB: Cached %d YouTube thumbnails into media library', $cached ) );
+				}
+			}
 		}
 	}
 
