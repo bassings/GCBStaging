@@ -301,10 +301,9 @@ function gcb_add_resource_hints( array $urls, string $relation_type ): array {
 			'crossorigin' => 'anonymous',
 		);
 
-		// YouTube thumbnail CDN (critical for video rail and embeds)
-		$urls[] = array(
-			'href' => 'https://i.ytimg.com',
-		);
+		// YouTube thumbnail CDN — no longer needed since thumbnails are cached
+		// locally in the media library via GCB_YouTube_Thumbnail_Cache.
+		// Re-enable if local caching is disabled.
 
 		// Note: youtube-nocookie.com preconnect removed 2026-02-06
 		// Lighthouse flagged it as unused — lite-youtube only loads iframe on click
@@ -487,46 +486,18 @@ add_action( 'wp_head', 'gcb_inline_critical_css', 1 );
  *
  * Added: 2026-03-05
  */
-function gcb_preload_hero_image(): void {
-	if ( ! is_front_page() ) {
-		return;
-	}
-
-	// Use the same cache key as bento-grid.php
-	$cache_key  = 'gcb_bento_grid_' . date( 'Y-m-d-H' );
-	$grid_posts = get_transient( $cache_key );
-
-	// If cache miss, run the same query (it'll be cached for bento-grid.php too)
-	if ( false === $grid_posts ) {
-		$grid_posts = new WP_Query(
-			array(
-				'post_type'      => 'post',
-				'posts_per_page' => 1, // Only need the hero
-				'orderby'        => 'date',
-				'order'          => 'DESC',
-			)
-		);
-	}
-
-	if ( ! $grid_posts->have_posts() ) {
-		return;
-	}
-
-	$grid_posts->the_post();
-	$hero_url = get_the_post_thumbnail_url( get_the_ID(), 'large' );
-	wp_reset_postdata();
-
-	if ( ! $hero_url ) {
-		return;
-	}
-
-	// Output preload — src only, no srcset (avoids Photon mismatch)
-	printf(
-		'<link rel="preload" as="image" href="%s" fetchpriority="high">' . "\n",
-		esc_url( $hero_url )
-	);
-}
-add_action( 'wp_head', 'gcb_preload_hero_image', 2 ); // Priority 2 = very early in <head>
+/**
+ * Hero image preload — DISABLED.
+ *
+ * Jetpack's LCP optimizer (data-jp-lcp-optimized) already sets fetchpriority="high",
+ * loading="eager", and decoding="sync" on the hero. It also rewrites the srcset to
+ * ~18 viewport-optimised entries. Our static preload fetches a different size (1000x667)
+ * than what Jetpack's srcset resolves to (900x506 on desktop), causing a wasted 114KB
+ * duplicate download. Removing the preload eliminates this waste.
+ *
+ * If Jetpack's LCP optimization is ever disabled, re-enable this with imagesrcset/
+ * imagesizes attributes that match the rendered img tag.
+ */
 
 /**
  * Preload LCP candidate image on single post pages — DISABLED
