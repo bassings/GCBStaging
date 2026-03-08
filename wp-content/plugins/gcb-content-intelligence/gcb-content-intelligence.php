@@ -57,6 +57,10 @@ function gcb_ci_init(): void {
 		require_once GCB_CI_DIR . 'includes/class-gcb-cli-commands.php';
 		WP_CLI::add_command( 'gcb', 'GCB_CLI_Commands' );
 	}
+
+	// Initialize YouTube channel fetcher (cron + admin triggers).
+	require_once GCB_CI_DIR . 'includes/class-gcb-youtube-channel-fetcher.php';
+	GCB_YouTube_Channel_Fetcher::init();
 }
 add_action( 'plugins_loaded', 'gcb_ci_init' );
 
