@@ -487,17 +487,81 @@ add_action( 'wp_head', 'gcb_inline_critical_css', 1 );
  * Added: 2026-03-05
  */
 /**
- * Hero image preload — DISABLED.
+/**
+ * Preload the hero image with imagesrcset/imagesizes to match Jetpack's LCP
+ * optimizer output. This avoids the duplicate download that occurred when we
+ * preloaded a fixed size (1000x667) that didn't match what Jetpack's srcset
+ * resolved to (900x506 on desktop).
  *
- * Jetpack's LCP optimizer (data-jp-lcp-optimized) already sets fetchpriority="high",
- * loading="eager", and decoding="sync" on the hero. It also rewrites the srcset to
- * ~18 viewport-optimised entries. Our static preload fetches a different size (1000x667)
- * than what Jetpack's srcset resolves to (900x506 on desktop), causing a wasted 114KB
- * duplicate download. Removing the preload eliminates this waste.
- *
- * If Jetpack's LCP optimization is ever disabled, re-enable this with imagesrcset/
- * imagesizes attributes that match the rendered img tag.
+ * By using imagesrcset + imagesizes on the preload, the browser picks the
+ * same URL from the preload as it would from the rendered img tag.
  */
+function gcb_preload_hero_image(): void {
+	if ( ! is_front_page() ) {
+		return;
+	}
+
+	// Use the same cache key as bento-grid.php
+	$cache_key  = 'gcb_bento_grid_' . date( 'Y-m-d-H' );
+	$grid_posts = get_transient( $cache_key );
+
+	if ( false === $grid_posts ) {
+		$grid_posts = new WP_Query(
+			array(
+				'post_type'      => 'post',
+				'posts_per_page' => 1,
+				'orderby'        => 'date',
+				'order'          => 'DESC',
+			)
+		);
+	}
+
+	if ( ! $grid_posts->have_posts() ) {
+		return;
+	}
+
+	$grid_posts->the_post();
+	$post_id      = get_the_ID();
+	$thumbnail_id = get_post_thumbnail_id( $post_id );
+	$hero_url     = get_the_post_thumbnail_url( $post_id, 'large' );
+	wp_reset_postdata();
+
+	if ( ! $hero_url || ! $thumbnail_id ) {
+		return;
+	}
+
+	// Build a srcset that covers common desktop viewports.
+	// Jetpack's LCP optimizer picks ~900px on desktop (≥1025px viewport).
+	// We include a range so the preload matches regardless of viewport.
+	$base_url = wp_get_attachment_url( $thumbnail_id );
+	if ( ! $base_url ) {
+		return;
+	}
+
+	// Use Photon-style resize URLs matching Jetpack's pattern.
+	$photon_base = $hero_url; // Already a Photon URL on WP.com
+	$srcset_entries = array();
+	$widths = array( 354, 419, 752, 809, 900, 1017 );
+	$meta   = wp_get_attachment_metadata( $thumbnail_id );
+	$ratio  = ( ! empty( $meta['width'] ) && ! empty( $meta['height'] ) )
+		? $meta['height'] / $meta['width']
+		: 0.667; // Default 3:2
+
+	foreach ( $widths as $w ) {
+		$h = (int) round( $w * $ratio );
+		$srcset_entries[] = esc_url( $photon_base . '&resize=' . $w . '%2C' . $h ) . ' ' . $w . 'w';
+	}
+
+	// Match Jetpack's sizes attribute for the hero.
+	$sizes = '(min-width: 1025px) 900px, (min-width: 835px) 752px, (min-width: 769px) 809px, (min-width: 441px) 747px, (min-width: 413px) 419px, (min-width: 394px) 391px, (min-width: 376px) 372px, (min-width: 361px) 354px, 339px';
+
+	printf(
+		'<link rel="preload" as="image" imagesrcset="%s" imagesizes="%s" fetchpriority="high">' . "\n",
+		esc_attr( implode( ', ', $srcset_entries ) ),
+		esc_attr( $sizes )
+	);
+}
+add_action( 'wp_head', 'gcb_preload_hero_image', 2 );
 
 /**
  * Preload LCP candidate image on single post pages — DISABLED
