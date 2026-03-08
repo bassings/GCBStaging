@@ -114,7 +114,9 @@ if ( empty( $videos ) ) {
 			$title       = $video['title'];
 			$duration    = $video['duration'];
 			$view_count  = $video['view_count'];
-			$thumbnail   = $video['thumbnail'];
+			$thumbnail   = function_exists( 'gcb_optimize_youtube_thumbnail' )
+				? gcb_optimize_youtube_thumbnail( $video['thumbnail'], 'rail' )
+				: $video['thumbnail'];
 			$youtube_url = "https://www.youtube.com/watch?v={$video_id}";
 			?>
 

@@ -97,7 +97,7 @@ test.describe('GCB Content Intelligence - Bento Grid Pattern', () => {
     expect(hasVariation || await gridItems.count() > 2).toBeTruthy();
   });
 
-  test('Bento grid featured images have optimized heights', async ({ page, request }) => {
+  test('Bento grid images use consistent 16:9 aspect ratio', async ({ page, request }) => {
     await request.delete('/wp-json/gcb-testing/v1/reset', {
       headers: { 'GCB-Test-Key': 'test-secret-key-local' }
     });
@@ -106,7 +106,7 @@ test.describe('GCB Content Intelligence - Bento Grid Pattern', () => {
     for (let i = 0; i < 2; i++) {
       await request.post('/wp-json/gcb-testing/v1/create-post', {
         data: {
-          title: `Image Height Test ${i + 1}`,
+          title: `Image Ratio Test ${i + 1}`,
           content: '<p>Test content</p>',
           status: 'publish'
         },
@@ -121,24 +121,38 @@ test.describe('GCB Content Intelligence - Bento Grid Pattern', () => {
     await page.setViewportSize({ width: 1920, height: 1080 });
     await page.goto('/', { waitUntil: 'networkidle' });
 
-    // Featured card image
-    const featuredCard = page.locator('.bento-item--featured, .bento-item--large').first();
-    const featuredImage = featuredCard.locator('img, .gcb-bento-card__image');
-    const featuredImageHeight = await featuredImage.evaluate(el => el.getBoundingClientRect().height);
+    // All image containers should use 16:9 aspect-ratio
+    const imageLinks = page.locator('.gcb-bento-card__image-link');
+    const count = await imageLinks.count();
+    expect(count).toBeGreaterThan(0);
 
-    expect(featuredImageHeight).toBeGreaterThanOrEqual(340); // 350px ± 10px
-    expect(featuredImageHeight).toBeLessThanOrEqual(360);
+    for (let i = 0; i < count; i++) {
+      const aspectRatio = await imageLinks.nth(i).evaluate(el => {
+        return window.getComputedStyle(el).aspectRatio;
+      });
+      expect(aspectRatio).toBe('16 / 9');
+    }
 
-    // Standard card image
-    const standardCard = page.locator('.bento-item:not(.bento-item--featured)').first();
-    const standardImage = standardCard.locator('img, .gcb-bento-card__image');
-    const standardImageHeight = await standardImage.evaluate(el => el.getBoundingClientRect().height);
+    // Featured card image should be wider than standard cards
+    const featuredLink = page.locator('.bento-item--featured .gcb-bento-card__image-link').first();
+    const standardLink = page.locator('.bento-item:not(.bento-item--featured) .gcb-bento-card__image-link').first();
 
-    expect(standardImageHeight).toBeGreaterThanOrEqual(210); // 220px ± 10px
-    expect(standardImageHeight).toBeLessThanOrEqual(230);
+    const featuredWidth = await featuredLink.evaluate(el => el.getBoundingClientRect().width);
+    const standardWidth = await standardLink.evaluate(el => el.getBoundingClientRect().width);
+
+    expect(featuredWidth).toBeGreaterThan(standardWidth);
+
+    // Both should maintain ~16:9 ratio (width/height ≈ 1.78, allow 1.5-2.0)
+    const featuredRect = await featuredLink.evaluate(el => {
+      const r = el.getBoundingClientRect();
+      return { width: r.width, height: r.height };
+    });
+    const ratio = featuredRect.width / featuredRect.height;
+    expect(ratio).toBeGreaterThan(1.5);
+    expect(ratio).toBeLessThan(2.0);
   });
 
-  test('Bento grid images responsive heights on mobile', async ({ page, request }) => {
+  test('Bento grid images responsive on mobile with 16:9 ratio', async ({ page, request }) => {
     await request.delete('/wp-json/gcb-testing/v1/reset', {
       headers: { 'GCB-Test-Key': 'test-secret-key-local' }
     });
@@ -159,12 +173,20 @@ test.describe('GCB Content Intelligence - Bento Grid Pattern', () => {
     await page.setViewportSize({ width: 375, height: 667 });
     await page.goto('/', { waitUntil: 'networkidle' });
 
-    const featuredCard = page.locator('.bento-item--featured, .bento-item--large').first();
-    const image = featuredCard.locator('img, .gcb-bento-card__image');
-    const imageHeight = await image.evaluate(el => el.getBoundingClientRect().height);
+    const featuredLink = page.locator('.bento-item--featured .gcb-bento-card__image-link').first();
+    const aspectRatio = await featuredLink.evaluate(el => {
+      return window.getComputedStyle(el).aspectRatio;
+    });
+    expect(aspectRatio).toBe('16 / 9');
 
-    expect(imageHeight).toBeGreaterThanOrEqual(270); // 280px ± 10px
-    expect(imageHeight).toBeLessThanOrEqual(290);
+    // Height should be proportional to width (mobile full-width ~343px → ~193px height)
+    const rect = await featuredLink.evaluate(el => {
+      const r = el.getBoundingClientRect();
+      return { width: r.width, height: r.height };
+    });
+    const ratio = rect.width / rect.height;
+    expect(ratio).toBeGreaterThan(1.5);
+    expect(ratio).toBeLessThan(2.0);
   });
 
   test('Bento Grid is responsive on mobile viewports', async ({ page, request }) => {

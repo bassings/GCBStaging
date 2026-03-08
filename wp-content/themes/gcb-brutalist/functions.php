@@ -504,7 +504,7 @@ function gcb_preload_hero_image(): void {
 	}
 
 	$grid_posts->the_post();
-	$hero_url = get_the_post_thumbnail_url( get_the_ID(), 'medium_large' );
+	$hero_url = get_the_post_thumbnail_url( get_the_ID(), 'large' );
 	wp_reset_postdata();
 
 	if ( ! $hero_url ) {
@@ -864,6 +864,30 @@ SCRIPT;
 	return $delayed;
 }
 add_filter( 'script_loader_tag', 'gcb_delay_gtag_script', 10, 3 );
+
+/**
+ * Override WP.com font-display:fallback → swap
+ *
+ * WordPress.com's wp-fonts-local system forces font-display:fallback on all
+ * @font-face rules, ignoring theme.json fontDisplay:"swap" declarations.
+ * fallback gives only a ~100ms swap window which can cause invisible text
+ * and delay LCP (element render delay).
+ *
+ * swap ensures text is immediately visible with fallback fonts, then swaps
+ * to the web font once loaded — better for LCP and perceived performance.
+ *
+ * Added: 2026-03-08
+ */
+function gcb_force_font_display_swap( string $html ): string {
+	return str_replace( 'font-display:fallback', 'font-display:swap', $html );
+}
+
+// Hook into the existing WebP output buffer (runs on template_redirect at priority 1)
+// We add our font-display fix as a second output buffer callback that runs after WebP
+add_action( 'template_redirect', function() {
+	if ( is_admin() ) return;
+	ob_start( 'gcb_force_font_display_swap' );
+}, 2 );
 
 /**
  * Google Fonts are now loaded via theme.json fontFace declarations.
@@ -2797,6 +2821,30 @@ add_action( 'template_redirect', function () {
 
 
 
+
+/**
+ * Downsize YouTube thumbnails to reduce payload
+ *
+ * Replaces hqdefault.jpg (480x360, ~30-45KB) with mqdefault.jpg (320x180, ~10-15KB)
+ * for contexts where the image is displayed at ≤320px (e.g. video rail cards).
+ * For full-width contexts (video archive), keeps hqdefault.
+ *
+ * Photon CDN was tested but doesn't re-encode third-party images to WebP or
+ * improve cache headers — YouTube's 2h TTL passes through unchanged.
+ * We already preconnect to i.ytimg.com so the connection cost is minimal.
+ *
+ * Added: 2026-03-08
+ *
+ * @param string $url YouTube thumbnail URL
+ * @param string $context 'rail' for small cards, 'archive' for full cards
+ * @return string Optimised thumbnail URL
+ */
+function gcb_optimize_youtube_thumbnail( string $url, string $context = 'rail' ): string {
+	if ( 'rail' === $context && strpos( $url, 'hqdefault' ) !== false ) {
+		return str_replace( 'hqdefault', 'mqdefault', $url );
+	}
+	return $url;
+}
 
 /**
  * GCB WebP Safety Net v2

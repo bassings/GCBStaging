@@ -66,7 +66,7 @@ if ( ! $grid_posts->have_posts() ) {
 			$srcset_size   = 'large'; // Generate srcset from large for full range
 			$thumbnail     = get_the_post_thumbnail_url( $post_id, $default_size );
 			$srcset        = $thumbnail_id ? wp_get_attachment_image_srcset( $thumbnail_id, $srcset_size ) : '';
-			$sizes         = $is_featured ? '(max-width: 768px) 100vw, (max-width: 1024px) 66vw, 1200px' : '(max-width: 768px) 85vw, 280px';
+			$sizes         = $is_featured ? '(max-width: 768px) 100vw, (max-width: 1024px) 66vw, 900px' : '(max-width: 768px) 85vw, 400px';
 			
 			// Open carousel wrapper after hero (index 1)
 			if ( 1 === $index ) :
