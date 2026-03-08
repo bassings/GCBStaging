@@ -36,6 +36,10 @@ add_filter( 'wpseo_og_locale', function () {
  */
 add_action( 'after_setup_theme', function () {
 	add_theme_support( 'yoast-seo-breadcrumbs' );
+
+	// CrUX-optimised thumbnail: covers hero + standard card at mobile 2.6x DPR (~1071px).
+	// Physical file avoids Photon virtual resize cold-start on new article social shares.
+	add_image_size( 'gcb-crux', 1024, 0, false );
 }, 5 );
 
 /**
@@ -3086,6 +3090,7 @@ function gcb_generate_physical_thumbnails( $metadata, $attachment_id ) {
 		'thumbnail'    => array( 'width' => 150, 'height' => 150, 'crop' => true ),
 		'medium'       => array( 'width' => 300, 'height' => 300, 'crop' => false ),
 		'medium_large' => array( 'width' => 768, 'height' => 0,   'crop' => false ),
+		'gcb-crux'     => array( 'width' => 1024, 'height' => 0,  'crop' => false ), // CrUX: covers hero + card at mobile 2.6x DPR (~1071px)
 		'large'        => array( 'width' => 1200, 'height' => 1200, 'crop' => false ),
 		'newspack-article-block-landscape-large' => array( 'width' => 1200, 'height' => 900, 'crop' => true ),
 		'newspack-article-block-uncropped'       => array( 'width' => 1200, 'height' => 9999, 'crop' => false ),
