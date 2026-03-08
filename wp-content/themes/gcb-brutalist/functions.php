@@ -344,10 +344,15 @@ function gcb_preload_critical_fonts(): void {
 	// Preconnect to fonts.wp.com (serves Playfair Display on WP.com production)
 	echo '<link rel="preconnect" href="https://fonts.wp.com" crossorigin="anonymous">' . "\n";
 	
-	// Only preload the single most critical font — Playfair Display 400 (Regular)
-	// for hero headlines. Bold (67KB) and Space Mono (16KB) can load normally
-	// without preload to reduce bandwidth contention with the hero image on mobile.
+	// Playfair Display 400 (Regular) — critical for headlines/hero text
+	// NOTE: URL must match the @font-face src that WP.com generates in wp-fonts-local
 	echo '<link rel="preload" as="font" type="font/woff2" href="https://fonts.wp.com/s/playfairdisplay/v36/nuFvD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKdFvUDVZNLo_U2r.woff2" crossorigin="anonymous">' . "\n";
+	
+	// Playfair Display 700 (Bold) — used for logo and emphasis
+	echo '<link rel="preload" as="font" type="font/woff2" href="https://fonts.wp.com/s/playfairdisplay/v36/nuFvD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKeiukDVZNLo_U2r.woff2" crossorigin="anonymous">' . "\n";
+	
+	// Space Mono 400 (nav, metadata) — works from gstatic
+	echo '<link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/spacemono/v13/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2" crossorigin="anonymous">' . "\n";
 }
 add_action( 'wp_head', 'gcb_preload_critical_fonts', 0 );
 
