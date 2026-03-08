@@ -539,13 +539,13 @@ function gcb_preload_hero_image(): void {
 	}
 
 	// Use Photon-style resize URLs matching Jetpack's pattern.
+	// IMPORTANT: Jetpack's LCP optimizer calculates resize dimensions based on
+	// the CSS-rendered aspect ratio (16:9 from our aspect-ratio rule), NOT the
+	// intrinsic image dimensions. We must use the same 16:9 ratio here.
 	$photon_base = $hero_url; // Already a Photon URL on WP.com
 	$srcset_entries = array();
 	$widths = array( 354, 419, 752, 809, 900, 1017 );
-	$meta   = wp_get_attachment_metadata( $thumbnail_id );
-	$ratio  = ( ! empty( $meta['width'] ) && ! empty( $meta['height'] ) )
-		? $meta['height'] / $meta['width']
-		: 0.667; // Default 3:2
+	$ratio  = 9 / 16; // Match CSS aspect-ratio: 16/9 on bento cards
 
 	foreach ( $widths as $w ) {
 		$h = (int) round( $w * $ratio );
