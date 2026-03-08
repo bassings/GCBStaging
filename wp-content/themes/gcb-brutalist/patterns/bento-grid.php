@@ -65,6 +65,12 @@ if ( ! $grid_posts->have_posts() ) {
 			$default_size  = $is_featured ? 'large' : 'gcb-card';
 			$thumbnail     = get_the_post_thumbnail_url( $post_id, $default_size );
 
+			// Get actual image dimensions for width/height attributes (CLS prevention).
+			// Fallback to 16:9 if metadata unavailable.
+			$img_meta = $thumbnail_id ? wp_get_attachment_metadata( $thumbnail_id ) : null;
+			$img_w    = ! empty( $img_meta['width'] )  ? (int) $img_meta['width']  : 800;
+			$img_h    = ! empty( $img_meta['height'] ) ? (int) $img_meta['height'] : 450;
+
 			// Hero gets Jetpack LCP enrichment (18+ srcset entries) automatically.
 			// Standard cards only get physical thumbnails (300w, 768w, 1200w) from
 			// wp_get_attachment_image_srcset(), leaving a gap at ~400w. We generate
@@ -97,8 +103,8 @@ if ( ! $grid_posts->have_posts() ) {
 							src="<?php echo esc_url( $thumbnail ); ?>"
 							alt="<?php echo esc_attr( get_the_title() ); ?>"
 							class="gcb-bento-card__image"
-							width="800"
-							height="450"
+							width="<?php echo esc_attr( $img_w ); ?>"
+							height="<?php echo esc_attr( $img_h ); ?>"
 							<?php if ( $srcset ) : ?>
 								srcset="<?php echo esc_attr( $srcset ); ?>"
 								sizes="<?php echo esc_attr( $sizes ); ?>"
