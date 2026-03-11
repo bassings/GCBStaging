@@ -2966,6 +2966,10 @@ function gcb_photon_srcset( int $attachment_id, array $target_widths = array( 30
 // a Photon-resized URL. Returns [new_url, found] or [original, false].
 function gcb_webp_resolve( $url ) {
 	static $upload_dir = null;
+	static $cache = array();
+	if ( isset( $cache[ $url ] ) ) {
+		return $cache[ $url ];
+	}
 	if ( $upload_dir === null ) {
 		$upload_dir = wp_upload_dir();
 	}
@@ -2988,6 +2992,7 @@ function gcb_webp_resolve( $url ) {
 
 	// Not a jpg/jpeg/png? Skip.
 	if ( ! preg_match( '/\.(jpe?g|png)$/i', $url_no_query ) ) {
+		$cache[ $url ] = $url;
 		return $url;
 	}
 
@@ -2997,7 +3002,8 @@ function gcb_webp_resolve( $url ) {
 
 	// Case 1: Exact .webp exists (full-size or thumbnail)
 	if ( file_exists( $webp_path ) ) {
-		return preg_replace( '/\.(jpe?g|png)/i', '.webp', $url );
+		$cache[ $url ] = preg_replace( '/\.(jpe?g|png)/i', '.webp', $url );
+		return $cache[ $url ];
 	}
 
 	// Case 2: Thumbnail doesn't exist as .webp — try full-size .webp + Photon resize
