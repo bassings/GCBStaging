@@ -2059,6 +2059,52 @@ function gcb_register_nav_menus(): void {
 add_action( 'after_setup_theme', 'gcb_register_nav_menus' );
 
 /**
+ * Register "Brand" custom taxonomy for car manufacturers.
+ *
+ * Provides /brand/{slug}/ archive pages showing all content types for a brand.
+ * Non-hierarchical (flat list like tags, but controlled — no freeform creation).
+ * Exposed in REST API for programmatic management.
+ */
+function gcb_register_brand_taxonomy(): void {
+	$labels = array(
+		'name'                       => __( 'Brands', 'gcb-brutalist' ),
+		'singular_name'              => __( 'Brand', 'gcb-brutalist' ),
+		'search_items'               => __( 'Search Brands', 'gcb-brutalist' ),
+		'all_items'                  => __( 'All Brands', 'gcb-brutalist' ),
+		'edit_item'                  => __( 'Edit Brand', 'gcb-brutalist' ),
+		'update_item'                => __( 'Update Brand', 'gcb-brutalist' ),
+		'add_new_item'               => __( 'Add New Brand', 'gcb-brutalist' ),
+		'new_item_name'              => __( 'New Brand Name', 'gcb-brutalist' ),
+		'menu_name'                  => __( 'Brands', 'gcb-brutalist' ),
+		'not_found'                  => __( 'No brands found.', 'gcb-brutalist' ),
+		'back_to_items'              => __( '← Back to Brands', 'gcb-brutalist' ),
+	);
+
+	$args = array(
+		'labels'            => $labels,
+		'hierarchical'      => false,
+		'public'            => true,
+		'show_in_rest'      => true,
+		'show_ui'           => true,
+		'show_admin_column' => true,
+		'query_var'         => true,
+		'rewrite'           => array(
+			'slug'       => 'brand',
+			'with_front' => false,
+		),
+		'capabilities'      => array(
+			'manage_terms' => 'manage_categories',
+			'edit_terms'   => 'manage_categories',
+			'delete_terms' => 'manage_categories',
+			'assign_terms' => 'edit_posts',
+		),
+	);
+
+	register_taxonomy( 'brand', array( 'post' ), $args );
+}
+add_action( 'init', 'gcb_register_brand_taxonomy' );
+
+/**
  * Custom Navigation Walker for GCB Brutalist Theme
  *
  * Outputs flat <a> tags without <ul>/<li> wrappers to maintain
