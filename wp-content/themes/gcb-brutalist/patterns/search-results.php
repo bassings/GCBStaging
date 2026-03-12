@@ -86,8 +86,12 @@ if ( $search_results->have_posts() ) :
 						</time>
 
 						<!-- Content Format Badge -->
+						<?php
+						$badge_categories = get_the_category();
+						$badge_label      = ! empty( $badge_categories ) ? $badge_categories[0]->name : 'Article';
+						?>
 						<span style="padding: 2px 8px; border: 1px solid var(--wp--preset--color--brutal-border); text-transform: uppercase;">
-							Article
+							<?php echo esc_html( $badge_label ); ?>
 						</span>
 					</div>
 				</div>
