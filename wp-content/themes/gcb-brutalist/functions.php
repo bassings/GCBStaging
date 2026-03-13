@@ -3559,3 +3559,127 @@ function gcb_brand_grid_shortcode( $atts ) {
 	return $output;
 }
 add_shortcode( 'gcb_brand_grid', 'gcb_brand_grid_shortcode' );
+
+/**
+ * Taxonomy Migration Redirects
+ *
+ * Handles 301 redirects for old category URLs:
+ * - /category/{brand}/ → /brand/{brand}/
+ * - /category/{old-type}/ → /category/{new-type}/
+ *
+ * @since 1.1.0
+ */
+add_action( 'template_redirect', 'gcb_taxonomy_redirects', 1 );
+
+function gcb_taxonomy_redirects() {
+	// Only run on 404s or category paths that need redirecting
+	$request_uri = $_SERVER['REQUEST_URI'] ?? '';
+	
+	// Must be a /category/ URL
+	if ( ! preg_match( '#^/category/([^/]+)/?#', $request_uri, $matches ) ) {
+		return;
+	}
+	
+	$old_slug = $matches[1];
+	
+	// Brand slugs that should redirect to /brand/
+	$brands = array(
+		'alfa-romeo', 'alpine', 'aston-martin', 'audi', 'bentley', 'bmw', 'byd',
+		'cadillac', 'chery', 'chevrolet', 'chrysler', 'citroen', 'cupra', 'dacia',
+		'dodge', 'ds', 'ferrari', 'fiat', 'ford', 'genesis', 'gmc', 'gwm', 'haval',
+		'holden', 'honda', 'hummer', 'hyundai', 'infiniti', 'isuzu', 'jaguar', 'jeep',
+		'kia', 'koenigsegg', 'lamborghini', 'lancia', 'land-rover', 'lexus', 'lincoln',
+		'lotus', 'lucid', 'maserati', 'mazda', 'mclaren', 'mercedes-benz', 'mg',
+		'mini', 'mitsubishi', 'nissan', 'opel', 'pagani', 'peugeot', 'polestar',
+		'porsche', 'ram', 'renault', 'rivian', 'rolls-royce', 'saab', 'seat', 'skoda',
+		'smart', 'ssangyong', 'subaru', 'suzuki', 'tesla', 'toyota', 'vauxhall',
+		'vinfast', 'volkswagen', 'volvo', 'zeekr',
+	);
+	
+	// Check if it's a brand
+	if ( in_array( $old_slug, $brands, true ) ) {
+		wp_redirect( home_url( '/brand/' . $old_slug . '/' ), 301 );
+		exit;
+	}
+	
+	// Content type category consolidations
+	$category_redirects = array(
+		// Reviews consolidation
+		'car-reviews'        => 'reviews',
+		'first-drive'        => 'reviews',
+		'first-drives'       => 'reviews',
+		'quick-spin'         => 'reviews',
+		'quick-spins'        => 'reviews',
+		'comparison'         => 'reviews',
+		'comparisons'        => 'reviews',
+		'long-term-test'     => 'reviews',
+		'long-term-tests'    => 'reviews',
+		
+		// News consolidation
+		'breaking'           => 'news',
+		'breaking-news'      => 'news',
+		'announcements'      => 'news',
+		'recalls'            => 'news',
+		'industry'           => 'news',
+		'industry-news'      => 'news',
+		
+		// Features consolidation
+		'feature'            => 'features',
+		'opinion'            => 'features',
+		'opinions'           => 'features',
+		'editorial'          => 'features',
+		'editorials'         => 'features',
+		'columns'            => 'features',
+		'column'             => 'features',
+		
+		// Interviews consolidation
+		'interview'          => 'interviews',
+		'q-and-a'            => 'interviews',
+		'profiles'           => 'interviews',
+		'profile'            => 'interviews',
+		
+		// Tech consolidation
+		'technology'         => 'tech',
+		'ev-tech'            => 'tech',
+		'electric'           => 'tech',
+		'electric-vehicles'  => 'tech',
+		'autonomous'         => 'tech',
+		'safety'             => 'tech',
+		
+		// Motorsport consolidation
+		'racing'             => 'motorsport',
+		'f1'                 => 'motorsport',
+		'formula-1'          => 'motorsport',
+		'supercars'          => 'motorsport',
+		'wrc'                => 'motorsport',
+		'rally'              => 'motorsport',
+		'motogp'             => 'motorsport',
+		'le-mans'            => 'motorsport',
+		'indycar'            => 'motorsport',
+		'nascar'             => 'motorsport',
+		
+		// Lifestyle consolidation
+		'culture'            => 'lifestyle',
+		'travel'             => 'lifestyle',
+		'events'             => 'lifestyle',
+		'shows'              => 'lifestyle',
+		'motor-shows'        => 'lifestyle',
+		'car-shows'          => 'lifestyle',
+		'podcasts'           => 'lifestyle',
+		'videos'             => 'lifestyle',
+		'video'              => 'lifestyle',
+		'gallery'            => 'lifestyle',
+		'galleries'          => 'lifestyle',
+		'awards'             => 'lifestyle',
+		'best-of'            => 'lifestyle',
+		'buyers-guide'       => 'lifestyle',
+		'buying-guide'       => 'lifestyle',
+	);
+	
+	// Check if it's a content type redirect
+	if ( isset( $category_redirects[ $old_slug ] ) ) {
+		$new_slug = $category_redirects[ $old_slug ];
+		wp_redirect( home_url( '/category/' . $new_slug . '/' ), 301 );
+		exit;
+	}
+}
