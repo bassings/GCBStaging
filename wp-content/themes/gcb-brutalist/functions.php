@@ -14,6 +14,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Get the content type badge label for a post
+ *
+ * Returns the first category name for use in card badges.
+ * Falls back to 'Article' if no category is found.
+ *
+ * @param int|null $post_id Post ID (defaults to current post).
+ * @return string The badge label.
+ */
+function gcb_get_content_type_badge( $post_id = null ) {
+	if ( ! $post_id ) {
+		$post_id = get_the_ID();
+	}
+	$categories = get_the_category( $post_id );
+	return ! empty( $categories ) ? esc_html( $categories[0]->name ) : 'Article';
+}
+
+/**
  * SEO & GEO (Generative Engine Optimization) Filters
  *
  * Fix Yoast og:locale for Australian English.
@@ -1622,9 +1639,10 @@ function gcb_build_search_results_html() {
 			$html .= '<div class="wp-block-post-excerpt" style="flex:1 1 auto;font-family:var(--wp--preset--font-family--system-sans);font-size:0.875rem;line-height:1.5;color:var(--wp--preset--color--brutal-grey);margin:0;padding:0 1.5rem 0.75rem 1.5rem;">';
 			$html .= '<p style="margin:0;">' . $excerpt . '</p>';
 			$html .= '</div>';
+			$badge_label = gcb_get_content_type_badge();
 			$html .= '<time class="wp-block-post-date" datetime="' . $datetime . '" style="margin-top:auto;flex-shrink:0;padding:0 1.5rem 1.5rem 1.5rem;font-family:var(--wp--preset--font-family--mono);font-size:0.75rem;color:var(--wp--preset--color--brutal-grey);display:flex;align-items:center;gap:0.75rem;">';
 			$html .= $date;
-			$html .= '<span style="padding:2px 8px;border:1px solid var(--wp--preset--color--brutal-border);text-transform:uppercase;">Article</span>';
+			$html .= '<span style="padding:2px 8px;border:1px solid var(--wp--preset--color--brutal-border);text-transform:uppercase;">' . $badge_label . '</span>';
 			$html .= '</time>';
 			$html .= '</div>';
 			$html .= '</li>';
@@ -1840,6 +1858,174 @@ function gcb_category_posts_shortcode() {
 	return '';
 }
 add_shortcode( 'gcb_category_posts', 'gcb_category_posts_shortcode' );
+
+/**
+ * Archive Grid Shortcode
+ *
+ * Displays posts in a bento-style grid with dynamic content type badges.
+ * Works for category, tag, date, and author archives.
+ * Usage: [gcb_archive_grid]
+ */
+function gcb_archive_grid_shortcode() {
+	global $gcb_archive_grid_html;
+	$gcb_archive_grid_html = gcb_build_archive_grid_html();
+	return '<!--GCB_ARCHIVE_GRID_PLACEHOLDER-->';
+}
+
+/**
+ * Build the archive grid HTML
+ *
+ * @return string Clean HTML for archive grid
+ */
+function gcb_build_archive_grid_html() {
+	// Get current page for pagination
+	$paged = get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1;
+
+	// Build query args - inherit from main query
+	$args = array(
+		'post_type'      => 'post',
+		'post_status'    => 'publish',
+		'posts_per_page' => 12,
+		'paged'          => $paged,
+		'orderby'        => 'date',
+		'order'          => 'DESC',
+	);
+
+	// Inherit category/tag/date/author from main query
+	if ( is_category() ) {
+		$args['cat'] = get_queried_object_id();
+	} elseif ( is_tag() ) {
+		$args['tag_id'] = get_queried_object_id();
+	} elseif ( is_author() ) {
+		$args['author'] = get_queried_object_id();
+	} elseif ( is_year() ) {
+		$args['year'] = get_query_var( 'year' );
+	} elseif ( is_month() ) {
+		$args['year']     = get_query_var( 'year' );
+		$args['monthnum'] = get_query_var( 'monthnum' );
+	} elseif ( is_day() ) {
+		$args['year']     = get_query_var( 'year' );
+		$args['monthnum'] = get_query_var( 'monthnum' );
+		$args['day']      = get_query_var( 'day' );
+	} elseif ( is_tax( 'brand' ) ) {
+		$args['tax_query'] = array(
+			array(
+				'taxonomy' => 'brand',
+				'field'    => 'term_id',
+				'terms'    => get_queried_object_id(),
+			),
+		);
+	}
+
+	$archive_query = new WP_Query( $args );
+
+	$html = '';
+
+	if ( $archive_query->have_posts() ) :
+		$html .= '<div class="wp-block-query alignwide gcb-archive-grid">';
+		$html .= '<ul class="wp-block-post-template" style="display:grid;grid-template-columns:repeat(3,1fr);align-items:stretch;gap:2rem;list-style:none;padding:0;margin:0;">';
+
+		while ( $archive_query->have_posts() ) :
+			$archive_query->the_post();
+			$permalink   = esc_url( get_permalink() );
+			$title       = esc_html( get_the_title() );
+			$excerpt     = esc_html( wp_trim_words( get_the_excerpt(), 55 ) );
+			$date        = esc_html( get_the_date( 'M j, Y' ) );
+			$datetime    = esc_attr( get_the_date( 'c' ) );
+			$badge_label = gcb_get_content_type_badge( get_the_ID() );
+
+			// Get thumbnail HTML
+			$thumbnail_html = '';
+			if ( has_post_thumbnail() ) {
+				$thumbnail_html = '<a href="' . $permalink . '" style="display:block;flex-shrink:0;">';
+				$thumbnail_html .= get_the_post_thumbnail(
+					get_the_ID(),
+					'medium_large',
+					array(
+						'loading'  => 'lazy',
+						'decoding' => 'async',
+						'style'    => 'width:100%;height:220px;object-fit:cover;display:block;border-bottom:2px solid var(--wp--preset--color--brutal-border);',
+					)
+				);
+				$thumbnail_html .= '</a>';
+			}
+
+			$html .= '<li class="wp-block-post" style="margin:0;padding:0;">';
+			$html .= '<div class="gcb-post-card" style="border:2px solid var(--wp--preset--color--brutal-border);background:var(--wp--preset--color--void-black);overflow:hidden;display:flex;flex-direction:column;height:100%;">';
+			$html .= $thumbnail_html;
+			$html .= '<h3 class="wp-block-post-title" style="font-family:var(--wp--preset--font-family--playfair);font-size:1.25rem;line-height:1.3;margin:0 0 0.75rem 0;padding:1.5rem 1.5rem 0 1.5rem;color:var(--wp--preset--color--off-white);">';
+			$html .= '<a href="' . $permalink . '" style="color:inherit;text-decoration:none;">' . $title . '</a>';
+			$html .= '</h3>';
+			$html .= '<div class="wp-block-post-excerpt" style="flex:1 1 auto;font-family:var(--wp--preset--font-family--system-sans);font-size:0.875rem;line-height:1.5;color:var(--wp--preset--color--brutal-grey);margin:0;padding:0 1.5rem 0.75rem 1.5rem;">';
+			$html .= '<p style="margin:0;">' . $excerpt . '</p>';
+			$html .= '</div>';
+			$html .= '<time class="wp-block-post-date" datetime="' . $datetime . '" style="margin-top:auto;flex-shrink:0;padding:0 1.5rem 1.5rem 1.5rem;font-family:var(--wp--preset--font-family--mono);font-size:0.75rem;color:var(--wp--preset--color--brutal-grey);display:flex;align-items:center;gap:0.75rem;">';
+			$html .= $date;
+			$html .= '<span style="padding:2px 8px;border:1px solid var(--wp--preset--color--brutal-border);text-transform:uppercase;">' . $badge_label . '</span>';
+			$html .= '</time>';
+			$html .= '</div>';
+			$html .= '</li>';
+		endwhile;
+		wp_reset_postdata();
+
+		$html .= '</ul>';
+
+		// Pagination
+		$total_pages = $archive_query->max_num_pages;
+		if ( $total_pages > 1 ) {
+			$html .= '<nav class="wp-block-query-pagination" style="display:flex;justify-content:center;gap:1rem;margin-top:var(--wp--preset--spacing--50);font-family:var(--wp--preset--font-family--mono);">';
+
+			if ( $paged > 1 ) {
+				$html .= '<a href="' . esc_url( get_pagenum_link( $paged - 1 ) ) . '" class="wp-block-query-pagination-previous" style="color:var(--wp--preset--color--off-white);text-decoration:none;">← Previous</a>';
+			}
+
+			$html .= '<span class="wp-block-query-pagination-numbers" style="color:var(--wp--preset--color--brutal-grey);">Page ' . $paged . ' of ' . $total_pages . '</span>';
+
+			if ( $paged < $total_pages ) {
+				$html .= '<a href="' . esc_url( get_pagenum_link( $paged + 1 ) ) . '" class="wp-block-query-pagination-next" style="color:var(--wp--preset--color--off-white);text-decoration:none;">Next →</a>';
+			}
+
+			$html .= '</nav>';
+		}
+
+		$html .= '</div>';
+
+		// Responsive CSS - override theme's masonry margin
+		$html .= '<style>';
+		$html .= '.gcb-archive-grid .wp-block-post-template > li.wp-block-post { margin-top: 0 !important; }';
+		$html .= '@media (max-width: 1024px) { .gcb-archive-grid .wp-block-post-template { grid-template-columns: repeat(2, 1fr) !important; } }';
+		$html .= '@media (max-width: 768px) { .gcb-archive-grid .wp-block-post-template { grid-template-columns: 1fr !important; } }';
+		$html .= '.gcb-archive-grid .gcb-post-card:hover { border-color: var(--wp--preset--color--highlight) !important; }';
+		$html .= '.gcb-archive-grid .wp-block-post-title a:hover { color: var(--wp--preset--color--electric-blue) !important; }';
+		$html .= '</style>';
+
+	else :
+		$html = '<div class="wp-block-query-no-results">';
+		$html .= '<p style="padding:var(--wp--preset--spacing--50) 0;font-family:var(--wp--preset--font-family--mono);color:var(--wp--preset--color--brutal-grey);">No posts found.</p>';
+		$html .= '</div>';
+	endif;
+
+	return $html;
+}
+add_shortcode( 'gcb_archive_grid', 'gcb_archive_grid_shortcode' );
+
+/**
+ * Replace archive grid placeholder with actual HTML
+ */
+add_filter( 'render_block', function( $block_content, $block ) {
+	global $gcb_archive_grid_html;
+
+	if ( strpos( $block_content, '<!--GCB_ARCHIVE_GRID_PLACEHOLDER-->' ) !== false && ! empty( $gcb_archive_grid_html ) ) {
+		$block_content = str_replace(
+			'<!--GCB_ARCHIVE_GRID_PLACEHOLDER-->',
+			$gcb_archive_grid_html,
+			$block_content
+		);
+		$gcb_archive_grid_html = '';
+	}
+
+	return $block_content;
+}, 20, 2 );
 
 /**
  * Year Selector Shortcode
@@ -3319,3 +3505,57 @@ function gcb_generate_physical_thumbnails( $metadata, $attachment_id ) {
 	imagedestroy( $img );
 	return $metadata;
 }
+
+/**
+ * Brand Grid Shortcode
+ *
+ * Displays all brands with posts in a card grid.
+ * Usage: [gcb_brand_grid]
+ */
+function gcb_brand_grid_shortcode( $atts ) {
+	$brands = get_terms( array(
+		'taxonomy'   => 'brand',
+		'hide_empty' => true,
+		'orderby'    => 'name',
+		'order'      => 'ASC',
+	) );
+
+	if ( empty( $brands ) || is_wp_error( $brands ) ) {
+		return '<p>No brands found.</p>';
+	}
+
+	$output = '<div class="brand-index-grid" style="margin-bottom: var(--wp--preset--spacing--60);">';
+	
+	// Header
+	$output .= '<div style="border-bottom: 2px solid var(--wp--preset--color--brutal-border); padding-bottom: var(--wp--preset--spacing--30); margin-bottom: var(--wp--preset--spacing--40);">';
+	$output .= '<h2 style="font-family: var(--wp--preset--font-family--playfair); font-size: 2.5rem; text-transform: uppercase; color: var(--wp--preset--color--off-white); margin: 0;">Browse by Brand</h2>';
+	$output .= '<p style="font-family: var(--wp--preset--font-family--mono); font-size: 0.875rem; color: var(--wp--preset--color--brutal-grey); margin-top: 0.5rem;">' . count( $brands ) . ' brands with reviews and news</p>';
+	$output .= '</div>';
+
+	// Grid
+	$output .= '<div class="brands-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">';
+	
+	foreach ( $brands as $brand ) {
+		$link = get_term_link( $brand );
+		if ( is_wp_error( $link ) ) continue;
+		
+		$output .= '<a href="' . esc_url( $link ) . '" class="brand-card" style="display: block; padding: 1.5rem 1rem; border: 2px solid var(--wp--preset--color--brutal-border); text-decoration: none; background: transparent;">';
+		$output .= '<div style="font-family: var(--wp--preset--font-family--mono); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--wp--preset--color--off-white); margin-bottom: 0.5rem;">' . esc_html( $brand->name ) . '</div>';
+		$output .= '<div style="font-family: var(--wp--preset--font-family--mono); font-size: 0.75rem; color: var(--wp--preset--color--brutal-grey);">' . $brand->count . ' ' . ( $brand->count === 1 ? 'article' : 'articles' ) . '</div>';
+		$output .= '</a>';
+	}
+	
+	$output .= '</div>';
+	
+	// Styles
+	$output .= '<style>
+		.brand-card:hover, .brand-card:focus { border-color: var(--wp--preset--color--highlight) !important; }
+		@media (max-width: 768px) { .brands-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important; } }
+		@media (max-width: 480px) { .brands-grid { grid-template-columns: 1fr 1fr !important; } }
+	</style>';
+	
+	$output .= '</div>';
+	
+	return $output;
+}
+add_shortcode( 'gcb_brand_grid', 'gcb_brand_grid_shortcode' );
