@@ -101,7 +101,7 @@ class GCB_YouTube_Channel_Fetcher {
 		$cached = 0;
 		$thumb_stats = array( 'total' => 0, 'valid' => 0, 'stale' => 0 );
 		if ( class_exists( 'GCB_YouTube_Thumbnail_Cache' ) && ! empty( $videos ) ) {
-			$cached = GCB_YouTube_Thumbnail_Cache::cache_thumbnails( $videos );
+			// DISABLED: $cached = GCB_YouTube_Thumbnail_Cache::cache_thumbnails( $videos );
 			$thumb_stats = GCB_YouTube_Thumbnail_Cache::get_stats();
 		}
 
@@ -167,7 +167,7 @@ class GCB_YouTube_Channel_Fetcher {
 
 		if ( class_exists( 'GCB_YouTube_Thumbnail_Cache' ) ) {
 			$stats_before = GCB_YouTube_Thumbnail_Cache::get_stats();
-			$cached = GCB_YouTube_Thumbnail_Cache::cache_thumbnails( $videos );
+			// DISABLED: $cached = GCB_YouTube_Thumbnail_Cache::cache_thumbnails( $videos );
 			$stats_after = GCB_YouTube_Thumbnail_Cache::get_stats();
 		}
 
@@ -479,7 +479,7 @@ class GCB_YouTube_Channel_Fetcher {
 
 			// Cache thumbnails into media library (processes up to 5 per cycle).
 			if ( class_exists( 'GCB_YouTube_Thumbnail_Cache' ) ) {
-				$cached = GCB_YouTube_Thumbnail_Cache::cache_thumbnails( $videos );
+				// DISABLED: $cached = GCB_YouTube_Thumbnail_Cache::cache_thumbnails( $videos );
 				if ( $cached > 0 ) {
 					error_log( sprintf( 'GCB: Cached %d YouTube thumbnails into media library', $cached ) );
 				}
