@@ -471,6 +471,12 @@ function gcb_bento_grid_fallback_css(): void {
 			grid-auto-rows: minmax(300px, auto) !important;
 		}
 	}
+	.gcb-bento-card__image-link {
+		aspect-ratio: 16 / 9;
+		height: auto;
+		border-bottom: 2px solid var(--wp--preset--color--brutal-border);
+		display: block;
+	}
 	</style>
 	<?php
 }
