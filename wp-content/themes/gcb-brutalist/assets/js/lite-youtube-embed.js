@@ -47,10 +47,32 @@ class LiteYouTubeEmbed extends HTMLElement {
 	}
 
 	/**
-	 * Try thumbnail resolutions in order: maxresdefault > sddefault > hqdefault
-	 * Not all videos have maxresdefault (1280x720), so we fall back gracefully.
+	 * Try thumbnail resolutions in order:
+	 * 1. Server-rendered local poster (data-poster attribute, set by PHP)
+	 * 2. Pre-set background-image (from PHP output buffer)
+	 * 3. YouTube fallback chain: maxresdefault > sddefault > hqdefault
 	 */
 	loadPosterWithFallback(videoId) {
+		var localPoster = this.getAttribute('data-poster');
+
+		// If PHP set a full-quality local poster via data-poster, upgrade to it
+		// (The inline style may have a LQIP placeholder that we want to replace)
+		if (localPoster) {
+			var self = this;
+			var img = new Image();
+			img.onload = function() {
+				self.style.backgroundImage = 'url("' + localPoster + '")';
+			};
+			img.src = localPoster;
+			return;
+		}
+
+		// If background-image is already set server-side (LQIP or full), keep it
+		if (this.style.backgroundImage && this.style.backgroundImage !== 'none') {
+			return;
+		}
+
+		// Fallback: load from YouTube directly
 		var self = this;
 		var base = 'https://i.ytimg.com/vi/' + videoId + '/';
 		var fallbacks = [
@@ -63,8 +85,6 @@ class LiteYouTubeEmbed extends HTMLElement {
 			if (index >= fallbacks.length) return;
 			var img = new Image();
 			img.onload = function() {
-				// YouTube returns a 120x90 gray placeholder for missing thumbs;
-				// real maxresdefault is 1280x720, sddefault is 640x480, hqdefault is 480x360
 				if (img.naturalWidth <= 120 && index < fallbacks.length - 1) {
 					tryLoad(index + 1);
 				} else {
@@ -75,7 +95,6 @@ class LiteYouTubeEmbed extends HTMLElement {
 			img.src = fallbacks[index];
 		}
 
-		// Set hqdefault immediately as a safe baseline, then upgrade if better exists
 		this.style.backgroundImage = 'url("' + base + 'hqdefault.jpg")';
 		tryLoad(0);
 	}
