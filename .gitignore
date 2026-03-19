@@ -55,3 +55,4 @@ wp-config.php
 .ht.sqlite-*
 wp-content/plugins/wordpress-seo/
 llms.txt
+\n# Ignore large SQLite backups\nwp-content/database/*.ht.sqlite.bak-*
