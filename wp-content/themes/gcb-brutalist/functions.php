@@ -448,7 +448,8 @@ add_action( 'wp_head', 'gcb_font_fallback_overrides', 0 );
  * layout styles for the Bento Grid.
  */
 function gcb_bento_grid_fallback_css(): void {
-	if ( ! is_front_page() ) {
+	// Apply bento grid fallback to homepage, archives (categories/tags), and search results
+	if ( ! is_front_page() && ! is_archive() && ! is_search() ) {
 		return;
 	}
 	?>
