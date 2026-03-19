@@ -442,6 +442,40 @@ add_action( 'wp_head', 'gcb_font_fallback_overrides', 0 );
 // See comment above — duplicate CSS removed 2026-03-18
 
 /**
+ * Bento Grid Fallback CSS
+ * 
+ * Prevents massive FOUC on the homepage if Jetpack Boost fails to generate
+ * layout styles for the Bento Grid.
+ */
+function gcb_bento_grid_fallback_css(): void {
+	if ( ! is_front_page() ) {
+		return;
+	}
+	?>
+	<style id="gcb-bento-grid-fallback">
+	.gcb-bento-grid__container {
+		display: grid !important;
+		grid-template-columns: repeat(3, 1fr) !important;
+		gap: 2rem !important;
+		grid-auto-rows: 400px !important;
+	}
+	@media (max-width: 1024px) {
+		.gcb-bento-grid__container {
+			grid-template-columns: repeat(2, 1fr) !important;
+		}
+	}
+	@media (max-width: 768px) {
+		.gcb-bento-grid__container {
+			grid-template-columns: 1fr !important;
+			grid-auto-rows: minmax(300px, auto) !important;
+		}
+	}
+	</style>
+	<?php
+}
+add_action( 'wp_head', 'gcb_bento_grid_fallback_css', 2 );
+
+/**
  * Defer non-critical CSS loading — DISABLED
  *
  * Jetpack Boost now handles CSS deferral on WP.com production using its own
@@ -523,7 +557,7 @@ function gcb_preload_hero_image(): void {
 	// intrinsic image dimensions. We must use the same 16:9 ratio here.
 	$photon_base = $hero_url; // Already a Photon URL on WP.com
 	$srcset_entries = array();
-	$widths = array( 354, 419, 752, 809, 900, 1017 );
+	$widths = array( 354, 391, 419, 684, 708, 752, 782, 809, 838, 900, 1017, 1062, 1116, 1173, 1257 );
 	$ratio  = 9 / 16; // Match CSS aspect-ratio: 16/9 on bento cards
 
 	foreach ( $widths as $w ) {
