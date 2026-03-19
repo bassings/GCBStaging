@@ -79,7 +79,7 @@
           "slug": "system-sans"
         },
         {
-          "fontFamily": "'Playfair Display', Georgia, serif",
+          "fontFamily": "'Playfair Display', 'Playfair Display Fallback', Georgia, serif",
           "name": "Playfair Display",
           "slug": "playfair",
           "fontFace": [
