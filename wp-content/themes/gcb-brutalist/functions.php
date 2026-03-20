@@ -463,7 +463,6 @@ function gcb_bento_grid_fallback_css(): void {
 		display: grid !important;
 		grid-template-columns: repeat(3, 1fr) !important;
 		gap: 2rem !important;
-		grid-auto-rows: 400px !important;
 	}
 	@media (max-width: 1024px) {
 		.gcb-bento-grid__container {
@@ -473,7 +472,6 @@ function gcb_bento_grid_fallback_css(): void {
 	@media (max-width: 768px) {
 		.gcb-bento-grid__container {
 			grid-template-columns: 1fr !important;
-			grid-auto-rows: minmax(300px, auto) !important;
 		}
 	}
 	.gcb-bento-card__image-link {
