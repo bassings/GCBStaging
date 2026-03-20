@@ -565,14 +565,15 @@ function gcb_preload_hero_image(): void {
 	// IMPORTANT: Jetpack's LCP optimizer calculates resize dimensions based on
 	// the CSS-rendered aspect ratio (16:9 from our aspect-ratio rule), NOT the
 	// intrinsic image dimensions. We must use the same 16:9 ratio here.
-	$photon_base = $hero_url; // Already a Photon URL on WP.com
+	$photon_base = strtok( $hero_url, '?' ); // Strip existing query args
 	$srcset_entries = array();
 	$widths = array( 354, 391, 419, 684, 708, 752, 782, 809, 838, 900, 1017, 1062, 1116, 1173, 1257 );
 	$ratio  = 9 / 16; // Match CSS aspect-ratio: 16/9 on bento cards
 
 	foreach ( $widths as $w ) {
 		$h = (int) round( $w * $ratio );
-		$srcset_entries[] = esc_url( $photon_base . '&resize=' . $w . '%2C' . $h ) . ' ' . $w . 'w';
+		// Build clean Photon URL with ssl=1 to match Jetpack output
+		$srcset_entries[] = esc_url( add_query_arg( array( 'resize' => $w . ',' . $h, 'ssl' => '1' ), $photon_base ) ) . ' ' . $w . 'w';
 	}
 
 	// Match Jetpack's sizes attribute for the hero.
@@ -631,10 +632,12 @@ function gcb_preload_single_post_image(): void {
 		$ratio = $meta['height'] / $meta['width'];
 	}
 
+	$photon_base = strtok( $hero_url, '?' ); // Strip existing query args
 	$srcset_entries = array();
 	foreach ( $widths as $w ) {
 		$h = (int) round( $w * $ratio );
-		$srcset_entries[] = esc_url( $hero_url . '&resize=' . $w . '%2C' . $h ) . ' ' . $w . 'w';
+		// Build clean Photon URL with ssl=1 to match Jetpack output
+		$srcset_entries[] = esc_url( add_query_arg( array( 'resize' => $w . ',' . $h, 'ssl' => '1' ), $photon_base ) ) . ' ' . $w . 'w';
 	}
 
 	// Match typical Jetpack sizes for single post featured images
