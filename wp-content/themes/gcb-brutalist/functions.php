@@ -572,7 +572,7 @@ function gcb_preload_hero_image(): void {
 
 	foreach ( $widths as $w ) {
 		$h = (int) round( $w * $ratio );
-		$srcset_entries[] = esc_url( $photon_base . '&resize=' . $w . '%2C' . $h . '&quality=75' ) . ' ' . $w . 'w';
+		$srcset_entries[] = esc_url( $photon_base . '&resize=' . $w . '%2C' . $h ) . ' ' . $w . 'w';
 	}
 
 	// Match Jetpack's sizes attribute for the hero.
@@ -634,7 +634,7 @@ function gcb_preload_single_post_image(): void {
 	$srcset_entries = array();
 	foreach ( $widths as $w ) {
 		$h = (int) round( $w * $ratio );
-		$srcset_entries[] = esc_url( $hero_url . '&resize=' . $w . '%2C' . $h . '&quality=75' ) . ' ' . $w . 'w';
+		$srcset_entries[] = esc_url( $hero_url . '&resize=' . $w . '%2C' . $h ) . ' ' . $w . 'w';
 	}
 
 	// Match typical Jetpack sizes for single post featured images
